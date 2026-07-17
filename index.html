@@ -784,6 +784,71 @@
   }
   #mobile-basic .mb-back::before { content: "cd .. "; color: #2f8f43; }
 
+  /* ---- mobile: inline player + full merch store (feature parity) ---- */
+  .mb-song .mb-play {
+    background: none; color: #4dff6c; border: 1px solid #2f8f43; border-radius: 0;
+    padding: 9px 12px; font-size: 12px; cursor: pointer; font-family: inherit; min-width: 42px;
+  }
+  .mb-song .mb-play::before { content: "["; color: #2f8f43; }
+  .mb-song .mb-play::after { content: "]"; color: #2f8f43; }
+  .mb-song .mb-play.playing { color: #050805; background: #4dff6c; }
+  .mb-actions-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 20px; }
+  .mb-cta {
+    background: none; border: 1px solid #2f8f43; color: #4dff6c;
+    padding: 11px 15px; font-size: 13px; font-family: inherit; cursor: pointer; flex: 1;
+  }
+  .mb-cta.primary { background: #123a1c; color: #b6ffc4; }
+
+  #mobile-store {
+    position: fixed; inset: 0; z-index: 98500; display: none;
+    background: #050805; color: #4dff6c; overflow: auto;
+    font-family: "Consolas", "Lucida Console", monospace;
+    padding: 22px 18px 60px; font-size: 14px; line-height: 1.5;
+  }
+  #mobile-store.on { display: block; }
+  #mobile-store h1 { font-size: 20px; margin: 0 0 2px; font-weight: normal; }
+  #mobile-store h1::before { content: "C:\\10TO2\\STORE> "; color: #2f8f43; }
+  #mobile-store .mb-sub { color: #2f8f43; font-size: 12px; margin-bottom: 18px; }
+  #mobile-store h2 {
+    font-size: 13px; color: #2f8f43; font-weight: normal; text-transform: uppercase;
+    letter-spacing: 1px; margin: 24px 0 6px; border-top: 1px solid #163a1e; padding-top: 14px;
+  }
+  .ms-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-top: 1px solid #163a1e; flex-wrap: wrap; }
+  .ms-item .ms-t { flex: 1 1 120px; min-width: 120px; }
+  .ms-item .ms-t b { display: block; font-size: 14.5px; font-weight: normal; color: #b6ffc4; }
+  .ms-item .ms-t b::before { content: "> "; color: #2f8f43; }
+  .ms-item .ms-t span { color: #2f8f43; font-size: 11px; }
+  .ms-item .ms-price { color: #b6ffc4; font-size: 13px; min-width: 46px; text-align: right; }
+  .mb-sel, #mobile-store input, #mobile-store select {
+    background: #0a120a; border: 1px solid #2f8f43; color: #4dff6c;
+    padding: 9px; font-family: inherit; font-size: 13px; border-radius: 0;
+  }
+  .ms-item .mb-sel { flex: 0 0 auto; }
+  .ms-add {
+    background: none; border: 1px solid #2f8f43; color: #4dff6c;
+    padding: 9px 12px; font-size: 12px; font-family: inherit; cursor: pointer;
+  }
+  .ms-add::before { content: "+"; margin-right: 3px; color: #2f8f43; }
+  #ms-cart .ms-line { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; font-size: 13px; }
+  #ms-cart .ms-rm { background: none; border: none; color: #ff6b6b; cursor: pointer; font-family: inherit; font-size: 13px; }
+  #ms-cart .ms-tot { border-top: 1px solid #2f8f43; margin-top: 8px; padding-top: 8px; color: #b6ffc4; }
+  #ms-checkout { display: none; margin-top: 12px; }
+  #ms-checkout.on { display: block; }
+  #ms-checkout .ms-field { display: block; width: 100%; margin: 7px 0; box-sizing: border-box; }
+  #ms-checkout .ms-row { display: flex; gap: 7px; }
+  #ms-checkout .ms-row > * { flex: 1; }
+  #ms-card { background: #fff; border: 1px solid #2f8f43; padding: 12px 10px; margin: 9px 0; }
+  #ms-pay {
+    width: 100%; background: #123a1c; border: 1px solid #4dff6c; color: #b6ffc4;
+    padding: 14px; font-size: 15px; font-family: inherit; cursor: pointer; margin-top: 6px;
+  }
+  #ms-pay:disabled { opacity: 0.5; }
+  #ms-status { font-size: 12.5px; margin-top: 10px; min-height: 16px; color: #b6ffc4; }
+  #ms-card-errors { color: #ff6b6b; font-size: 12px; min-height: 15px; }
+  #mobile-store .ms-note { color: #2f8f43; font-size: 11px; margin-top: 10px; line-height: 1.5; }
+  #mobile-store .mb-back { margin-top: 26px; background: none; border: 1px solid #2f8f43; color: #4dff6c; padding: 10px 16px; font-size: 12px; font-family: inherit; cursor: pointer; }
+  #mobile-store .mb-back::before { content: "cd .. "; color: #2f8f43; }
+
 
 /* ---------- download strip below WMP screenshot ---------- */
 .wmp-dl-strip {
@@ -1602,9 +1667,12 @@
   </div>
 </div>
 <div id="mobile-basic"></div>
+<div id="mobile-store"></div>
 
 <!-- Real playback. Empty until songs[].src is filled in; falls back to the simulated clock. -->
 <audio id="wmp-audio" preload="none"></audio>
+<!-- Dedicated element for the mobile basic-view player (independent of the desktop WMP). -->
+<audio id="mb-audio" preload="none"></audio>
 
 
 <script>
@@ -2472,7 +2540,7 @@ const MERCH = [
       { label: "4XL", printfulVariantId: "5396150191" },
       { label: "5XL", printfulVariantId: "5396150192" }
     ] },
-  { name: "10to2 - zip hoodie", mb: 140, price: 45, note: "Gildan 18600 zip hoodie, S-3XL", url: "", img: "",
+  { name: "10to2 - zip hoodie", mb: 140, price: 40, note: "Gildan 18600 zip hoodie, S-3XL", url: "", img: "",
     variants: [
       { label: "S",   printfulVariantId: "5396152424" },
       { label: "M",   printfulVariantId: "5396152425" },
@@ -2481,19 +2549,23 @@ const MERCH = [
       { label: "2XL", printfulVariantId: "5396152428" },
       { label: "3XL", printfulVariantId: "5396152429" }
     ] },
-  { name: "10to2 - jersey", mb: 110, price: 35, note: "All-over jersey, 2XS-6XL", url: "", img: "",
+  /* Jersey price scales with size (Printful's base cost rises on the big
+     sizes), so each variant carries its own `price`; unit price falls back
+     to the item `price` when a variant omits one. Keep these in sync with
+     _catalog.js. */
+  { name: "10to2 - jersey", mb: 110, price: 40, note: "All-over jersey, 2XS-6XL", url: "", img: "",
     variants: [
-      { label: "2XS", printfulVariantId: "5396150016" },
-      { label: "XS",  printfulVariantId: "5396150017" },
-      { label: "S",   printfulVariantId: "5396150018" },
-      { label: "M",   printfulVariantId: "5396150019" },
-      { label: "L",   printfulVariantId: "5396150020" },
-      { label: "XL",  printfulVariantId: "5396150021" },
-      { label: "2XL", printfulVariantId: "5396150022" },
-      { label: "3XL", printfulVariantId: "5396150023" },
-      { label: "4XL", printfulVariantId: "5396150024" },
-      { label: "5XL", printfulVariantId: "5396150025" },
-      { label: "6XL", printfulVariantId: "5396150026" }
+      { label: "2XS", printfulVariantId: "5396150016", price: 40 },
+      { label: "XS",  printfulVariantId: "5396150017", price: 40 },
+      { label: "S",   printfulVariantId: "5396150018", price: 40 },
+      { label: "M",   printfulVariantId: "5396150019", price: 40 },
+      { label: "L",   printfulVariantId: "5396150020", price: 40 },
+      { label: "XL",  printfulVariantId: "5396150021", price: 40 },
+      { label: "2XL", printfulVariantId: "5396150022", price: 42 },
+      { label: "3XL", printfulVariantId: "5396150023", price: 44 },
+      { label: "4XL", printfulVariantId: "5396150024", price: 46 },
+      { label: "5XL", printfulVariantId: "5396150025", price: 46 },
+      { label: "6XL", printfulVariantId: "5396150026", price: 46 }
     ] },
   { name: "Ifwecrash - poster 18x24", mb: 94,  price: 12, note: "Matte, rolled", url: "", img: "", printfulVariantId: "" },
   { name: "One2many - cassette", mb: 132, price: 14, note: "Limited to 100", url: "", img: "", printfulVariantId: "" },
@@ -3222,6 +3294,16 @@ let cdSel = new Set();
 let cdQty = {};   /* index -> 1..5 (each copy takes disc space, obviously) */
 let cdVar = {};   /* index -> chosen position in MERCH[i].variants */
 
+/* Unit price for an item, honouring a per-size override when the chosen
+   variant carries its own `price` (e.g. the jersey's larger sizes). */
+function unitPrice(m, vi) {
+  if (m.variants) {
+    const v = m.variants[vi || 0];
+    if (v && v.price != null) return v.price;
+  }
+  return m.price;
+}
+
 function renderCd() {
   const list = document.getElementById("cd-list");
   list.innerHTML = "";
@@ -3248,7 +3330,7 @@ function renderCd() {
       '<span class="cd-name">' + m.name + '<br><span class="cd-size">' + m.note + '</span></span>' +
       opts +
       '<span class="cd-size">' + (m.mb * (cdSel.has(i) ? qty : 1)) + ' MB</span>' +
-      '<span class="cd-price">' + (m.price ? "$" + (m.price * (cdSel.has(i) ? qty : 1)) : "free") + '</span>';
+      '<span class="cd-price">' + (m.price ? "$" + (unitPrice(m, cdVar[i] || 0) * (cdSel.has(i) ? qty : 1)) : "free") + '</span>';
     row.addEventListener("click", () => {
       cdSel.has(i) ? cdSel.delete(i) : cdSel.add(i);
       renderCd();
@@ -3269,7 +3351,7 @@ function renderCd() {
   cdSel.forEach(i => {
     const q = cdQty[i] || 1;
     mb += MERCH[i].mb * q;
-    cost += MERCH[i].price * q;
+    cost += unitPrice(MERCH[i], cdVar[i] || 0) * q;
   });
   const over = mb > CD_CAPACITY;
   document.getElementById("cd-cap-text").innerHTML =
@@ -3290,11 +3372,12 @@ document.getElementById("cd-burn").addEventListener("click", () => {
     const m = MERCH[i];
     const qty = cdQty[i] || 1;
     const v = m.variants ? m.variants[cdVar[i] || 0] : null;
+    const up = unitPrice(m, cdVar[i] || 0);
     return {
       name: m.name + (v ? " (" + v.label + ")" : ""),
-      unit: m.price,
+      unit: up,
       qty: qty,
-      price: m.price * qty,
+      price: up * qty,
       printfulVariantId: v ? v.printfulVariantId : m.printfulVariantId,
       url: m.url
     };
@@ -4165,13 +4248,16 @@ function buildBasic() {
   const box = document.getElementById("mobile-basic");
   if (box.dataset.built) return;
   box.dataset.built = "1";
-  let h = '<h1>10to2</h1><div class="mb-sub">DIR /music -- the desktop version needs a mouse, so here\'s everything on it.</div>';
+  let h = '<h1>10to2</h1><div class="mb-sub">DIR /music -- everything the desktop has, sized for your thumb.</div>';
+  h += '<div class="mb-actions-row"><button class="mb-cta primary" id="mb-shop">Shop merch \u00bb</button></div>';
   songs.forEach((s, i) => {
     const l = LYRICS.find(x => x.song === i);
+    const playable = s.src && !(s.locked && !vaultUnlocked);
     h += '<div class="mb-song">' +
            '<img src="' + s.art + '">' +
            '<div class="mb-t"><b>' + s.title + '</b><span>' + s.artist + ' \u00b7 ' +
              Math.floor(s.duration/60) + ':' + String(s.duration%60).padStart(2,"0") + '</span></div>' +
+           (playable ? '<button class="mb-play" data-play="' + i + '" aria-label="Play ' + s.title + '">\u25b6</button>' : '') +
            (l ? '<button class="mb-go" data-lyric="' + i + '">Lyrics</button>' : '') +
          '</div>' +
          (l ? '<pre class="mb-lyric" id="mbl-' + i + '">' + l.body + '</pre>' : '');
@@ -4197,6 +4283,13 @@ function buildBasic() {
       el.classList.toggle("on");
       b.textContent = el.classList.contains("on") ? "Hide" : "Lyrics";
     }));
+  box.querySelectorAll("[data-play]").forEach(b =>
+    b.addEventListener("click", () => mbPlay(Number(b.dataset.play), b)));
+  document.getElementById("mb-shop").addEventListener("click", () => {
+    buildStore();
+    box.classList.remove("on");
+    document.getElementById("mobile-store").classList.add("on");
+  });
   document.getElementById("mb-contact").addEventListener("click", () => {
     window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Hey 10to2 —");
   });
@@ -4225,6 +4318,230 @@ function buildBasic() {
       btn.textContent = "Retry";
     }
   });
+}
+
+/* ---- Mobile basic-view audio player (independent of the desktop WMP) ---- */
+let mbPlayingBtn = null;
+function mbPlay(i, btn) {
+  const audio = document.getElementById("mb-audio");
+  const s = songs[i];
+  if (!s || !s.src) return;
+  const same = mbPlayingBtn === btn;
+  if (mbPlayingBtn) { mbPlayingBtn.classList.remove("playing"); mbPlayingBtn.textContent = "▶"; }
+  if (same && !audio.paused) {                     // tapping the current track pauses it
+    audio.pause(); mbPlayingBtn = null; return;
+  }
+  audio.src = s.src;
+  audio.currentTime = 0;
+  audio.play().then(() => {
+    btn.classList.add("playing"); btn.textContent = "■"; mbPlayingBtn = btn;
+  }).catch(() => {});
+  audio.onended = () => { btn.classList.remove("playing"); btn.textContent = "▶"; mbPlayingBtn = null; };
+}
+
+/* ---- Mobile merch store + Stripe checkout (feature parity with desktop) ---- */
+let mbCart = [];
+let mbCardElement = null;
+/* Escape user/text before it touches innerHTML (names, emails, refs). */
+const mbEsc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+function mbShip(country) {
+  const s = BACKEND_CONFIG.shipping;
+  if (!s) return 0;
+  return (country || "US").toUpperCase() === "US" ? (s.us || 0) : (s.international || 0);
+}
+
+function mbRenderCart() {
+  const wrap = document.getElementById("ms-cart");
+  const country = document.getElementById("ms-country") ? document.getElementById("ms-country").value : "US";
+  if (mbCart.length === 0) {
+    wrap.innerHTML = '<div style="color:#2f8f43;font-size:12px;padding:6px 0;">Cart is empty — add something above.</div>';
+    document.getElementById("ms-checkout").classList.remove("on");
+    return;
+  }
+  const sub = mbCart.reduce((a, l) => a + l.unit * l.qty, 0);
+  const ship = mbShip(country);
+  wrap.innerHTML = mbCart.map((l, idx) =>
+    '<div class="ms-line"><span>' + mbEsc(l.name) + (l.qty > 1 ? " x" + l.qty : "") +
+    '</span><span>$' + (l.unit * l.qty) + ' <button class="ms-rm" data-rm="' + idx + '">✕</button></span></div>'
+  ).join("") +
+    '<div class="ms-line"><span>Shipping</span><span>$' + ship + '</span></div>' +
+    '<div class="ms-line ms-tot"><b>Total</b><b>$' + (sub + ship) + '</b></div>';
+  wrap.querySelectorAll("[data-rm]").forEach(b =>
+    b.addEventListener("click", () => { mbCart.splice(Number(b.dataset.rm), 1); mbRenderCart(); }));
+  document.getElementById("ms-checkout").classList.add("on");
+}
+
+function buildStore() {
+  const box = document.getElementById("mobile-store");
+  if (box.dataset.built) { mbRenderCart(); return; }
+  box.dataset.built = "1";
+
+  const buyable = MERCH.map((m, i) => [m, i]).filter(([m]) => m.price > 0);
+  let h = '<h1>merch</h1><div class="mb-sub">Same store as the desktop CD Wizard. Card is handled by Stripe — it never touches this site.</div>';
+
+  h += '<h2>Items</h2>';
+  buyable.forEach(([m, i]) => {
+    const sizeSel = m.variants
+      ? '<select class="mb-sel" data-role="size" data-i="' + i + '">' +
+          m.variants.map((v, vi) => '<option value="' + vi + '">' + v.label + '</option>').join("") + '</select>'
+      : "";
+    h += '<div class="ms-item">' +
+           '<div class="ms-t"><b>' + mbEsc(m.name) + '</b><span>' + mbEsc(m.note) + '</span></div>' +
+           '<span class="ms-price" id="msp-' + i + '">$' + unitPrice(m, 0) + '</span>' +
+           sizeSel +
+           '<select class="mb-sel" data-role="qty" data-i="' + i + '">' +
+             [1,2,3,4,5].map(n => '<option value="' + n + '">x' + n + '</option>').join("") + '</select>' +
+           '<button class="ms-add" data-add="' + i + '">Add</button>' +
+         '</div>';
+  });
+
+  h += '<h2>Cart</h2><div id="ms-cart"></div>';
+
+  h += '<div id="ms-checkout">' +
+         '<h2>Checkout</h2>' +
+         '<div id="ms-not-configured" style="display:none;color:#ff6b6b;font-size:12px;margin-bottom:8px;">' +
+           'Checkout isn\'t configured yet. Email ' + CONTACT_EMAIL + ' to order.</div>' +
+         '<input class="ms-field" id="ms-email" type="email" placeholder="you@email.com" autocomplete="email">' +
+         '<input class="ms-field" id="ms-name" placeholder="Full name" autocomplete="name">' +
+         '<input class="ms-field" id="ms-address" placeholder="Street address" autocomplete="address-line1">' +
+         '<div class="ms-row"><input id="ms-city" placeholder="City" autocomplete="address-level2">' +
+           '<input id="ms-zip" placeholder="ZIP / postcode" autocomplete="postal-code"></div>' +
+         '<div class="ms-row"><select id="ms-country">' +
+           COUNTRIES.map(c => '<option value="' + c[0] + '">' + c[1] + '</option>').join("") + '</select>' +
+           '<input id="ms-state" placeholder="State / province" autocomplete="address-level1"></div>' +
+         '<div id="ms-card"></div>' +
+         '<div id="ms-card-errors"></div>' +
+         '<button id="ms-pay">Pay</button>' +
+         '<div id="ms-status"></div>' +
+         '<div class="ms-note">Not what you wanted? Email ' + CONTACT_EMAIL + ' for a refund or a swap.</div>' +
+       '</div>';
+
+  h += '<button class="mb-back" id="ms-back"></button>';
+  box.innerHTML = h;
+
+  /* item interactions: size changes update the shown unit price */
+  box.querySelectorAll('[data-role="size"]').forEach(sel =>
+    sel.addEventListener("change", () => {
+      const i = Number(sel.dataset.i);
+      document.getElementById("msp-" + i).textContent = "$" + unitPrice(MERCH[i], Number(sel.value) || 0);
+    }));
+  box.querySelectorAll("[data-add]").forEach(btn =>
+    btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.add);
+      const m = MERCH[i];
+      const sizeEl = box.querySelector('[data-role="size"][data-i="' + i + '"]');
+      const qtyEl = box.querySelector('[data-role="qty"][data-i="' + i + '"]');
+      const vi = sizeEl ? Number(sizeEl.value) || 0 : 0;
+      const v = m.variants ? m.variants[vi] : null;
+      mbCart.push({
+        name: m.name + (v ? " (" + v.label + ")" : ""),
+        unit: unitPrice(m, vi),
+        qty: Number(qtyEl.value) || 1,
+        printfulVariantId: v ? v.printfulVariantId : m.printfulVariantId
+      });
+      btn.textContent = "Added";
+      setTimeout(() => { btn.textContent = "Add"; }, 900);
+      mbRenderCart();
+    }));
+
+  /* state field only matters for a few countries (Printful needs state_code) */
+  const stateEl = box.querySelector("#ms-state");
+  const countryEl = box.querySelector("#ms-country");
+  function syncState() {
+    stateEl.style.display = STATE_REQUIRED.includes(countryEl.value) ? "" : "none";
+    mbRenderCart();
+  }
+  countryEl.addEventListener("change", syncState);
+  syncState();
+
+  document.getElementById("ms-back").addEventListener("click", () => {
+    box.classList.remove("on");
+    document.getElementById("mobile-basic").classList.add("on");
+  });
+
+  mbRenderCart();
+  mbInitCheckout();
+  document.getElementById("ms-pay").addEventListener("click", mbSubmitPayment);
+}
+
+async function mbInitCheckout() {
+  const configured = BACKEND_CONFIG.apiBaseUrl && BACKEND_CONFIG.stripePublishableKey;
+  if (!configured) {
+    document.getElementById("ms-not-configured").style.display = "block";
+    document.getElementById("ms-pay").disabled = true;
+    return;
+  }
+  try {
+    await loadStripeJs();
+    if (!stripeInstance) stripeInstance = Stripe(BACKEND_CONFIG.stripePublishableKey);
+    if (!mbCardElement) {
+      mbCardElement = stripeInstance.elements().create("card");
+      mbCardElement.mount("#ms-card");
+      mbCardElement.on("change", (ev) => {
+        document.getElementById("ms-card-errors").textContent = ev.error ? ev.error.message : "";
+      });
+    }
+  } catch (e) {
+    document.getElementById("ms-status").textContent = "Couldn't load the payment form. Try again in a moment.";
+    document.getElementById("ms-pay").disabled = true;
+  }
+}
+
+async function mbSubmitPayment() {
+  const pay = document.getElementById("ms-pay");
+  const status = document.getElementById("ms-status");
+  if (mbCart.length === 0) { status.textContent = "Your cart is empty."; return; }
+
+  const email = document.getElementById("ms-email").value.trim();
+  const country = document.getElementById("ms-country").value;
+  const shipping = {
+    name: document.getElementById("ms-name").value.trim(),
+    address: document.getElementById("ms-address").value.trim(),
+    city: document.getElementById("ms-city").value.trim(),
+    state: document.getElementById("ms-state").value.trim(),
+    zip: document.getElementById("ms-zip").value.trim(),
+    country: country
+  };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { status.textContent = "Enter a valid email."; return; }
+  if (!shipping.name || !shipping.address || !shipping.city || !shipping.zip) {
+    status.textContent = "Fill in your full shipping address."; return;
+  }
+  if (STATE_REQUIRED.includes(country) && !shipping.state) {
+    status.textContent = "State / province is required for " + country + "."; return;
+  }
+
+  pay.disabled = true;
+  status.textContent = "Processing...";
+  const ship = mbShip(country);
+  const payload = {
+    items: mbCart.map(l => ({ name: l.name, price: l.unit, qty: l.qty, printfulVariantId: l.printfulVariantId }))
+      .concat(ship ? [{ name: "Shipping", price: ship, qty: 1, printfulVariantId: "" }] : []),
+    email, shipping
+  };
+
+  try {
+    const res = await fetch(BACKEND_CONFIG.apiBaseUrl + "/create-payment-intent", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("Server error creating payment.");
+    const data = await res.json();
+    const result = await stripeInstance.confirmCardPayment(data.clientSecret, {
+      payment_method: { card: mbCardElement, billing_details: { name: shipping.name, email } }
+    });
+    if (result.error) { status.textContent = result.error.message; pay.disabled = false; return; }
+    if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
+      const sub = mbCart.reduce((a, l) => a + l.unit * l.qty, 0);
+      status.innerHTML = "<b>Payment complete.</b> Order placed — a receipt is on its way to " + mbEsc(email) +
+        ".<br>Total $" + (sub + ship) + " · Ref " + mbEsc(result.paymentIntent.id);
+      mbCart = [];
+      mbRenderCart();
+      if (mbCardElement) mbCardElement.clear();
+    }
+  } catch (err) {
+    status.textContent = "Something went wrong: " + err.message;
+    pay.disabled = false;
+  }
 }
 
 function mobileGate() {
