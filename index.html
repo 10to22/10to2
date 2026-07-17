@@ -2193,14 +2193,16 @@ const MAILING_LIST_CONFIG = {
 
    Setup (~5 min, no server, no database table needed):
      1. Make a free project at https://supabase.com
-     2. Project Settings -> API -> copy "Project URL" and the "anon public" key
+     2. Project Settings -> API -> copy the "Project URL" and a client key
+        (the newer "publishable" sb_publishable_... key, or the legacy
+        "anon public" key — either works)
      3. Paste them below. That's it — Realtime broadcast is on by default.
-   The anon key is meant to be public (it's safe in client code); it only
-   allows what your Row Level Security policies permit, and this uses
-   ephemeral broadcast messages that are never written to your database. */
+   The publishable/anon key is meant to be public (safe in client code); it
+   only allows what your access policies permit, and this uses ephemeral
+   broadcast messages that are never written to your database. */
 const CHATROOM_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: ""
+  supabaseUrl: "https://aecvfegvljzqovfmveka.supabase.co",
+  supabaseKey: "sb_publishable_Vb2UOj7TpL5QbcSJian1xQ_D9uIUuT8"
 };
 
 /* Lyrics shown in My Documents -> Notepad. */
@@ -2842,7 +2844,7 @@ function chatInitSupabase() {
   s.onload = () => {
     try {
       const client = window.supabase.createClient(
-        CHATROOM_CONFIG.supabaseUrl, CHATROOM_CONFIG.supabaseAnonKey);
+        CHATROOM_CONFIG.supabaseUrl, CHATROOM_CONFIG.supabaseKey);
       const channel = client.channel("10to2-" + CHAT_ROOM, { config: { broadcast: { self: false } } });
       channel.on("broadcast", { event: "chat" }, ({ payload }) => chatOnRemote(payload));
       channel.subscribe((status) => {
@@ -2864,7 +2866,7 @@ function chatInitSupabase() {
 
 /* Pick a transport: Supabase if configured, else same-device BroadcastChannel. */
 function initChatTransport() {
-  if (CHATROOM_CONFIG.supabaseUrl && CHATROOM_CONFIG.supabaseAnonKey) {
+  if (CHATROOM_CONFIG.supabaseUrl && CHATROOM_CONFIG.supabaseKey) {
     chatInitSupabase();
   } else if ("BroadcastChannel" in window) {
     const bc = new BroadcastChannel("10to2-chat-" + CHAT_ROOM);
