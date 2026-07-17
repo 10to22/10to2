@@ -1465,6 +1465,7 @@
         <div class="ua-admin-tabs">
           <span class="ua-admin-tab active" data-tab="links">Merch Links</span>
           <span class="ua-admin-tab" data-tab="gallery">Image Gallery</span>
+          <span class="ua-admin-tab" data-tab="profile">Profile</span>
         </div>
         <div id="ua-admin-tab-links">
           <p class="ua-sub">Live merch links &mdash; paste in real Shopify/Printful product URLs and the Write button in the CD Wizard uses them immediately. <b>Preview only:</b> edits here last until this tab reloads &mdash; to make them permanent for everyone, copy the values into the <code>MERCH</code> list in index.html.</p>
@@ -1473,6 +1474,15 @@
         <div id="ua-admin-tab-gallery" style="display:none;">
           <p class="ua-sub">Pick a photo for each item &mdash; it shows up next to that item in the CD Wizard.</p>
           <div id="ua-gallery-editor"></div>
+        </div>
+        <div id="ua-admin-tab-profile" style="display:none;">
+          <p class="ua-sub">Your display name (shown on the account tile and in the chatroom). Guests can't take <b>10to2</b> &mdash; but you're the admin, so it's yours.</p>
+          <input class="xp-field" id="ua-admin-name" maxlength="20" placeholder="Display name" style="width:100%;">
+          <div class="ua-actions">
+            <button class="xp-btn primary" id="ua-admin-savename">Save name</button>
+            <button class="xp-btn" id="ua-admin-claim">Claim &ldquo;10to2&rdquo;</button>
+          </div>
+          <div class="ua-msg" id="ua-admin-name-msg"></div>
         </div>
         <div class="ua-actions">
           <button class="xp-btn" id="ua-admin-logoff">Log Off</button>
@@ -3195,12 +3205,33 @@ document.querySelectorAll(".ua-admin-tab").forEach(tab => {
   tab.addEventListener("click", () => {
     document.querySelectorAll(".ua-admin-tab").forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
-    const isGallery = tab.dataset.tab === "gallery";
-    document.getElementById("ua-admin-tab-links").style.display = isGallery ? "none" : "block";
-    document.getElementById("ua-admin-tab-gallery").style.display = isGallery ? "block" : "none";
-    if (isGallery) renderGalleryEditor();
+    const which = tab.dataset.tab;
+    /* show only the matching ua-admin-tab-<which> panel */
+    ["links", "gallery", "profile"].forEach(name =>
+      document.getElementById("ua-admin-tab-" + name).style.display = (name === which ? "block" : "none"));
+    if (which === "gallery") renderGalleryEditor();
+    if (which === "profile") {
+      document.getElementById("ua-admin-name").value = chatUserId;
+      document.getElementById("ua-admin-name-msg").textContent = "";
+    }
   });
 });
+
+/* Admin profile: set the display name, and (unlike guests) claim "10to2". */
+function adminSetName(name) {
+  const v = (name || "").trim().slice(0, 20);
+  const msg = document.getElementById("ua-admin-name-msg");
+  if (!v) { msg.className = "ua-msg"; msg.textContent = "Type a name first."; return; }
+  chatUserId = v;
+  try { localStorage.setItem("10to2.nickname", chatUserId); } catch (e) {}
+  document.getElementById("ua-you-name").textContent = chatUserId;
+  document.getElementById("ua-admin-name").value = chatUserId;
+  msg.className = "ua-msg ok";
+  msg.textContent = 'Saved. You’re now "' + chatUserId + '".';
+}
+document.getElementById("ua-admin-savename").addEventListener("click", () =>
+  adminSetName(document.getElementById("ua-admin-name").value));
+document.getElementById("ua-admin-claim").addEventListener("click", () => adminSetName("10to2"));
 
 document.getElementById("ua-admin-login").addEventListener("click", () => {
   const v = document.getElementById("ua-admin-pass").value;
