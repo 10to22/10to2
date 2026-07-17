@@ -2380,20 +2380,25 @@ const SCRAPPED = [
    printfulVariantId: one { label, printfulVariantId } per size. The CD
    Wizard shows a size dropdown for those, and the chosen size's ID is
    what gets sent to the backend. Every size is a different
-   sync_variant_id in Printful, so fill in one per row. */
+   sync_variant_id in Printful, so fill in one per row.
+
+   flag = Printful's product-level identifier for the item (the hash-style
+   ID shown in the Printful dashboard / returned by their API). Edited in
+   the Administrator panel and passed through to the backend so it can
+   match the sale to the right Printful product. Leave "" if unused. */
 const MERCH = [
-  { name: "Whoareyou? - CD single", mb: 148, price: 8,  note: "Jewel case, 2 tracks", url: "", img: "", printfulVariantId: "" },
-  { name: "10to2 - logo tee (black)", mb: 121, price: 25, note: "S / M / L / XL", url: "", img: "",
+  { name: "Whoareyou? - CD single", mb: 148, price: 8,  note: "Jewel case, 2 tracks", url: "", img: "", printfulVariantId: "", flag: "" },
+  { name: "10to2 - logo tee (black)", mb: 121, price: 25, note: "S / M / L / XL", url: "", img: "", flag: "6a587b3c453ab3",
     variants: [
       { label: "S",  printfulVariantId: "" },
       { label: "M",  printfulVariantId: "" },
       { label: "L",  printfulVariantId: "" },
       { label: "XL", printfulVariantId: "" }
     ] },
-  { name: "Ifwecrash - poster 18x24", mb: 94,  price: 12, note: "Matte, rolled", url: "", img: "", printfulVariantId: "" },
-  { name: "One2many - cassette", mb: 132, price: 14, note: "Limited to 100", url: "", img: "", printfulVariantId: "" },
-  { name: "sticker pack (4)", mb: 27, price: 5, note: "Die cut, vinyl", url: "", img: "", printfulVariantId: "" },
-  { name: "unreleased_demos.zip", mb: 305, price: 0, note: "Mailing list only", url: "", img: "", printfulVariantId: "" }
+  { name: "Ifwecrash - poster 18x24", mb: 94,  price: 12, note: "Matte, rolled", url: "", img: "", printfulVariantId: "", flag: "" },
+  { name: "One2many - cassette", mb: 132, price: 14, note: "Limited to 100", url: "", img: "", printfulVariantId: "", flag: "" },
+  { name: "sticker pack (4)", mb: 27, price: 5, note: "Die cut, vinyl", url: "", img: "", printfulVariantId: "", flag: "" },
+  { name: "unreleased_demos.zip", mb: 305, price: 0, note: "Mailing list only", url: "", img: "", printfulVariantId: "", flag: "" }
 ];
 
 /* Eras. Each rewrites the theme tokens declared at the top of the stylesheet. */
@@ -2895,11 +2900,13 @@ function renderMerchEditor() {
             'placeholder="' + esc(v.label) + ' variant ID" title="Printful variant ID (' + esc(v.label) + ')" ' +
             'value="' + esc(v.printfulVariantId) + '" style="flex:1; min-width:0;">'
           ).join("") + '</div>'
-        : '<input class="xp-field ua-merch-pfid" type="text" placeholder="Printful variant ID" value="' + esc(item.printfulVariantId) + '">');
+        : '<input class="xp-field ua-merch-pfid" type="text" placeholder="Printful variant ID" value="' + esc(item.printfulVariantId) + '">') +
+      '<input class="xp-field ua-merch-flag" type="text" placeholder="Printful flag / product ID" title="Printful product-level identifier" value="' + esc(item.flag) + '">';
     const nameInput = row.querySelector(".ua-merch-name");
     const priceInput = row.querySelector(".ua-merch-price");
     const noteInput = row.querySelector(".ua-merch-note");
     const urlInput = row.querySelector(".ua-merch-url");
+    const flagInput = row.querySelector(".ua-merch-flag");
     const saved = row.querySelector(".ua-merch-saved");
     function flashSaved() {
       saved.classList.add("show");
@@ -2909,6 +2916,7 @@ function renderMerchEditor() {
     priceInput.addEventListener("change", () => { MERCH[i].price = Number(priceInput.value) || 0; flashSaved(); });
     noteInput.addEventListener("change", () => { MERCH[i].note = noteInput.value.trim(); flashSaved(); });
     urlInput.addEventListener("change", () => { MERCH[i].url = urlInput.value.trim(); flashSaved(); });
+    flagInput.addEventListener("change", () => { MERCH[i].flag = flagInput.value.trim(); flashSaved(); });
     row.querySelectorAll(".ua-merch-pfid").forEach(pfidInput => {
       pfidInput.addEventListener("change", () => {
         if (pfidInput.dataset.variant !== undefined) {
@@ -3140,6 +3148,7 @@ document.getElementById("cd-burn").addEventListener("click", () => {
       qty: qty,
       price: m.price * qty,
       printfulVariantId: v ? v.printfulVariantId : m.printfulVariantId,
+      flag: m.flag,
       url: m.url
     };
   });
@@ -3332,8 +3341,8 @@ document.getElementById("co-form").addEventListener("submit", async (e) => {
   const ship = shippingCost();
   const payload = {
     items: checkoutItems.map(l => ({
-      name: l.name, price: l.price, qty: l.qty, printfulVariantId: l.printfulVariantId
-    })).concat(ship ? [{ name: "Shipping", price: ship, qty: 1, printfulVariantId: "" }] : []),
+      name: l.name, price: l.price, qty: l.qty, printfulVariantId: l.printfulVariantId, flag: l.flag
+    })).concat(ship ? [{ name: "Shipping", price: ship, qty: 1, printfulVariantId: "", flag: "" }] : []),
     email: document.getElementById("co-email").value,
     shipping: {
       name: document.getElementById("co-name").value,
