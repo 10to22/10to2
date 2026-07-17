@@ -2186,6 +2186,23 @@ const MAILING_LIST_CONFIG = {
   endpoint: "https://formspree.io/f/xwvglony"
 };
 
+/* Chatroom. Leave both blank and the room is same-device only (every tab
+   of this page on one machine shares it — fine for testing, useless for
+   real fans). Paste a free Supabase project's URL + anon (public) key and
+   it becomes a real room where different people worldwide talk live.
+
+   Setup (~5 min, no server, no database table needed):
+     1. Make a free project at https://supabase.com
+     2. Project Settings -> API -> copy "Project URL" and the "anon public" key
+     3. Paste them below. That's it — Realtime broadcast is on by default.
+   The anon key is meant to be public (it's safe in client code); it only
+   allows what your Row Level Security policies permit, and this uses
+   ephemeral broadcast messages that are never written to your database. */
+const CHATROOM_CONFIG = {
+  supabaseUrl: "",
+  supabaseAnonKey: ""
+};
+
 /* Lyrics shown in My Documents -> Notepad. */
 const LYRICS = [
   { file: "whoareyou.txt", size: "1 KB", song: 0, body:
@@ -2741,24 +2758,21 @@ document.getElementById("msn-input").addEventListener("keydown", (e) => {
    No server, no accounts, nothing to host — open the file in two tabs and
    talk to yourself to see it work.
 
-   To make this talk across DIFFERENT devices (the actual end goal), swap
-   the two functions below — chatSend() and the channel's onmessage — for
-   calls to a real realtime backend. The easiest drop-in options:
-     - Firebase Realtime Database / Firestore (listen() + set())
-     - Supabase Realtime (channel.on('broadcast', ...))
-     - A tiny WebSocket server you run yourself (Node + ws, or Cloudflare
-       Durable Objects) and connect to with `new WebSocket("wss://...")`
-   Everything else here — the DOM rendering, the user list, the log —
-   doesn't need to change; only the transport does.
+   The transport is pluggable (see initChatTransport below): fill in
+   CHATROOM_CONFIG at the top of the file with a free Supabase project and
+   it upgrades to a real cross-device room; leave it blank and it stays a
+   same-device BroadcastChannel. Everything else here — the DOM rendering,
+   the user list, the log — is transport-agnostic and never changes.
    ========================================================================= */
 const CHAT_ROOM = "10to2-fans";
 function loadSavedNickname() {
   try { return localStorage.getItem("10to2.nickname"); } catch (e) { return null; }
 }
 let chatUserId = loadSavedNickname() || ("guest" + Math.floor(1000 + Math.random() * 9000));
-const chatChannel = ("BroadcastChannel" in window) ? new BroadcastChannel("10to2-chat-" + CHAT_ROOM) : null;
 let chatUsers = {};   // id -> last-seen timestamp (everyone currently in the room)
 let chatOpen = false;
+let chatCrossDevice = false;   // true once a real (Supabase) transport is live
+let chatPost = () => {};       // send one message; replaced when a transport connects
 
 /* Escape anything that arrived over the wire before it touches innerHTML.
    With BroadcastChannel this only guards against your own other tabs, but
@@ -2785,39 +2799,90 @@ function chatRenderUserCount() {
   document.getElementById("chat-usercount").textContent = (others.length + 1) + " here";
 }
 
-function chatAnnounce() {
-  if (!chatChannel) return;
-  chatChannel.postMessage({ type: "presence", id: chatUserId, ts: Date.now() });
+function chatStatus(t) {
+  const el = document.getElementById("chat-usercount");
+  if (el) el.textContent = t;
 }
 
-if (chatChannel) {
-  chatChannel.onmessage = (ev) => {
-    const msg = ev.data;
-    if (!msg || msg.id === chatUserId) return;
-    if (msg.type === "presence") {
-      const isNew = !chatUsers[msg.id];
-      chatUsers[msg.id] = Date.now();
-      chatRenderUserCount();
-      if (isNew && chatOpen) chatAppend(null, chatEsc(msg.id).slice(0, 40) + " joined the room.", false, true);
-    } else if (msg.type === "message") {
-      chatUsers[msg.id] = Date.now();
-      chatRenderUserCount();
-      chatAppend(msg.id, msg.text, false, false);
-    }
-  };
+/* Handle an incoming message from whatever transport is live. Both the
+   BroadcastChannel and the Supabase paths deliver the exact same shape. */
+function chatOnRemote(msg) {
+  if (!msg || msg.id === chatUserId) return;
+  if (msg.type === "presence") {
+    const isNew = !chatUsers[msg.id];
+    chatUsers[msg.id] = Date.now();
+    chatRenderUserCount();
+    if (isNew && chatOpen) chatAppend(null, chatEsc(msg.id).slice(0, 40) + " joined the room.", false, true);
+  } else if (msg.type === "message") {
+    chatUsers[msg.id] = Date.now();
+    chatRenderUserCount();
+    chatAppend(msg.id, msg.text, false, false);
+  }
+}
+
+function chatAnnounce() {
+  chatPost({ type: "presence", id: chatUserId, ts: Date.now() });
+}
+
+/* Start the heartbeat once a transport is connected. */
+function chatStartPresence() {
   chatAnnounce();
   setInterval(chatAnnounce, 4000);
   setInterval(chatRenderUserCount, 4000);
-} else {
-  document.getElementById("chat-usercount").textContent = "offline (no BroadcastChannel)";
+  chatRenderUserCount();
 }
+
+/* Supabase Realtime — a real room across devices. Broadcast messages are
+   ephemeral (never written to your DB), so no table or RLS setup is needed;
+   the public anon key is safe in client code. */
+function chatInitSupabase() {
+  chatStatus("connecting…");
+  const s = document.createElement("script");
+  s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+  s.onload = () => {
+    try {
+      const client = window.supabase.createClient(
+        CHATROOM_CONFIG.supabaseUrl, CHATROOM_CONFIG.supabaseAnonKey);
+      const channel = client.channel("10to2-" + CHAT_ROOM, { config: { broadcast: { self: false } } });
+      channel.on("broadcast", { event: "chat" }, ({ payload }) => chatOnRemote(payload));
+      channel.subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          chatCrossDevice = true;
+          chatPost = (msg) => channel.send({ type: "broadcast", event: "chat", payload: msg });
+          chatStartPresence();
+        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+          chatStatus("offline");
+        }
+      });
+    } catch (e) {
+      chatStatus("offline");
+    }
+  };
+  s.onerror = () => chatStatus("offline");
+  document.head.appendChild(s);
+}
+
+/* Pick a transport: Supabase if configured, else same-device BroadcastChannel. */
+function initChatTransport() {
+  if (CHATROOM_CONFIG.supabaseUrl && CHATROOM_CONFIG.supabaseAnonKey) {
+    chatInitSupabase();
+  } else if ("BroadcastChannel" in window) {
+    const bc = new BroadcastChannel("10to2-chat-" + CHAT_ROOM);
+    bc.onmessage = (ev) => chatOnRemote(ev.data);
+    chatPost = (msg) => bc.postMessage(msg);
+    chatStartPresence();
+  } else {
+    chatStatus("offline");
+  }
+}
+initChatTransport();
 
 function chatSend() {
   const input = document.getElementById("chat-input");
   const text = input.value.trim();
   if (!text) return;
   chatAppend(chatUserId, text, true, false);
-  if (chatChannel) chatChannel.postMessage({ type: "message", id: chatUserId, text });
+  chatPost({ type: "message", id: chatUserId, text });
   input.value = "";
 }
 document.getElementById("chat-send").addEventListener("click", chatSend);
@@ -2828,7 +2893,9 @@ document.getElementById("chatroom-toggle").addEventListener("click", () => {
   document.getElementById("chatroom-panel").style.display = chatOpen ? "block" : "none";
   document.getElementById("chatroom-toggle").textContent = chatOpen ? "Close chatroom" : "Open chatroom";
   if (chatOpen && !document.getElementById("chat-log").dataset.greeted) {
-    chatAppend(null, "You're in " + CHAT_ROOM + ". Anyone with this page open in another tab or window is here with you.", false, true);
+    chatAppend(null, "You're in " + CHAT_ROOM + ". " + (chatCrossDevice
+      ? "Anyone else on the site right now is here with you."
+      : "Anyone with this page open in another tab or window is here with you."), false, true);
     document.getElementById("chat-log").dataset.greeted = "1";
   }
 });

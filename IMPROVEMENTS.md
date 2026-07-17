@@ -90,9 +90,11 @@ and what's worth doing next. Compiled July 2026.
 
 ## 4. Worth doing next (roughly in order of payoff)
 
-- **Real cross-device chatroom.** The transport is cleanly isolated — swap
-  BroadcastChannel for Supabase Realtime (free tier) or Firebase and the
-  #10to2-fans room becomes real. Rendering is already XSS-safe.
+- **Real cross-device chatroom — now wired, just needs a key.** The room
+  upgrades from same-device to worldwide the moment you paste a free
+  Supabase project URL + anon key into `CHATROOM_CONFIG` (top of index.html).
+  No server, no DB table (uses ephemeral Realtime broadcast). Leave it blank
+  and it stays same-device. Rendering is already XSS-safe.
 - **Analytics.** One script tag (GoatCounter or Plausible, both free/cheap,
   no cookie banner needed) tells you whether people open the CD Wizard,
   Messenger, or bounce at the boot screen.
