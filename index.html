@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#245edb">
 <title>10to2</title>
 <meta name="description" content="10to2 - official site. Listen to Whoareyou?, One2many, Ifwecrash and more. An interactive Windows XP-styled desktop -- explore, dig around, find the easter eggs.">
 
@@ -14,13 +15,13 @@
 <meta property="og:title" content="10to2">
 <meta property="og:description" content="Listen to Whoareyou?, One2many, Ifwecrash and more -- inside a fully interactive Windows XP desktop.">
 <meta property="og:url" content="https://10to2.net/">
-<meta property="og:image" content="https://10to2.net/preview.png">
+<meta property="og:image" content="https://10to2.net/preview.jpg">
 
 <!-- Twitter/X card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="10to2">
 <meta name="twitter:description" content="Listen to Whoareyou?, One2many, Ifwecrash and more -- inside a fully interactive Windows XP desktop.">
-<meta name="twitter:image" content="https://10to2.net/preview.png">
+<meta name="twitter:image" content="https://10to2.net/preview.jpg">
 
 <!-- Favicon (generated from the 10to2 crest) -->
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADGklEQVR42u2XzU7rSBCFv3a72yRO5JDYKEFIsELkCXi9eTGegg0rFqAkKIlFfnBiu932LEa2FA0icIeruxhq121X9fGpOlVtAVT8QXP4w/YD4AfAlwEIIRBCADAejxkOh//a/4q5X3WoqgopJa7rcnZ2hlKK1WqFMQZr7e8F4LouQRBwcnLCdrul0+lgjEFrzWAwIE1T1us1RVF8bwpqarvdLlJKJpMJxhguLy8Zj8cATCYTpJR0u90Dn28BUFX/NMskSVBKIYTAcRyGwyGnp6dYaxFCoJQiSZIDn/+cAsdxCIKA/X5Pv99nuVziOA5JkvDw8ECapiRJgpSS5XJJGIbEcUy73Wa9XlOW5a8xUFPY6/VQSjEYDFgsFmRZ1ryT5zlSymadZRmLxYIwDFFKEQTB0XS4x77e8zxms1mzllI2hxZF0azrPWstk8kEgPPzczabzYcsuB/lXQhBHMfN4XWgWm5JkiCEwFp7IEGtNXmeM5/Pj0rTfY/6qqro9XqMRiN83+fi4oLr62seHx+x1lKWJdZabm9vEUIgpUQIgdaaVqvFzc0N9/f3rFYrttstT09PzGazJvanGGi32wRBQLfbRWuN7/t4nsdut8NaS1VVOI7TVL+UEsdxsNay2+0wxrDZbNhut+z3+88zUCOcTqdMp1OUUhhjDlJQm7UWYwx3d3cH+1JKrLVorTHGNDHfk+aHKpBSEkURAGVZNkWotW6aju/7B3s1CwCDweDojPhQBdZa0jRtev58PscY0xSeEALXdZsDrbUopRiNRhhjSNOUsiw/BOAc6371oInjmCiK8DzvgFKlVOPjeR5RFBHHMcYY1uv10a54tBOWZcnr6ysAy+WSKIqYTqf4vs/V1RWtVotOp0OSJIRhyGKxIM9z0jT9vmlYy8f3/aaoXNdls9mw2+2a58YYfN8nz/N3JfeeSeCvz47OoijQWtPv98myDCEE+/2e5+dnwjBspHes///yfaAoCuI4RkqJUoq3tzeklOR5zsvLy++/kNTpKMuSNE2Zz+dkWUaapo3cPjuGm3g/f0Y/AP73AP4GZZGfmrnVwMUAAAAASUVORK5CYII=">
@@ -2754,13 +2755,21 @@ const chatChannel = ("BroadcastChannel" in window) ? new BroadcastChannel("10to2
 let chatUsers = {};   // id -> last-seen timestamp (everyone currently in the room)
 let chatOpen = false;
 
+/* Escape anything that arrived over the wire before it touches innerHTML.
+   With BroadcastChannel this only guards against your own other tabs, but
+   the moment the transport becomes Firebase/Supabase/WebSocket (see above)
+   nicknames and messages are attacker-controlled, so treat them that way now. */
+function chatEsc(s) {
+  return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+}
+
 function chatAppend(who, text, isMe, isSys) {
   const log = document.getElementById("chat-log");
   const line = document.createElement("div");
   line.className = "msn-line" + (isMe ? " me" : "") + (isSys ? " sys" : "");
   line.innerHTML = isSys
     ? text
-    : "<span class='who'>" + (isMe ? "you" : who) + ":</span> " + text.replace(/[<>]/g, c => c === "<" ? "&lt;" : "&gt;");
+    : "<span class='who'>" + (isMe ? "you" : chatEsc(who).slice(0, 40)) + ":</span> " + chatEsc(text);
   log.appendChild(line);
   log.scrollTop = log.scrollHeight;
 }
@@ -2784,7 +2793,7 @@ if (chatChannel) {
       const isNew = !chatUsers[msg.id];
       chatUsers[msg.id] = Date.now();
       chatRenderUserCount();
-      if (isNew && chatOpen) chatAppend(null, msg.id + " joined the room.", false, true);
+      if (isNew && chatOpen) chatAppend(null, chatEsc(msg.id).slice(0, 40) + " joined the room.", false, true);
     } else if (msg.type === "message") {
       chatUsers[msg.id] = Date.now();
       chatRenderUserCount();
@@ -2996,7 +3005,7 @@ document.getElementById("net-device").addEventListener("click", () => {
   document.getElementById("net-view-lock").style.display = "block";
 });
 document.querySelectorAll(".net-remote").forEach(el => {
-  el.addEventListener("click", () => window.open(el.dataset.href, "_blank"));
+  el.addEventListener("click", () => window.open(el.dataset.href, "_blank", "noopener"));
 });
 document.getElementById("net-back").addEventListener("click", () => {
   document.getElementById("net-view-lock").style.display = "none";
@@ -3795,6 +3804,8 @@ function ssPrepare() {
 }
 
 function ssStart() {
+  /* respect users who've asked their OS for less motion */
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (document.getElementById("screensaver").classList.contains("on")) return;
   ssPrepare();
   const box = document.getElementById("screensaver");
