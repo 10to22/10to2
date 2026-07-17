@@ -1,0 +1,5 @@
+# 10to2.net — allow everything, point crawlers at the sitemap.
+User-agent: *
+Allow: /
+
+Sitemap: https://10to2.net/sitemap.xml
