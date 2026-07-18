@@ -869,6 +869,31 @@
   #mobile-store .mb-back::before { content: "cd .. "; color: #2f8f43; }
 
 
+/* ---------- Music Videos app (WMP-style) ---------- */
+#mv-stage {
+  background: #000; width: 100%; aspect-ratio: 16 / 9;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid #16233f; position: relative;
+}
+#mv-stage video, #mv-stage iframe { width: 100%; height: 100%; border: 0; display: block; background: #000; }
+#mv-idle {
+  color: #7d90c0; font-size: 12px; text-align: center; padding: 20px;
+  font-family: Tahoma, sans-serif;
+}
+#mv-idle b { color: #b9c8ea; }
+.mv-list { margin-top: 8px; }
+.mv-row {
+  display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+  color: #d7e0f5; font-size: 12px; cursor: pointer; border-radius: 2px;
+}
+.mv-row:hover { background: rgba(90, 130, 220, 0.25); }
+.mv-row.playing { background: rgba(90, 130, 220, 0.45); }
+.mv-row .mv-num { color: #7d90c0; width: 16px; text-align: right; }
+.mv-row .mv-title { flex: 1; }
+.mv-row .mv-kind { color: #7d90c0; font-size: 10.5px; }
+.mv-row.mv-disabled { opacity: 0.45; cursor: default; }
+.mv-row.mv-disabled:hover { background: none; }
+
 /* ---------- Fan Photos app ---------- */
 .fp-drop {
   border: 2px dashed #a9c6f5; border-radius: 4px; background: #f4f8ff;
@@ -1132,6 +1157,10 @@
   <div class="icon" style="left:200px; top:120px;" data-target="win-solitaire">
     <img src="data:image/png;base64,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" draggable="false">
     <span>Solitaire</span>
+  </div>
+  <div class="icon" style="left:200px; top:420px;" data-target="win-videos">
+    <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 256 256"><circle cx="128" cy="128" r="120" fill="%23111"/><g><path d="M128 22 a106 106 0 0 1 106 106 l-40 0 a66 66 0 0 0 -66 -66 z" fill="%2343a047"/><path d="M234 128 a106 106 0 0 1 -106 106 l0 -40 a66 66 0 0 0 66 -66 z" fill="%23fdd835"/><path d="M128 234 a106 106 0 0 1 -106 -106 l40 0 a66 66 0 0 0 66 66 z" fill="%231e88e5"/><path d="M22 128 a106 106 0 0 1 106 -106 l0 40 a66 66 0 0 0 -66 66 z" fill="%23e53935"/></g><circle cx="128" cy="128" r="72" fill="%23eef3fb" stroke="%23b9c8ea" stroke-width="4"/><circle cx="128" cy="128" r="60" fill="%23dce7f7"/><path d="M108 92 L172 128 L108 164 Z" fill="%231e64d0" stroke="%230d3f96" stroke-width="5" stroke-linejoin="round"/></svg>'>
+    <span>Music Videos</span>
   </div>
   <div class="icon" style="left:200px; top:320px;" data-target="win-fanphotos">
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJvZHkiIHgxPSIwIiB5MT0iMCIgeDI9IjAuOSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiNlY2VjZWMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYzZjNmM2Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJzaWRlIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2UyZTJlMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjAuNDUiIHN0b3AtY29sb3I9IiNmYmZiZmIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYzhjOGM4Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJsZW5zcmluZyIgY3g9IjAuNCIgY3k9IjAuMzgiIHI9IjAuOCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2YyZjJmMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNiM2IzYjMiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgPC9kZWZzPgoKICA8IS0tIGdyb3VuZCBzaGFkb3cgLS0+CiAgPGVsbGlwc2UgY3g9IjEyOCIgY3k9IjIyMCIgcng9IjEwMCIgcnk9IjEzIiBmaWxsPSIjMDAwIiBvcGFjaXR5PSIwLjEyIi8+CgogIDwhLS0gc2h1dHRlciBidXR0b24gcGVla2luZyBhYm92ZSB0aGUgdG9wIGVkZ2UgLS0+CiAgPGVsbGlwc2UgY3g9Ijc2IiBjeT0iNTgiIHJ4PSIyNCIgcnk9IjExIiBmaWxsPSIjZjRmNGY0IiBzdHJva2U9IiMzYTNhM2EiIHN0cm9rZS13aWR0aD0iNiIgdHJhbnNmb3JtPSJyb3RhdGUoLTUgNzYgNTgpIi8+CgogIDwhLS0gbWFpbiBib2R5OiB3aWRlIGxhbmRzY2FwZSBicmljaywgc2xpZ2h0IDMvNCB0aWx0IC0tPgogIDxwYXRoIGQ9Ik02NCA2NiBMMjA2IDUwIFEyMjggNDggMjMyIDY4IEwyMzggMTcyIFEyNDAgMTk0IDIxOCAxOTcgTDc4IDIxMiBRNTQgMjE1IDUwIDE5NCBMNDAgOTYgUTM2IDcyIDY0IDY2IFoiCiAgICAgICAgZmlsbD0idXJsKCNib2R5KSIgc3Ryb2tlPSIjM2EzYTNhIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBsZWZ0IGdyaXAgZmFjZSAtLT4KICA8cGF0aCBkPSJNNjQgNjYgUTQwIDc0IDQyIDk4IEw1MiAxOTIgUTU0IDIxMCA3NiAyMTEgTDg2IDIxMCBMNzQgNjggWiIKICAgICAgICBmaWxsPSJ1cmwoI3NpZGUpIiBzdHJva2U9IiMzYTNhM2EiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDwhLS0gZ3JpcCBpbm5lciBwYW5lbCAtLT4KICA8cmVjdCB4PSI1MCIgeT0iOTQiIHdpZHRoPSIxNyIgaGVpZ2h0PSI3NiIgcng9IjYiIGZpbGw9IiNmYmZiZmIiIHN0cm9rZT0iIzljOWM5YyIgc3Ryb2tlLXdpZHRoPSIzIiB0cmFuc2Zvcm09InJvdGF0ZSgtNCA1OCAxMzIpIi8+CiAgPCEtLSBncmlwIGRvdHMgLS0+CiAgPGcgZmlsbD0iIzhmOGY4ZiI+CiAgICA8Y2lyY2xlIGN4PSI4MiIgY3k9IjEwNCIgcj0iNCIvPgogICAgPGNpcmNsZSBjeD0iODQiIGN5PSIxMjYiIHI9IjQiLz4KICAgIDxjaXJjbGUgY3g9Ijg2IiBjeT0iMTQ4IiByPSI0Ii8+CiAgICA8Y2lyY2xlIGN4PSI4OCIgY3k9IjE3MCIgcj0iNCIvPgogICAgPGNpcmNsZSBjeD0iOTAiIGN5PSIxOTAiIHI9IjQiLz4KICA8L2c+CgogIDwhLS0gdmlld2ZpbmRlciBibG9ja3MgdG9wLXJpZ2h0IC0tPgogIDxyZWN0IHg9IjE0OCIgeT0iNjAiIHdpZHRoPSI1NCIgaGVpZ2h0PSIxOSIgcng9IjMiIGZpbGw9IiMyZTMzMzUiIHN0cm9rZT0iIzFiMWUyMCIgc3Ryb2tlLXdpZHRoPSI0IiB0cmFuc2Zvcm09InJvdGF0ZSgtNSAxNzUgNjkpIi8+CiAgPHJlY3QgeD0iMjA3IiB5PSI1NSIgd2lkdGg9IjE3IiBoZWlnaHQ9IjE3IiByeD0iMyIgZmlsbD0iIzJlMzMzNSIgc3Ryb2tlPSIjMWIxZTIwIiBzdHJva2Utd2lkdGg9IjQiIHRyYW5zZm9ybT0icm90YXRlKC01IDIxNSA2MykiLz4KCiAgPCEtLSBsZW5zIGFzc2VtYmx5LCBjZW50ZXItcmlnaHQgLS0+CiAgPGNpcmNsZSBjeD0iMTYzIiBjeT0iMTM4IiByPSI1MCIgZmlsbD0idXJsKCNsZW5zcmluZykiIHN0cm9rZT0iIzNhM2EzYSIgc3Ryb2tlLXdpZHRoPSI2Ii8+CiAgPGNpcmNsZSBjeD0iMTYzIiBjeT0iMTM4IiByPSI0MCIgZmlsbD0iIzIzMjMyMyIvPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEzOCIgcj0iMzMiIGZpbGw9IiMzZTNlM2UiLz4KICA8Y2lyY2xlIGN4PSIxNjMiIGN5PSIxMzgiIHI9IjI2IiBmaWxsPSIjMTUxNTE1Ii8+CiAgPGNpcmNsZSBjeD0iMTYzIiBjeT0iMTM4IiByPSIxOCIgZmlsbD0iIzMzMzMzMyIvPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9IjEzOCIgcj0iOCIgZmlsbD0iIzFjNjZkOCIvPgogIDxjaXJjbGUgY3g9IjE1OSIgY3k9IjEzMyIgcj0iMy41IiBmaWxsPSIjOTViZGYxIiBvcGFjaXR5PSIwLjkiLz4KPC9zdmc+Cg==">
@@ -1442,6 +1471,23 @@
   </div>
 
   <!-- ============ Vault Terminal ============ -->
+  <!-- ============ Music Videos (WMP-style video player) ============ -->
+  <div class="win" id="win-videos" style="left:280px; top:50px; width:560px;">
+    <div class="win-titlebar">
+      <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><circle cx="128" cy="128" r="120" fill="%23111"/><circle cx="128" cy="128" r="76" fill="%23dce7f7"/><path d="M104 84 L180 128 L104 172 Z" fill="%231e64d0"/></svg>'>
+      <div class="title">Windows Media Player &mdash; Music Videos</div>
+      <div class="win-btn min">_</div>
+      <div class="win-btn max">&#9633;</div>
+      <div class="win-btn close">X</div>
+    </div>
+    <div class="win-body" style="padding:10px; background:linear-gradient(180deg,#2b3a5e 0%,#1a2440 100%);">
+      <div id="mv-stage">
+        <div id="mv-idle"><b>No video loaded.</b><br>Pick one from the playlist below.</div>
+      </div>
+      <div class="mv-list" id="mv-list"></div>
+    </div>
+  </div>
+
   <!-- ============ Fan Photos (upload a pic in the merch; best ones get featured) ============ -->
   <div class="win" id="win-fanphotos" style="left:300px; top:70px; width:440px; height:480px;">
     <div class="win-titlebar">
@@ -1689,6 +1735,7 @@
     <div id="start-menu">
       <div class="sm-header">Windows User</div>
       <div class="sm-item" data-open="win-media">Windows Media Player</div>
+      <div class="sm-item" data-open="win-videos">Music Videos</div>
       <div class="sm-item" data-open="win-docs">My Documents</div>
       <div class="sm-item" data-open="win-msn">Messenger</div>
       <div class="sm-item" data-open="win-cd">Burn a CD</div>
@@ -1998,6 +2045,7 @@ function prevPlayableIndex(i) {
 function playSong(i) {
   if (i === null || i === undefined) return;
   if (songs[i].locked && !vaultUnlocked) return;
+  if (typeof mvCurrent !== "undefined" && mvCurrent >= 0) mvStop();   /* one soundtrack at a time */
   playingIndex = i;
   selectedIndex = i;
   elapsed = 0;
@@ -2266,6 +2314,7 @@ function closeWindow(id) {
   document.getElementById(id).classList.remove("minimized");
   openWins.delete(id);
   refreshTaskbar();
+  if (id === "win-videos" && typeof mvStop === "function") mvStop();
 }
 
 function minimizeWindow(id) {
@@ -4597,6 +4646,15 @@ function buildBasic(force) {
          '</div>' +
          (l ? '<pre class="mb-lyric" id="mbl-' + i + '">' + l.body + '</pre>' : '');
   });
+  const mvReady = MUSIC_VIDEOS.map((v, i) => [v, i]).filter(([v]) => v.src || v.youtube);
+  if (mvReady.length) {
+    h += '<div style="color:#2f8f43;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:26px 0 2px;border-top:1px solid #163a1e;padding-top:14px">Music videos</div>';
+    mvReady.forEach(([v, i]) => {
+      h += '<div class="mb-song"><div class="mb-t"><b>' + v.title + '</b><span>' + (v.youtube ? 'YouTube' : 'video') + '</span></div>' +
+             '<button class="mb-go" data-mv-play="' + i + '">Watch</button></div>' +
+           '<div id="mb-mv-' + i + '" style="display:none"></div>';
+    });
+  }
   h += '<div style="color:#2f8f43;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:26px 0 2px;border-top:1px solid #163a1e;padding-top:14px">Listen everywhere</div>';
   [["Spotify", "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO"],
    ["Apple Music", "https://music.apple.com/us/artist/10to2/1638897947"],
@@ -4646,6 +4704,22 @@ function buildBasic(force) {
     }));
   box.querySelectorAll("[data-play]").forEach(b =>
     b.addEventListener("click", () => mbPlay(Number(b.dataset.play), b)));
+  box.querySelectorAll("[data-mv-play]").forEach(b =>
+    b.addEventListener("click", () => {
+      const i = Number(b.dataset.mvPlay);
+      const v = MUSIC_VIDEOS[i];
+      track("video/play-mobile");
+      if (v.youtube) { window.open("https://www.youtube.com/watch?v=" + encodeURIComponent(v.youtube), "_blank", "noopener"); return; }
+      const slot = document.getElementById("mb-mv-" + i);
+      if (slot.style.display === "none") {
+        mbStopAudio();
+        slot.innerHTML = '<video controls autoplay playsinline style="width:100%;border:1px solid #2f8f43;background:#000" src="' + v.src.replace(/"/g, "&quot;") + '"></video>';
+        slot.style.display = "block";
+        b.textContent = "Hide";
+      } else {
+        slot.innerHTML = ""; slot.style.display = "none"; b.textContent = "Watch";
+      }
+    }));
   document.getElementById("mb-shop").addEventListener("click", () => {
     track("mobile/store-open");
     mbStopAudio();
@@ -4722,6 +4796,72 @@ function mbPlay(i, btn) {
     if (nextBtn) mbPlay(Number(nextBtn.dataset.play), nextBtn);
   };
 }
+
+/* =========================================================================
+   MUSIC VIDEOS — the WMP-style video player.
+   -------------------------------------------------------------------------
+   HOW TO ADD A VIDEO (one line each):
+   - Have an mp4?  Put it in assets/video/ (commit it to this repo) and set
+       { title: "Whoareyou? (official video)", src: "assets/video/whoareyou.mp4" }
+     Keep files webby: H.264 mp4, 720p, under ~50MB or GitHub gets grumpy.
+   - It's on YouTube?  Just use the video id (the part after watch?v=):
+       { title: "Ifwecrash (official video)", youtube: "dQw4w9WgXcQ" }
+     Embeds play right inside the player (privacy-friendly nocookie domain).
+   Entries with neither src nor youtube show greyed-out as "coming soon".
+   ========================================================================= */
+const MUSIC_VIDEOS = [
+  { title: "Whoareyou? (official video)", src: "", youtube: "" },
+  { title: "One2many (visualizer)",       src: "", youtube: "" },
+  { title: "Ifwecrash (official video)",  src: "", youtube: "" },
+];
+
+let mvCurrent = -1;
+
+function mvStop() {
+  const stage = document.getElementById("mv-stage");
+  if (!stage) return;
+  stage.innerHTML = '<div id="mv-idle"><b>No video loaded.</b><br>Pick one from the playlist below.</div>';
+  mvCurrent = -1;
+  mvRenderList();
+}
+
+function mvPlay(i) {
+  const v = MUSIC_VIDEOS[i];
+  if (!v || (!v.src && !v.youtube)) return;
+  /* one soundtrack at a time — silence the audio players */
+  try { document.getElementById("wmp-audio").pause(); } catch (e) {}
+  try { document.getElementById("mb-audio").pause(); } catch (e) {}
+  if (typeof isPlaying !== "undefined") { isPlaying = false; if (typeof renderOverlays === "function") renderOverlays(); }
+
+  const stage = document.getElementById("mv-stage");
+  if (v.youtube) {
+    stage.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' +
+      encodeURIComponent(v.youtube) + '?autoplay=1&rel=0" title="' + v.title.replace(/"/g, "&quot;") +
+      '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+  } else {
+    stage.innerHTML = '<video controls autoplay playsinline src="' + v.src.replace(/"/g, "&quot;") + '"></video>';
+  }
+  mvCurrent = i;
+  track("video/play");
+  mvRenderList();
+}
+
+function mvRenderList() {
+  const list = document.getElementById("mv-list");
+  if (!list) return;
+  list.innerHTML = MUSIC_VIDEOS.map((v, i) => {
+    const ready = !!(v.src || v.youtube);
+    return '<div class="mv-row' + (i === mvCurrent ? " playing" : "") + (ready ? "" : " mv-disabled") +
+      '" data-mv="' + i + '">' +
+      '<span class="mv-num">' + (i + 1) + '</span>' +
+      '<span class="mv-title">' + v.title + '</span>' +
+      '<span class="mv-kind">' + (ready ? (v.youtube ? "YouTube" : "MP4") : "coming soon") + '</span>' +
+      '</div>';
+  }).join("");
+  list.querySelectorAll("[data-mv]").forEach(row =>
+    row.addEventListener("click", () => mvPlay(Number(row.dataset.mv))));
+}
+mvRenderList();
 
 /* ---- Fan Photos: upload + wall (shared by the desktop app and mobile) ---- */
 
