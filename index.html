@@ -125,6 +125,8 @@
     object-fit: contain;
     display: block;
     margin: 0 auto 4px;
+    /* dragging moves the whole icon, never ghost-drags the image */
+    pointer-events: none; -webkit-user-drag: none; user-select: none;
     filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.6));
   }
   .icon span {
@@ -346,7 +348,9 @@
   }
   #start-btn {
     pointer-events: auto;
-    height: 100%; width: 13%; min-width: 120px;
+    /* The button art is a 151x40 PNG; lock the box to that ratio so the
+       logo never stretches, whatever the screen width. */
+    height: 100%; width: auto; aspect-ratio: 151 / 40;
     cursor: pointer;
   }
   #start-menu {
@@ -2134,8 +2138,62 @@ document.getElementById("btn-next").addEventListener("click", (e) => {
 renderOverlays();
 
 /* ================= Icon selection / opening ================= */
+/* Desktop icons: click opens, press-and-drag rearranges (like real XP).
+   A 6px threshold separates the two, and layouts persist per browser. */
+const ICON_POS_KEY = "10to2.iconpos";
+let iconDragMoved = false;
+
+function iconKey(icon) { return icon.dataset.target || "icon-" + [...document.querySelectorAll(".icon")].indexOf(icon); }
+
+function saveIconPositions() {
+  const pos = {};
+  document.querySelectorAll(".icon").forEach(icon => {
+    pos[iconKey(icon)] = { l: icon.style.left, t: icon.style.top };
+  });
+  try { localStorage.setItem(ICON_POS_KEY, JSON.stringify(pos)); } catch (e) {}
+}
+
+(function restoreIconPositions() {
+  let pos = null;
+  try { pos = JSON.parse(localStorage.getItem(ICON_POS_KEY) || "null"); } catch (e) {}
+  if (!pos) return;
+  document.querySelectorAll(".icon").forEach(icon => {
+    const p = pos[iconKey(icon)];
+    if (!p || !p.l || !p.t) return;
+    /* clamp back on screen in case it was saved on a bigger display */
+    const l = Math.min(Math.max(0, parseInt(p.l, 10)), window.innerWidth - 90);
+    const t = Math.min(Math.max(0, parseInt(p.t, 10)), window.innerHeight - 130);
+    icon.style.left = l + "px";
+    icon.style.top = t + "px";
+  });
+})();
+
 document.querySelectorAll(".icon").forEach(icon => {
+  icon.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return;
+    const startX = e.clientX, startY = e.clientY;
+    const origL = parseInt(icon.style.left, 10) || 0;
+    const origT = parseInt(icon.style.top, 10) || 0;
+    iconDragMoved = false;
+    function onMove(ev) {
+      const dx = ev.clientX - startX, dy = ev.clientY - startY;
+      if (!iconDragMoved && Math.abs(dx) + Math.abs(dy) < 6) return;
+      iconDragMoved = true;
+      icon.style.left = Math.min(Math.max(0, origL + dx), window.innerWidth - 90) + "px";
+      icon.style.top = Math.min(Math.max(0, origT + dy), window.innerHeight - 130) + "px";
+    }
+    function onUp() {
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+      if (iconDragMoved) saveIconPositions();
+    }
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+    e.preventDefault();
+  });
   icon.addEventListener("click", (e) => {
+    /* the tail end of a drag is not a click */
+    if (iconDragMoved) { iconDragMoved = false; e.stopPropagation(); return; }
     document.querySelectorAll(".icon").forEach(i => i.classList.remove("selected"));
     icon.classList.add("selected");
     /* Icons without a data-target (there aren't many left) just select. */
