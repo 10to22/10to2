@@ -62,9 +62,9 @@
         "https://instagram.com/finleycry9"
       ],
       "track": [
-        { "@type": "MusicRecording", "name": "Whoareyou?", "byArtist": { "@id": "https://10to2.net/#artist" }, "url": "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" },
-        { "@type": "MusicRecording", "name": "One2many", "byArtist": { "@id": "https://10to2.net/#artist" }, "url": "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" },
-        { "@type": "MusicRecording", "name": "Ifwecrash", "byArtist": { "@id": "https://10to2.net/#artist" }, "url": "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" }
+        { "@type": "MusicRecording", "name": "Whoareyou?", "duration": "PT1M29S", "byArtist": { "@id": "https://10to2.net/#artist" }, "inLanguage": "en", "url": "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" },
+        { "@type": "MusicRecording", "name": "One2many", "duration": "PT1M24S", "byArtist": { "@id": "https://10to2.net/#artist" }, "inLanguage": "en", "url": "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" },
+        { "@type": "MusicRecording", "name": "Ifwecrash", "duration": "PT1M21S", "byArtist": { "@id": "https://10to2.net/#artist" }, "inLanguage": "en", "url": "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" }
       ]
     },
     {
@@ -4302,6 +4302,13 @@ function buildBasic() {
          '</div>' +
          (l ? '<pre class="mb-lyric" id="mbl-' + i + '">' + l.body + '</pre>' : '');
   });
+  h += '<div style="color:#2f8f43;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:26px 0 2px;border-top:1px solid #163a1e;padding-top:14px">Listen everywhere</div>';
+  [["Spotify", "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO"],
+   ["Apple Music", "https://music.apple.com/us/artist/10to2/1638897947"],
+   ["Instagram", "https://instagram.com/finleycry9"]].forEach(([label, url]) => {
+    h += '<div class="mb-song"><div class="mb-t"><b>' + label + '</b></div>' +
+           '<a class="mb-go" href="' + url + '" target="_blank" rel="noopener">Open</a></div>';
+  });
   h += '<div class="mb-song" style="border-bottom:1px solid #163a1e">' +
          '<div class="mb-t"><b>Contact</b><span>booking, press, collabs</span></div>' +
          '<button class="mb-go" id="mb-contact">Email</button>' +
@@ -4326,6 +4333,7 @@ function buildBasic() {
   box.querySelectorAll("[data-play]").forEach(b =>
     b.addEventListener("click", () => mbPlay(Number(b.dataset.play), b)));
   document.getElementById("mb-shop").addEventListener("click", () => {
+    mbStopAudio();
     buildStore();
     box.classList.remove("on");
     document.getElementById("mobile-store").classList.add("on");
@@ -4334,6 +4342,7 @@ function buildBasic() {
     window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Hey 10to2 —");
   });
   document.getElementById("mb-back").addEventListener("click", () => {
+    mbStopAudio();
     box.classList.remove("on");
     document.getElementById("mobile-gate").classList.add("on");
   });
@@ -4362,6 +4371,11 @@ function buildBasic() {
 
 /* ---- Mobile basic-view audio player (independent of the desktop WMP) ---- */
 let mbPlayingBtn = null;
+function mbStopAudio() {
+  const audio = document.getElementById("mb-audio");
+  audio.pause();
+  if (mbPlayingBtn) { mbPlayingBtn.classList.remove("playing"); mbPlayingBtn.textContent = "▶"; mbPlayingBtn = null; }
+}
 function mbPlay(i, btn) {
   const audio = document.getElementById("mb-audio");
   const s = songs[i];
@@ -4376,7 +4390,13 @@ function mbPlay(i, btn) {
   audio.play().then(() => {
     btn.classList.add("playing"); btn.textContent = "■"; mbPlayingBtn = btn;
   }).catch(() => {});
-  audio.onended = () => { btn.classList.remove("playing"); btn.textContent = "▶"; mbPlayingBtn = null; };
+  audio.onended = () => {
+    btn.classList.remove("playing"); btn.textContent = "▶"; mbPlayingBtn = null;
+    /* auto-advance to the next playable track in the list, then stop at the end */
+    const btns = [...document.querySelectorAll("#mobile-basic .mb-play")];
+    const nextBtn = btns[btns.indexOf(btn) + 1];
+    if (nextBtn) mbPlay(Number(nextBtn.dataset.play), nextBtn);
+  };
 }
 
 /* ---- Mobile merch store + Stripe checkout (feature parity with desktop) ---- */
@@ -4577,6 +4597,7 @@ async function mbSubmitPayment() {
       mbCart = [];
       mbRenderCart();
       if (mbCardElement) mbCardElement.clear();
+      pay.disabled = false;                 // ready for another order without a reload
     }
   } catch (err) {
     status.textContent = "Something went wrong: " + err.message;
