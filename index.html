@@ -3678,6 +3678,7 @@ let solStock = [], solWaste = [], solFoundations = [[], [], [], []], solTableau 
 let solSelected = null; // { pile: "waste"|"tableau"|"foundation", col, cardIndex }
 let solSpiderMode = false;
 let solSpiderCompleted = 0;
+let solLastSpiderDeal = 0;   /* debounce: double-clicking the stock must not deal twice */
 
 function solRankLabel(r) { return SOL_RANK_LABEL[r] || String(r); }
 function solIsRed(suit) { return suit === 1 || suit === 2; }
@@ -3900,6 +3901,12 @@ function solHandlePileClick(pile, col, cardIndex) {
   }
   if (pile === "stock") {
     if (solSpiderMode) {
+      /* Windows-solitaire muscle memory is to double-click; without a
+         guard that lands two full rows (20 cards) in one go and floods
+         the board. One deal per half second. */
+      const now = Date.now();
+      if (now - solLastSpiderDeal < 500) return;
+      solLastSpiderDeal = now;
       /* Deal one card per column; if fewer than 10 remain, deal what's
          left rather than leaving a stock that ignores clicks. */
       const deal = Math.min(solStock.length, SOL_SPIDER_COLS);
