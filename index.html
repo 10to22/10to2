@@ -2548,7 +2548,7 @@ const SCRAPPED = [
    sync_variant_id in Printful, so fill in one per row. */
 const MERCH = [
   { name: "Whoareyou? - CD single", mb: 148, price: 8,  note: "Jewel case, 2 tracks", url: "", img: "", printfulVariantId: "" },
-  { name: "10to2 - logo tee (black)", mb: 121, price: 25, note: "Gildan 5000 heavy cotton, S-5XL", url: "", img: "",
+  { name: "10to2 - logo tee (white)", mb: 121, price: 25, note: "Gildan 5000 heavy cotton, S-5XL", url: "", img: "",
     variants: [
       { label: "S",   printfulVariantId: "5396150185" },
       { label: "M",   printfulVariantId: "5396150186" },
@@ -3900,14 +3900,14 @@ function solHandlePileClick(pile, col, cardIndex) {
   }
   if (pile === "stock") {
     if (solSpiderMode) {
-      const numCols = SOL_SPIDER_COLS;
-      if (solStock.length >= numCols) {
-        for (let c = 0; c < numCols; c++) {
-          const card = solStock.pop();
-          card.faceUp = true;
-          solTableau[c].push(card);
-          solSpiderCheckComplete(c);
-        }
+      /* Deal one card per column; if fewer than 10 remain, deal what's
+         left rather than leaving a stock that ignores clicks. */
+      const deal = Math.min(solStock.length, SOL_SPIDER_COLS);
+      for (let c = 0; c < deal; c++) {
+        const card = solStock.pop();
+        card.faceUp = true;
+        solTableau[c].push(card);
+        solSpiderCheckComplete(c);
       }
     } else if (solStock.length) {
       const card = solStock.pop();
@@ -3924,6 +3924,17 @@ function solHandlePileClick(pile, col, cardIndex) {
   }
 
   const top = solTopCard(pile, col);
+
+  /* Classic solitaire: clicking a face-down card on top of a column turns
+     it over ("opens" it). Normally the flip happens automatically after a
+     move, but if a top card is ever left face-down, a click must open it
+     or that column is stuck for good. */
+  if (pile === "tableau" && top && !top.faceUp && cardIndex === solTableau[col].length - 1) {
+    top.faceUp = true;
+    solSelected = null;
+    solRender();
+    return;
+  }
 
   if (!solSelected) {
     if (!top) return;
@@ -4284,9 +4295,9 @@ function isSmall() {
   return window.matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
 }
 
-function buildBasic() {
+function buildBasic(force) {
   const box = document.getElementById("mobile-basic");
-  if (box.dataset.built) return;
+  if (box.dataset.built && !force) return;
   box.dataset.built = "1";
   let h = '<h1>10to2</h1><div class="mb-sub">DIR /music -- everything the desktop has, sized for your thumb.</div>';
   h += '<div class="mb-actions-row"><button class="mb-cta primary" id="mb-shop">Shop merch \u00bb</button></div>';
@@ -4321,6 +4332,17 @@ function buildBasic() {
          'color:#4dff6c;padding:11px;font-family:inherit;font-size:13px">' +
          '<button class="mb-go" id="mb-join">Join</button>' +
        '</div>' +
+       /* Same vault terminal as the desktop — same commands, same passphrase,
+          same locked bonus track on the line above once it opens. */
+       '<div style="color:#2f8f43;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:26px 0 8px;border-top:1px solid #163a1e;padding-top:14px">10to2-OS terminal</div>' +
+       '<div id="mb-term-out" style="background:#0a120a;border:1px solid #163a1e;padding:10px;font-size:12px;line-height:1.6;max-height:180px;overflow:auto;color:#2f8f43">' +
+         '10to2-OS [Version 5.10]<br>Mounting /vault... OK<br>Vault status: ' + (vaultUnlocked ? '<span style="color:#b6ffc4">UNLOCKED</span>' : 'LOCKED') + '<br>Type HELP for a list of commands.' +
+       '</div>' +
+       '<form id="mb-term-form" style="display:flex;gap:8px;margin-top:8px">' +
+         '<input id="mb-term-in" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" placeholder="C:\\10TO2&gt; _" ' +
+           'style="flex:1;background:#0a120a;border:1px solid #2f8f43;color:#4dff6c;padding:11px;font-family:inherit;font-size:13px">' +
+         '<button class="mb-go" type="submit">Run</button>' +
+       '</form>' +
        '<button class="mb-back" id="mb-back"></button>';
   box.innerHTML = h;
 
@@ -4345,6 +4367,12 @@ function buildBasic() {
     mbStopAudio();
     box.classList.remove("on");
     document.getElementById("mobile-gate").classList.add("on");
+  });
+  document.getElementById("mb-term-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const inp = document.getElementById("mb-term-in");
+    mbTermHandle(inp.value);
+    inp.value = "";
   });
   document.getElementById("mb-join").addEventListener("click", async () => {
     const btn = document.getElementById("mb-join");
@@ -4397,6 +4425,57 @@ function mbPlay(i, btn) {
     const nextBtn = btns[btns.indexOf(btn) + 1];
     if (nextBtn) mbPlay(Number(nextBtn.dataset.play), nextBtn);
   };
+}
+
+/* ---- Mobile vault terminal: same commands + passphrase as the desktop ---- */
+function mbTermPrint(text, color) {
+  const out = document.getElementById("mb-term-out");
+  if (!out) return;
+  const line = document.createElement("div");
+  if (color) line.style.color = color;
+  line.textContent = text;
+  out.appendChild(line);
+  out.scrollTop = out.scrollHeight;
+}
+
+function mbTermHandle(raw) {
+  const cmd = (raw || "").trim();
+  if (!cmd) return;
+  mbTermPrint("> " + cmd, "#4dff6c");
+  const lower = cmd.toLowerCase();
+  if (lower === "help") {
+    mbTermPrint("Commands: HELP, HINT, WHOAMI, CLEAR, LIST");
+  } else if (lower === "hint") {
+    mbTermPrint("10to2's favorite food");
+  } else if (lower === "whoami") {
+    mbTermPrint("guest@10to2-os");
+  } else if (lower === "clear") {
+    document.getElementById("mb-term-out").innerHTML = "";
+  } else if (lower === "list") {
+    mbTermPrint("Alternate / unreleased versions on file:");
+    Object.keys(ALT_VERSIONS).forEach(song => {
+      mbTermPrint(song + ":", "#b6ffc4");
+      ALT_VERSIONS[song].forEach(v => mbTermPrint("  " + v));
+    });
+  } else if (lower === VAULT_PASSPHRASE) {
+    if (vaultUnlocked) {
+      mbTermPrint("Vault already unlocked.", "#b6ffc4");
+    } else {
+      vaultUnlocked = true;
+      /* keep the desktop views in sync too */
+      renderRows(); renderBonusRow();
+      /* rebuild the song list so the vault track gets its play button,
+         then re-print the granted lines into the fresh terminal */
+      buildBasic(true);
+      mbTermPrint("> " + cmd, "#4dff6c");
+      mbTermPrint("Access granted. Vault status: UNLOCKED", "#b6ffc4");
+      mbTermPrint('"' + songs[3].title + '" added to the tracklist above.', "#b6ffc4");
+      const out = document.getElementById("mb-term-out");
+      if (out) out.scrollIntoView({ block: "center" });
+    }
+  } else {
+    mbTermPrint("'" + cmd + "' is not recognized as an internal or external command.", "#ff6b6b");
+  }
 }
 
 /* ---- Mobile merch store + Stripe checkout (feature parity with desktop) ---- */
