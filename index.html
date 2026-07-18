@@ -12,13 +12,17 @@
 <meta name="googlebot" content="index, follow">
 
 <link rel="canonical" href="https://10to2.net/">
+<link rel="me" href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO">
+<link rel="me" href="https://music.apple.com/us/artist/10to2/1638897947">
+<link rel="me" href="https://instagram.com/finleycry9">
 
 <!-- Google Search Console: to verify by HTML tag, paste the tag Google gives
      you on the line below (Search Console -> add property -> "HTML tag"):
      <meta name="google-site-verification" content="YOUR_CODE_HERE"> -->
 
 <!-- Open Graph (Facebook, Discord, Slack, iMessage previews, etc.) -->
-<meta property="og:type" content="website">
+<meta property="og:type" content="profile">
+<meta property="profile:username" content="10to2">
 <meta property="og:site_name" content="10to2">
 <meta property="og:title" content="10to2 — Official Site | Hyperpop Artist, Music &amp; Merch">
 <meta property="og:description" content="Stream Whoareyou?, One2many, Ifwecrash and more from hyperpop artist 10to2, and shop official merch — inside a fully interactive Windows XP desktop.">
@@ -51,7 +55,9 @@
       "@type": "MusicGroup",
       "@id": "https://10to2.net/#artist",
       "name": "10to2",
+      "alternateName": ["10 to 2", "10to2 music"],
       "url": "https://10to2.net/",
+      "mainEntityOfPage": "https://10to2.net/",
       "image": "https://10to2.net/preview.jpg",
       "email": "tt10to2tt@gmail.com",
       "genre": ["Hyperpop", "Electronic", "Pop"],
@@ -72,9 +78,22 @@
       "@id": "https://10to2.net/#website",
       "url": "https://10to2.net/",
       "name": "10to2",
+      "alternateName": ["10to2 official site", "10to2.net"],
       "description": "Official site of hyperpop artist 10to2 — music, merch and an interactive Windows XP-styled desktop.",
       "inLanguage": "en",
+      "about": { "@id": "https://10to2.net/#artist" },
       "publisher": { "@id": "https://10to2.net/#artist" }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://10to2.net/#page",
+      "url": "https://10to2.net/",
+      "name": "10to2 — Official Site",
+      "isPartOf": { "@id": "https://10to2.net/#website" },
+      "about": { "@id": "https://10to2.net/#artist" },
+      "mainEntity": { "@id": "https://10to2.net/#artist" },
+      "primaryImageOfPage": "https://10to2.net/preview.jpg",
+      "inLanguage": "en"
     }
   ]
 }
@@ -868,6 +887,35 @@
   #mobile-store .mb-back { margin-top: 26px; background: none; border: 1px solid #2f8f43; color: #4dff6c; padding: 10px 16px; font-size: 12px; font-family: inherit; cursor: pointer; }
   #mobile-store .mb-back::before { content: "cd .. "; color: #2f8f43; }
 
+
+/* ---------- Branding: corner watermark, splash tagline, welcome balloon ---------- */
+#desk-watermark {
+  position: fixed; right: 14px; bottom: calc(6.2vh + 12px); z-index: 1;
+  text-align: right; font-family: Tahoma, sans-serif; font-size: 11px;
+  color: rgba(255,255,255,0.78); text-shadow: 1px 1px 2px rgba(0,0,0,0.55);
+  line-height: 1.5; pointer-events: none; user-select: none;
+}
+.sp-tag {
+  margin-top: 10px; font-family: Tahoma, sans-serif; font-size: 12px;
+  color: #9db8e8; letter-spacing: 0.4px;
+}
+#welcome-balloon {
+  position: fixed; right: 12px; bottom: calc(6.2vh + 10px); z-index: 6000;
+  width: 300px; background: #ffffe1; border: 1px solid #000;
+  border-radius: 6px; padding: 10px 12px;
+  font-family: Tahoma, sans-serif; font-size: 11.5px; color: #1a1a1a;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.4); cursor: pointer;
+  animation: balloon-in 0.25s ease-out;
+}
+#welcome-balloon::after {  /* the balloon tail pointing at the tray */
+  content: ""; position: absolute; right: 26px; bottom: -12px;
+  border: 12px solid transparent; border-top-color: #ffffe1;
+  border-bottom: 0; border-right: 0;
+  filter: drop-shadow(0 1px 0 #000);
+}
+#welcome-balloon b { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 12px; }
+#welcome-balloon .wb-x { position: absolute; top: 6px; right: 8px; font-size: 11px; color: #444; }
+@keyframes balloon-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* ---------- Music Videos app (WMP-style) ---------- */
 #mv-stage {
@@ -1733,7 +1781,7 @@
 <div id="taskbar">
   <div id="start-btn">
     <div id="start-menu">
-      <div class="sm-header">Windows User</div>
+      <div class="sm-header">10to2 <span style="font-weight:normal; font-size:10.5px; opacity:0.85;">&mdash; hyperpop artist</span></div>
       <div class="sm-item" data-open="win-media">Windows Media Player</div>
       <div class="sm-item" data-open="win-videos">Music Videos</div>
       <div class="sm-item" data-open="win-docs">My Documents</div>
@@ -1770,6 +1818,7 @@
       <div class="sp-ms">Microsoft&reg;</div>
       <div class="sp-xp">Windows<em>xp</em></div>
       <div class="sp-sub">10 TO 2 EDITION</div>
+      <div class="sp-tag">the official site of the artist 10to2</div>
     </div>
     <div class="sp-track"><i></i></div>
   </div>
@@ -1782,7 +1831,7 @@
     <div class="mg-inner">
       <div class="mg-ico">!</div>
       <div>
-        <p><b>This site requires a display of at least 800 &times; 600 and a mouse.</b></p>
+        <p><b>Welcome to the official site of 10to2</b> &mdash; hyperpop, made loud. It's built as a whole Windows XP desktop, which really wants 800 &times; 600 and a mouse.</p>
         <p class="mg-sub">It's a whole Windows XP desktop. It does not fit in your hand, and pretending
         otherwise would make it worse for both of us.</p>
       </div>
@@ -1793,6 +1842,7 @@
     </div>
   </div>
 </div>
+<div id="desk-watermark" aria-hidden="true">10to2 &mdash; official artist site<br>10to2-OS Build 1002</div>
 <div id="mobile-basic"></div>
 <div id="mobile-store"></div>
 
@@ -4594,6 +4644,8 @@ function runBoot(done) {
     splash.classList.remove("on");
     sessionMark("10to2.booted");
     done();
+    /* first-time visitors get a tray balloon saying whose site this is */
+    if (!isSmall()) setTimeout(showWelcomeBalloon, 900);
   }
   document.getElementById("boot-skip").addEventListener("click", finish);
   boot.addEventListener("click", finish);
@@ -4862,6 +4914,21 @@ function mvRenderList() {
     row.addEventListener("click", () => mvPlay(Number(row.dataset.mv))));
 }
 mvRenderList();
+
+/* ---- First-visit welcome balloon: tells new visitors whose site this is ---- */
+function showWelcomeBalloon() {
+  try { if (localStorage.getItem("10to2.welcomed")) return; } catch (e) {}
+  const b = document.createElement("div");
+  b.id = "welcome-balloon";
+  b.innerHTML = '<b>&#127925; Welcome to 10to2.net</b>' +
+    '<span class="wb-x">&#10005;</span>' +
+    'The official site of <b style="display:inline">10to2</b> — hyperpop artist. ' +
+    'Music lives in <i>Windows Media Player</i>, merch in <i>Burn a CD</i>. Dig around.';
+  b.addEventListener("click", () => b.remove());
+  document.body.appendChild(b);
+  setTimeout(() => { if (b.parentNode) b.remove(); }, 14000);
+  try { localStorage.setItem("10to2.welcomed", "1"); } catch (e) {}
+}
 
 /* ---- Fan Photos: upload + wall (shared by the desktop app and mobile) ---- */
 
