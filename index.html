@@ -379,7 +379,10 @@
   #start-menu .sm-item:hover { background: #316ac5; color: #fff; }
   #taskbar-items {
     pointer-events: auto;
-    flex: 1; display: flex; gap: 4px; padding-left: 10px; height: 78%; align-items: center;
+    /* min-width:0 lets this flex child actually shrink — without it, a
+       screenful of open windows pushes the tray (and clock) off-screen. */
+    flex: 1; min-width: 0; overflow: hidden;
+    display: flex; gap: 4px; padding-left: 10px; height: 78%; align-items: center;
   }
   .taskbar-item {
     height: 100%; background: rgba(20, 50, 140, 0.55);
@@ -389,7 +392,10 @@
     cursor: pointer; max-width: 160px; overflow: hidden;
     white-space: nowrap; text-overflow: ellipsis;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+    /* shrink like real XP when the bar fills up */
+    flex: 1 1 auto; min-width: 0;
   }
+  .taskbar-item span { overflow: hidden; text-overflow: ellipsis; }
   .taskbar-item img { width: 14px; height: 14px; }
   .taskbar-item.active { background: rgba(10, 30, 100, 0.75); }
   #clock {
@@ -2347,8 +2353,13 @@ document.querySelectorAll(".win-titlebar").forEach(bar => {
 
     function onMove(ev) {
       if (!dragging) return;
-      win.style.left = (startLeft + ev.clientX - startX) + "px";
-      win.style.top = (startTop + ev.clientY - startY) + "px";
+      /* Clamp so the titlebar can never leave the screen — a window
+         dragged above the top edge would be unrecoverable. */
+      const w = win.getBoundingClientRect().width;
+      const newLeft = Math.min(Math.max(startLeft + ev.clientX - startX, -(w - 80)), window.innerWidth - 80);
+      const newTop = Math.min(Math.max(startTop + ev.clientY - startY, 0), window.innerHeight - 60);
+      win.style.left = newLeft + "px";
+      win.style.top = newTop + "px";
     }
     function onUp() {
       clearTimeout(holdTimer);
@@ -2364,7 +2375,7 @@ document.querySelectorAll(".win-titlebar").forEach(bar => {
 
 /* Resizing — a grip in the bottom-right corner of every window. Same
    hold-then-drag pattern, dragging the window's width/height directly. */
-const WIN_MIN_W = 260, WIN_MIN_H = 160;
+const WIN_MIN_W = 340, WIN_MIN_H = 160;   /* matches .win { min-width } — CSS wins anyway */
 
 document.querySelectorAll(".win").forEach(win => {
   const grip = document.createElement("div");
@@ -3667,10 +3678,12 @@ function shippingCost() {
 
 function renderCoSummary() {
   const ship = shippingCost();
-  const subtotal = checkoutItems.reduce((s, l) => s + l.price * l.qty, 0);
+  /* l.price is already the LINE total (unit x qty, set at cd-burn) —
+     don't multiply by qty again. */
+  const subtotal = checkoutItems.reduce((s, l) => s + l.price, 0);
   document.getElementById("co-summary").innerHTML =
     checkoutItems.map(l =>
-      l.name + (l.qty > 1 ? " x" + l.qty : "") + " &mdash; $" + (l.price * l.qty)
+      l.name + (l.qty > 1 ? " x" + l.qty : "") + " &mdash; $" + l.price
     ).join("<br>") +
     (ship ? "<br>Shipping (" + (coCountry() === "US" ? "US" : "international") + ") &mdash; $" + ship : "") +
     "<br><br><b>Total: $" + (subtotal + ship) + "</b>";
@@ -3780,9 +3793,9 @@ document.getElementById("co-form").addEventListener("submit", async (e) => {
       const esc = (s) => String(s).replace(/</g, "&lt;");
       xpDialog("Order confirmed",
         "<b>Thanks — order placed.</b><br><br>" +
-        checkoutItems.map(l => esc(l.name) + (l.qty > 1 ? " x" + l.qty : "") + " &mdash; $" + (l.price * l.qty)).join("<br>") +
+        checkoutItems.map(l => esc(l.name) + (l.qty > 1 ? " x" + l.qty : "") + " &mdash; $" + l.price).join("<br>") +
         (ship ? "<br>Shipping &mdash; $" + ship : "") +
-        "<br><b>Total: $" + (checkoutItems.reduce((s, l) => s + l.price * l.qty, 0) + ship) + "</b><br><br>" +
+        "<br><b>Total: $" + (checkoutItems.reduce((s, l) => s + l.price, 0) + ship) + "</b><br><br>" +
         "Ref: <span style='font-family:Consolas,monospace;'>" + esc(result.paymentIntent.id) + "</span><br>" +
         "A receipt is on its way to " + esc(payload.email) + ". Keep the ref if anything goes sideways.",
         "info");
