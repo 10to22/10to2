@@ -1399,6 +1399,7 @@
         <select class="xp-field co-input" id="co-country" required></select>
 
         <label class="co-label">Card</label>
+        <div id="co-prb" style="display:none; margin-bottom:10px;"></div>
         <div id="co-card-element" class="co-card-mount"></div>
         <div id="co-card-errors" style="color:#b02a2a; font-size:11px; min-height:16px; margin-top:4px;"></div>
 
@@ -1963,6 +1964,7 @@ function termHandleCommand(raw) {
       termPrint("Vault already unlocked.", "term-line-ok");
     } else {
       vaultUnlocked = true;
+      track("vault/unlock");
       termPrint("Access granted. Vault status: UNLOCKED", "term-line-ok");
       termPrint("Bonus track added to Windows Media Player.", "term-line-ok");
       renderRows();
@@ -2240,6 +2242,7 @@ function openWindow(id) {
   win.classList.add("open");
   win.classList.remove("minimized");
   openWins.add(id);
+  track("app/" + id);
   focusWindow(id);
   refreshTaskbar();
   showWinLoading(win);
@@ -2451,6 +2454,45 @@ const NEXT_RELEASE = { title: "new single", date: "2026-08-14T00:00:00" };
 const MAILING_LIST_CONFIG = {
   endpoint: "https://formspree.io/f/xwvglony"
 };
+
+/* =========================================================================
+   ANALYTICS — GoatCounter (free, no cookies, no banner needed).
+   Setup (~2 min): create an account at goatcounter.com, pick a code
+   (e.g. "10to2"), then paste your endpoint below:
+     endpoint: "https://10to2.goatcounter.com/count"
+   Pageviews count automatically; the track() calls sprinkled through the
+   site record the moments that matter (wizard opened, checkout started,
+   payment succeeded...) so you can see WHERE visitors drop off.
+   Blank endpoint = everything is a silent no-op.
+   ========================================================================= */
+const ANALYTICS_CONFIG = {
+  endpoint: ""            /* e.g. "https://10to2.goatcounter.com/count" */
+};
+
+(function initAnalytics() {
+  if (!ANALYTICS_CONFIG.endpoint) return;
+  window.goatcounter = { no_onload: false };
+  const s = document.createElement("script");
+  s.async = true;
+  s.src = "https://gc.zgo.at/count.js";
+  s.setAttribute("data-goatcounter", ANALYTICS_CONFIG.endpoint);
+  document.head.appendChild(s);
+})();
+
+/* Record a named event (shows up in GoatCounter as a pageview on that
+   pseudo-path). Never throws, never blocks. */
+function track(name) {
+  try {
+    if (!ANALYTICS_CONFIG.endpoint) return;
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: name, event: true });
+    } else {
+      /* script not loaded yet (or blocked) — fire the pixel directly */
+      new Image().src = ANALYTICS_CONFIG.endpoint +
+        "?p=" + encodeURIComponent(name) + "&e=true&rnd=" + Date.now();
+    }
+  } catch (e) {}
+}
 
 /* Chatroom. Leave both blank and the room is same-device only (every tab
    of this page on one machine shares it — fine for testing, useless for
@@ -3022,10 +3064,12 @@ async function subscribeEmail(email) {
       headers: Object.assign({ "Accept": "application/json" }, headers),
       body
     });
+    if (res.ok) track("mailing-list/join");
     return { ok: res.ok };
   } catch (e) {
     try {
       await fetch(MAILING_LIST_CONFIG.endpoint, { method: "POST", mode: "no-cors", headers, body });
+      track("mailing-list/join");
       return { ok: true };
     } catch (e2) {
       return { ok: false };
@@ -3714,7 +3758,95 @@ function loadStripeJs() {
   });
 }
 
+/* =========================================================================
+   APPLE PAY / GOOGLE PAY — Stripe Payment Request Button.
+   Renders a one-tap wallet button above the card form when the visitor's
+   device has a wallet set up (Safari+Apple Pay, Chrome+Google Pay).
+   Silently absent otherwise — the card form always remains.
+   The wallet sheet collects email + shipping address itself; the same
+   /api/create-payment-intent re-prices everything server-side as usual.
+   NOTE: wallets only appear on the real HTTPS domain (10to2.net), never
+   on localhost/file previews — that's a wallet rule, not a bug.
+   ========================================================================= */
+function walletShipFor(country) {
+  const s = BACKEND_CONFIG.shipping || {};
+  return (country || "US").toUpperCase() === "US" ? (s.us || 0) : (s.international || 0);
+}
+
+async function mountWalletButton(containerId, getCart, onSuccess) {
+  const box = document.getElementById(containerId);
+  if (!box || !window.Stripe || !stripeInstance) return;
+  box.innerHTML = "";
+  box.style.display = "none";
+  const cart = getCart();
+  if (!cart.items.length) return;
+  const sub = cart.items.reduce((s, l) => s + l.unit * l.qty, 0);
+  const mkTotal = (c) => ({ label: "10to2 merch", amount: Math.round((sub + walletShipFor(c)) * 100) });
+  const mkShipOpts = (c) => [{ id: "flat", label: "Flat shipping", detail: "5-10 business days",
+                               amount: Math.round(walletShipFor(c) * 100) }];
+
+  const pr = stripeInstance.paymentRequest({
+    country: "US", currency: "usd",
+    total: mkTotal("US"),
+    requestPayerName: true, requestPayerEmail: true, requestShipping: true,
+    shippingOptions: mkShipOpts("US")
+  });
+
+  pr.on("shippingaddresschange", (ev) => {
+    const c = (ev.shippingAddress && ev.shippingAddress.country) || "US";
+    ev.updateWith({ status: "success", total: mkTotal(c), shippingOptions: mkShipOpts(c) });
+  });
+
+  pr.on("paymentmethod", async (ev) => {
+    try {
+      const a = ev.shippingAddress || {};
+      const country = (a.country || "US").toUpperCase();
+      const payload = {
+        items: cart.items.map(l => ({ name: l.name, price: l.unit, qty: l.qty, printfulVariantId: l.printfulVariantId }))
+          .concat([{ name: "Shipping", price: walletShipFor(country), qty: 1, printfulVariantId: "" }]),
+        email: ev.payerEmail,
+        shipping: {
+          name: a.recipient || ev.payerName || "",
+          address: (a.addressLine && a.addressLine[0]) || "",
+          city: a.city || "", state: a.region || "", zip: a.postalCode || "", country
+        }
+      };
+      const res = await fetch(BACKEND_CONFIG.apiBaseUrl + "/create-payment-intent", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+      });
+      if (!res.ok) { ev.complete("fail"); return; }
+      const data = await res.json();
+      const conf = await stripeInstance.confirmCardPayment(data.clientSecret,
+        { payment_method: ev.paymentMethod.id }, { handleActions: false });
+      if (conf.error) { ev.complete("fail"); return; }
+      ev.complete("success");
+      let pi = conf.paymentIntent;
+      if (pi && pi.status === "requires_action") {
+        const c2 = await stripeInstance.confirmCardPayment(data.clientSecret);
+        if (c2.error) return;
+        pi = c2.paymentIntent;
+      }
+      if (pi && pi.status === "succeeded") {
+        track("funnel/payment-success-wallet");
+        onSuccess(pi, payload);
+      }
+    } catch (e) {
+      try { ev.complete("fail"); } catch (e2) {}
+    }
+  });
+
+  const can = await pr.canMakePayment();
+  if (!can) return;                                  /* no wallet on this device */
+  const btn = stripeInstance.elements().create("paymentRequestButton", {
+    paymentRequest: pr,
+    style: { paymentRequestButton: { theme: "dark", height: "40px" } }
+  });
+  box.style.display = "block";
+  btn.mount("#" + containerId);
+}
+
 async function openCheckout(lines) {
+  track("funnel/checkout-open");
   checkoutItems = lines;
   renderCoSummary();
   document.getElementById("co-status").textContent = "";
@@ -3740,6 +3872,22 @@ async function openCheckout(lines) {
         document.getElementById("co-card-errors").textContent = event.error ? event.error.message : "";
       });
     }
+    /* one-tap wallet button (renders only when the device has one) */
+    mountWalletButton("co-prb", () => ({
+      items: checkoutItems.map(l => ({
+        name: l.name, qty: l.qty,
+        unit: l.unit != null ? l.unit : l.price / (l.qty || 1),
+        printfulVariantId: l.printfulVariantId
+      }))
+    }), (pi, payload) => {
+      track("funnel/payment-success");
+      document.getElementById("co-status").textContent = "Payment complete -- confirmation email on its way.";
+      const esc2 = (s) => String(s).replace(/</g, "&lt;");
+      xpDialog("Order confirmed",
+        "<b>Thanks — order placed.</b><br><br>" +
+        "Ref: <span style='font-family:Consolas,monospace;'>" + esc2(pi.id) + "</span><br>" +
+        "A receipt is on its way to " + esc2(payload.email) + ".", "info");
+    });
   } catch (e) {
     document.getElementById("co-status").textContent = "Couldn't load the payment form. Try again in a moment.";
     document.getElementById("co-pay-btn").disabled = true;
@@ -3789,6 +3937,7 @@ document.getElementById("co-form").addEventListener("submit", async (e) => {
       status.textContent = result.error.message;
       btn.disabled = false;
     } else if (result.paymentIntent.status === "succeeded") {
+      track("funnel/payment-success");
       status.textContent = "Payment complete -- confirmation email on its way.";
       const esc = (s) => String(s).replace(/</g, "&lt;");
       xpDialog("Order confirmed",
@@ -4498,6 +4647,7 @@ function buildBasic(force) {
   box.querySelectorAll("[data-play]").forEach(b =>
     b.addEventListener("click", () => mbPlay(Number(b.dataset.play), b)));
   document.getElementById("mb-shop").addEventListener("click", () => {
+    track("mobile/store-open");
     mbStopAudio();
     buildStore();
     box.classList.remove("on");
@@ -4616,6 +4766,7 @@ async function fpUpload(file, name, statusEl) {
       body: blob
     });
     if (!r.ok) throw new Error("HTTP " + r.status);
+    track("fan-photo/upload");
     setStatus("Uploaded! If it makes the wall, it'll show up here. Thanks for repping.", true);
   } catch (e) {
     setStatus("Upload didn't go through — email it to " + CONTACT_EMAIL + " instead and we'll put it up.");
@@ -4694,6 +4845,7 @@ function mbTermHandle(raw) {
       mbTermPrint("Vault already unlocked.", "#b6ffc4");
     } else {
       vaultUnlocked = true;
+      track("vault/unlock-mobile");
       /* keep the desktop views in sync too */
       renderRows(); renderBonusRow();
       /* rebuild the song list so the vault track gets its play button,
@@ -4741,6 +4893,21 @@ function mbRenderCart() {
   wrap.querySelectorAll("[data-rm]").forEach(b =>
     b.addEventListener("click", () => { mbCart.splice(Number(b.dataset.rm), 1); mbRenderCart(); }));
   document.getElementById("ms-checkout").classList.add("on");
+  mbMountWallet();
+}
+
+/* (Re)mount the wallet button for the current mobile cart. */
+function mbMountWallet() {
+  if (!stripeInstance || !document.getElementById("ms-prb")) return;
+  mountWalletButton("ms-prb", () => ({
+    items: mbCart.map(l => ({ name: l.name, qty: l.qty, unit: l.unit, printfulVariantId: l.printfulVariantId }))
+  }), (pi, payload) => {
+    const status = document.getElementById("ms-status");
+    status.innerHTML = "<b>Payment complete.</b> Order placed — a receipt is on its way to " + mbEsc(payload.email) +
+      ".<br>Ref " + mbEsc(pi.id);
+    mbCart = [];
+    mbRenderCart();
+  });
 }
 
 function buildStore() {
@@ -4781,6 +4948,7 @@ function buildStore() {
          '<div class="ms-row"><select id="ms-country">' +
            COUNTRIES.map(c => '<option value="' + c[0] + '">' + c[1] + '</option>').join("") + '</select>' +
            '<input id="ms-state" placeholder="State / province" autocomplete="address-level1"></div>' +
+         '<div id="ms-prb" style="display:none;margin:9px 0"></div>' +
          '<div id="ms-card"></div>' +
          '<div id="ms-card-errors"></div>' +
          '<button id="ms-pay">Pay</button>' +
@@ -4853,6 +5021,7 @@ async function mbInitCheckout() {
         document.getElementById("ms-card-errors").textContent = ev.error ? ev.error.message : "";
       });
     }
+    mbMountWallet();
   } catch (e) {
     document.getElementById("ms-status").textContent = "Couldn't load the payment form. Try again in a moment.";
     document.getElementById("ms-pay").disabled = true;
@@ -4902,6 +5071,7 @@ async function mbSubmitPayment() {
     });
     if (result.error) { status.textContent = result.error.message; pay.disabled = false; return; }
     if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
+      track("funnel/payment-success-mobile");
       const sub = mbCart.reduce((a, l) => a + l.unit * l.qty, 0);
       status.innerHTML = "<b>Payment complete.</b> Order placed — a receipt is on its way to " + mbEsc(email) +
         ".<br>Total $" + (sub + ship) + " · Ref " + mbEsc(result.paymentIntent.id);
