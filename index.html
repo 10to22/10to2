@@ -958,6 +958,29 @@
 #welcome-balloon .wb-x { position: absolute; top: 6px; right: 8px; font-size: 11px; color: #444; }
 @keyframes balloon-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
+/* ---------- Pre-save ---------- */
+.ps-cta {
+  display: inline-block; background: #1db954; color: #fff; border: 0;
+  border-radius: 22px; padding: 12px 26px; font-size: 14px; font-weight: bold;
+  font-family: Tahoma, "Segoe UI", sans-serif; cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25); transition: filter 0.12s, transform 0.06s;
+}
+.ps-cta:hover { filter: brightness(1.08); }
+.ps-cta:active { transform: translateY(1px); }
+.ps-cta:disabled { opacity: 0.6; cursor: default; }
+.ps-unit {
+  background: #1a2440; color: #fff; border-radius: 5px; padding: 6px 0; width: 52px;
+  font-family: Tahoma, sans-serif;
+}
+.ps-unit b { display: block; font-size: 20px; line-height: 1; }
+.ps-unit span { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #9db8e8; }
+/* mobile pre-save banner */
+#mobile-basic .mb-presave {
+  display: block; width: 100%; background: #1db954; color: #050805; border: 0;
+  border-radius: 4px; padding: 13px; font-size: 14px; font-weight: bold;
+  font-family: inherit; cursor: pointer; margin: 4px 0 18px;
+}
+
 /* ---------- Guestbook ---------- */
 .gb-entry {
   border: 1px solid #d3dced; border-radius: 4px; background: #f8fbff;
@@ -1259,6 +1282,10 @@
   <div class="icon" style="left:200px; top:120px;" data-target="win-solitaire">
     <img src="data:image/png;base64,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" draggable="false">
     <span>Solitaire</span>
+  </div>
+  <div class="icon" style="left:290px; top:20px;" data-target="win-presave">
+    <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%231db954"/><g fill="none" stroke="%23ffffff" stroke-width="4.2" stroke-linecap="round"><path d="M18 38 q14 -9 28 -1"/><path d="M20 30 q12 -7 24 -1"/><path d="M22 23 q10 -5 20 -1"/></g><circle cx="46" cy="46" r="12" fill="%23ffffff" stroke="%231db954" stroke-width="2"/><path d="M46 40 v12 M40 46 h12" stroke="%231db954" stroke-width="3.4" stroke-linecap="round"/></svg>'>
+    <span>Pre-save</span>
   </div>
   <div class="icon" style="left:20px; top:420px;" data-target="win-guestbook">
     <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 64 64"><path d="M8 12 h20 a6 6 0 0 1 6 6 v38 a5 5 0 0 0 -5 -5 H8 Z" fill="%23e8ecf5" stroke="%235a6785" stroke-width="2.5"/><path d="M56 12 H36 a6 6 0 0 0 -6 6 v38 a5 5 0 0 1 5 -5 h21 Z" fill="%23fbfcff" stroke="%235a6785" stroke-width="2.5"/><g stroke="%23a0abc4" stroke-width="2" stroke-linecap="round"><path d="M38 24 h14"/><path d="M38 31 h14"/><path d="M38 38 h10"/></g><g stroke="%23c9d2e6" stroke-width="1.6" stroke-linecap="round"><path d="M13 24 h13"/><path d="M13 31 h13"/></g><path d="M40 46 L58 28 l6 6 l-18 18 l-8 2 z" fill="%23ffd54a" stroke="%238a6d0f" stroke-width="2" stroke-linejoin="round"/><path d="M58 28 l6 6" stroke="%238a6d0f" stroke-width="2"/></svg>'>
@@ -1578,6 +1605,25 @@
   </div>
 
   <!-- ============ Vault Terminal ============ -->
+  <!-- ============ Pre-save the next single ============ -->
+  <div class="win" id="win-presave" style="left:300px; top:80px; width:420px;">
+    <div class="win-titlebar">
+      <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%231db954"/><g fill="none" stroke="%23fff" stroke-width="5" stroke-linecap="round"><path d="M18 38 q14 -9 28 -1"/><path d="M21 29 q11 -6 22 -1"/></g></svg>'>
+      <div class="title">Pre-save the new single</div>
+      <div class="win-btn min">_</div>
+      <div class="win-btn max">&#9633;</div>
+      <div class="win-btn close">X</div>
+    </div>
+    <div class="win-body" style="padding:18px; text-align:center;">
+      <div class="ua-heading" id="ps-title" style="font-size:15px;">10to2 &mdash; new single</div>
+      <p class="ua-sub" id="ps-sub" style="margin-top:4px;">Save it to your library now and it lands there automatically the second it drops.</p>
+      <div id="ps-countdown" style="display:flex; justify-content:center; gap:10px; margin:14px 0;"></div>
+      <button id="ps-btn" class="ps-cta">&#9658; Pre-save on Spotify</button>
+      <div class="fp-status" id="ps-status" style="text-align:center;"></div>
+      <p class="ua-sub" style="margin-top:12px; font-size:10.5px;">One tap. No account made here &mdash; Spotify handles the save.</p>
+    </div>
+  </div>
+
   <!-- ============ Guestbook (a single page fans can sign) ============ -->
   <div class="win" id="win-guestbook" style="left:250px; top:60px; width:460px; height:480px;">
     <div class="win-titlebar">
@@ -2479,6 +2525,12 @@ function openWindow(id) {
   if (id === "win-msn" && typeof msnBoot === "function") msnBoot();
   if (id === "win-fanphotos" && typeof fpLoadWall === "function") fpLoadWall(document.getElementById("fp-wall"));
   if (id === "win-guestbook" && typeof gbLoad === "function") gbLoad(document.getElementById("gb-entries"));
+  if (id === "win-presave" && typeof presaveRenderCountdown === "function") {
+    const el = document.getElementById("ps-countdown");
+    presaveRenderCountdown(el);
+    clearInterval(presaveTimer);
+    presaveTimer = setInterval(() => presaveRenderCountdown(el), 1000);
+  }
 }
 
 function showWinLoading(win) {
@@ -2664,6 +2716,43 @@ setInterval(updateClock, 1000 * 30);
 
 /* Next release. Change this date and the taskbar countdown follows it. */
 const NEXT_RELEASE = { title: "new single", date: "2026-08-14T00:00:00" };
+
+/* =========================================================================
+   PRE-SAVE — save the upcoming single to a fan's library in one tap.
+   -------------------------------------------------------------------------
+   HOW PRE-SAVE ACTUALLY WORKS (important): you can't silently add an
+   UNRELEASED song to someone's library from the browser — the track has no
+   Spotify ID yet, and saving requires the fan's Spotify permission. Two
+   supported ways, pick one:
+
+   (A) EASIEST + what real artists use — a free "smart link" that handles the
+       Spotify login + auto-saves on release day for you:
+         * DistroKid users: enable HyperFollow on the release (free) and paste
+           its URL below, e.g. https://hyperfollow.com/10to2newsingle
+         * or Feature.fm / Show.co / Linkfire pre-save campaign URL.
+       Set:  presaveUrl: "https://hyperfollow.com/..."
+       The button just opens it; the service does the save. Works for the
+       unreleased single AND requires zero backend.
+
+   (B) DIRECT save of ALREADY-RELEASED tracks via Spotify (no backend, no
+       secret — uses PKCE with a public client id). Good for a "Save to my
+       library" button on the songs that are already out. Set:
+         spotifyClientId:  "your Spotify app client id"
+         spotifyTrackIds:  ["<spotify track id>", ...]
+       and register this exact redirect URI in your Spotify app dashboard:
+         https://10to2.net/   (and http://localhost for testing)
+       On click the fan authorizes once and the tracks save immediately.
+
+   If neither is set the button explains it's coming and offers the mailing
+   list. presaveUrl wins if both are set.
+   ========================================================================= */
+const PRESAVE_CONFIG = {
+  presaveUrl: "",              /* (A) smart-link — best for the unreleased single */
+  spotifyClientId: "",         /* (B) Spotify app client id for direct library save */
+  spotifyTrackIds: [],         /* (B) released track ids to save */
+  releaseTitle: NEXT_RELEASE.title,
+  releaseDate: NEXT_RELEASE.date
+};
 
 /* Mailing list. Paste ONE url below and every signup (Messenger + the
    mobile Join button) is live — nothing else to change. Free options:
@@ -4942,6 +5031,7 @@ function buildBasic(force) {
   box.dataset.built = "1";
   let h = '<h1>10to2</h1><div class="mb-sub">DIR /music -- everything the desktop has, sized for your thumb.</div>';
   h += '<div class="mb-actions-row"><button class="mb-cta primary" id="mb-shop">Shop merch \u00bb</button></div>';
+  h += '<button class="mb-presave" id="mb-presave">\u25B6 Pre-save the new single</button>';
   songs.forEach((s, i) => {
     const l = LYRICS.find(x => x.song === i);
     const playable = s.src && !(s.locked && !vaultUnlocked);
@@ -5034,6 +5124,8 @@ function buildBasic(force) {
         slot.innerHTML = ""; slot.style.display = "none"; b.textContent = "Watch";
       }
     }));
+  const mbPs = document.getElementById("mb-presave");
+  if (mbPs) mbPs.addEventListener("click", () => presaveAction(null));
   document.getElementById("mb-shop").addEventListener("click", () => {
     track("mobile/store-open");
     mbStopAudio();
@@ -5308,6 +5400,108 @@ async function gbSign(nameEl, msgEl, statusEl, listEl) {
   const count = document.getElementById("gb-count");
   msgEl.addEventListener("input", () => { count.textContent = (280 - msgEl.value.length) + " left"; });
   signBtn.addEventListener("click", () => gbSign(nameEl, msgEl, statusEl, listEl));
+})();
+
+/* =========================================================================
+   PRE-SAVE logic — countdown, the button action, and a self-contained
+   Spotify PKCE flow (no client secret, no backend) for direct library saves.
+   ========================================================================= */
+function presaveRenderCountdown(el) {
+  if (!el) return;
+  const target = new Date(PRESAVE_CONFIG.releaseDate).getTime();
+  const diff = target - Date.now();
+  if (isNaN(target)) { el.style.display = "none"; return; }
+  if (diff <= 0) { el.innerHTML = '<div class="ua-sub" style="margin:0;color:#1db954;font-weight:bold;">Out now &mdash; save it below.</div>'; return; }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor(diff / 3600000) % 24;
+  const m = Math.floor(diff / 60000) % 60;
+  const s = Math.floor(diff / 1000) % 60;
+  el.innerHTML = [["days", d], ["hrs", h], ["min", m], ["sec", s]]
+    .map(([lbl, v]) => '<div class="ps-unit"><b>' + v + "</b><span>" + lbl + "</span></div>").join("");
+}
+let presaveTimer = null;
+
+/* --- Spotify PKCE helpers (option B) --- */
+function psRand(n) {
+  const a = new Uint8Array(n); crypto.getRandomValues(a);
+  return Array.from(a, b => "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[b % 62]).join("");
+}
+async function psChallenge(verifier) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
+  return btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+async function psBeginSpotify(status) {
+  try {
+    const verifier = psRand(64);
+    const challenge = await psChallenge(verifier);
+    sessionStorage.setItem("10to2.ps_verifier", verifier);
+    const redirect = location.origin + location.pathname;
+    const url = "https://accounts.spotify.com/authorize?" + new URLSearchParams({
+      client_id: PRESAVE_CONFIG.spotifyClientId,
+      response_type: "code",
+      redirect_uri: redirect,
+      scope: "user-library-modify",
+      code_challenge_method: "S256",
+      code_challenge: challenge
+    }).toString();
+    location.href = url;                 // round-trips back to the site with ?code
+  } catch (e) {
+    if (status) { status.textContent = "Couldn't start Spotify — try again."; }
+  }
+}
+/* On load: if we came back from Spotify with ?code, finish the save. */
+async function psHandleReturn() {
+  const params = new URLSearchParams(location.search);
+  const code = params.get("code");
+  const verifier = sessionStorage.getItem("10to2.ps_verifier");
+  if (!code || !verifier || !PRESAVE_CONFIG.spotifyClientId) return;
+  sessionStorage.removeItem("10to2.ps_verifier");
+  /* strip the query so a refresh doesn't retry */
+  history.replaceState({}, "", location.origin + location.pathname);
+  try {
+    const tok = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: PRESAVE_CONFIG.spotifyClientId,
+        grant_type: "authorization_code",
+        code,
+        redirect_uri: location.origin + location.pathname,
+        code_verifier: verifier
+      })
+    }).then(r => r.json());
+    if (!tok.access_token) throw new Error("no token");
+    const ids = (PRESAVE_CONFIG.spotifyTrackIds || []).join(",");
+    if (ids) {
+      await fetch("https://api.spotify.com/v1/me/tracks?ids=" + encodeURIComponent(ids), {
+        method: "PUT", headers: { Authorization: "Bearer " + tok.access_token }
+      });
+    }
+    track("presave/saved");
+    showToast({ title: "Pre-save", body: "&#10003; Saved to your Spotify library. Thank you!", timeout: 6000 });
+  } catch (e) {
+    showToast({ title: "Pre-save", body: "Spotify save didn't complete — try again.", timeout: 5000 });
+  }
+}
+
+function presaveAction(status) {
+  const c = PRESAVE_CONFIG;
+  track("presave/click");
+  if (c.presaveUrl) { window.open(c.presaveUrl, "_blank", "noopener"); return; }
+  if (c.spotifyClientId && (c.spotifyTrackIds || []).length) { psBeginSpotify(status); return; }
+  xpDialog("Pre-save",
+    "<b>Pre-save is almost ready.</b><br><br>The link goes live with the single. " +
+    "Want a heads-up the second it drops? Join the mailing list in Messenger.", "info",
+    [{ label: "Open Messenger", primary: true, onClick: () => openWindow("win-msn") }, { label: "Close" }]);
+}
+
+(function initPresave() {
+  const btn = document.getElementById("ps-btn");
+  if (!btn) return;
+  document.getElementById("ps-title").textContent = "10to2 — " + PRESAVE_CONFIG.releaseTitle;
+  btn.addEventListener("click", () => presaveAction(document.getElementById("ps-status")));
+  /* live-check the return from Spotify once the page is up */
+  if (typeof psHandleReturn === "function") psHandleReturn();
 })();
 
 /* ---- Fan Photos: upload + wall (shared by the desktop app and mobile) ---- */
