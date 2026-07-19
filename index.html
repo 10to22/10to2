@@ -890,6 +890,22 @@
   #mobile-store .mb-back::before { content: "cd .. "; color: #2f8f43; }
 
 
+/* ---------- Out-of-stock merch (desktop wizard + mobile store) ---------- */
+.cd-item.oos { opacity: 0.72; }
+.cd-item.oos .cd-name { text-decoration: line-through; color: #8a94a6; text-decoration-color: #c0392b; }
+.cd-item.oos img { filter: grayscale(1); }
+.oos-badge {
+  display: inline-block; background: #c0392b; color: #fff;
+  font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 3px;
+  text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap;
+}
+.ms-item.oos .ms-t b { text-decoration: line-through; text-decoration-color: #ff6b6b; color: #7d8a72; }
+.ms-item.oos { opacity: 0.7; }
+
+/* incoming-message flash on the Messenger titlebar (XP taskbar-blink vibe) */
+@keyframes tb-flash { 0%,100% { filter: none; } 50% { filter: brightness(1.5) saturate(1.6); } }
+.win-titlebar.flash { animation: tb-flash 0.45s ease-in-out 4; }
+
 /* ---------- Branding: corner watermark, splash tagline, welcome balloon ---------- */
 #desk-watermark {
   position: fixed; right: 14px; bottom: calc(6.2vh + 12px); z-index: 1;
@@ -3269,6 +3285,45 @@ function chatStatus(t) {
 
 /* Handle an incoming message from whatever transport is live. Both the
    BroadcastChannel and the Supabase paths deliver the exact same shape. */
+/* XP-style "new message" chime + a titlebar flash, played whenever another
+   user posts to the chatroom. Sound is synthesized (no file needed) and
+   fails silent if the browser blocks audio before any user interaction. */
+let chatAudioCtx = null;
+function chatNotify() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) {
+      if (!chatAudioCtx) chatAudioCtx = new AC();
+      if (chatAudioCtx.state === "suspended") chatAudioCtx.resume();
+      const t0 = chatAudioCtx.currentTime;
+      /* two quick rising blips — the classic instant-messenger "bloop" */
+      [[880, 0], [1174, 0.10]].forEach(([freq, dt]) => {
+        const osc = chatAudioCtx.createOscillator();
+        const gain = chatAudioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.value = freq;
+        const s = t0 + dt;
+        gain.gain.setValueAtTime(0.0001, s);
+        gain.gain.exponentialRampToValueAtTime(0.22, s + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, s + 0.19);
+        osc.connect(gain); gain.connect(chatAudioCtx.destination);
+        osc.start(s); osc.stop(s + 0.2);
+      });
+    }
+  } catch (e) {}
+  /* flash the Messenger titlebar unless it's already the focused window */
+  const win = document.getElementById("win-msn");
+  if (win) {
+    const focused = win.classList.contains("open") && Number(win.style.zIndex || 0) >= zTop;
+    if (!focused) {
+      const bar = win.querySelector(".win-titlebar");
+      bar.classList.remove("flash");
+      void bar.offsetWidth;            // restart the animation
+      bar.classList.add("flash");
+    }
+  }
+}
+
 function chatOnRemote(msg) {
   if (!msg || msg.id === chatUserId) return;
   if (msg.type === "presence") {
@@ -3280,6 +3335,8 @@ function chatOnRemote(msg) {
     chatUsers[msg.id] = Date.now();
     chatRenderUserCount();
     chatAppend(msg.id, msg.text, false, false);
+    chatNotify();
+    track("chat/message-received");
   }
 }
 
@@ -3632,12 +3689,26 @@ function unitPrice(m, vi) {
   return m.price;
 }
 
+/* Can this item actually be fulfilled? It needs either an external product
+   page (url), a Printful variant ID, or per-size variants that carry IDs.
+   Items with none of those would take a payment and never ship, so they're
+   shown as "Out of stock" until you link them (paste a url or fill the
+   printfulVariantId). The free demos zip (price 0) isn't merch, skip it. */
+function merchInStock(m) {
+  if (m.price <= 0) return true;
+  if (m.url) return true;
+  if (m.variants) return m.variants.some(v => v.printfulVariantId);
+  return !!m.printfulVariantId;
+}
+
 function renderCd() {
   const list = document.getElementById("cd-list");
   list.innerHTML = "";
   MERCH.forEach((m, i) => {
+    const oos = !merchInStock(m);
+    if (oos) cdSel.delete(i);              // an out-of-stock item can never be selected
     const row = document.createElement("div");
-    row.className = "cd-item";
+    row.className = "cd-item" + (oos ? " oos" : "");
     const qty = cdQty[i] || 1;
     let opts = "";
     if (cdSel.has(i) && m.price > 0) {
@@ -3653,13 +3724,20 @@ function renderCd() {
         ).join("") + '</select>';
     }
     row.innerHTML =
-      '<input type="checkbox" ' + (cdSel.has(i) ? "checked" : "") + ' style="pointer-events:none">' +
+      '<input type="checkbox" ' + (cdSel.has(i) ? "checked" : "") + (oos ? " disabled" : "") + ' style="pointer-events:none">' +
       '<img src="' + (m.img || ("data:image/png;base64," + ICONS.cd)) + '" style="width:22px;height:22px;object-fit:cover;border-radius:3px;">' +
       '<span class="cd-name">' + m.name + '<br><span class="cd-size">' + m.note + '</span></span>' +
       opts +
-      '<span class="cd-size">' + (m.mb * (cdSel.has(i) ? qty : 1)) + ' MB</span>' +
-      '<span class="cd-price">' + (m.price ? "$" + (unitPrice(m, cdVar[i] || 0) * (cdSel.has(i) ? qty : 1)) : "free") + '</span>';
+      (oos
+        ? '<span class="oos-badge">Out of stock</span>'
+        : '<span class="cd-size">' + (m.mb * (cdSel.has(i) ? qty : 1)) + ' MB</span>' +
+          '<span class="cd-price">' + (m.price ? "$" + (unitPrice(m, cdVar[i] || 0) * (cdSel.has(i) ? qty : 1)) : "free") + '</span>');
     row.addEventListener("click", () => {
+      if (oos) {
+        xpDialog("CD Writing Wizard",
+          "<b>" + m.name + "</b> is temporarily out of stock &mdash; check back soon.", "info");
+        return;
+      }
       cdSel.has(i) ? cdSel.delete(i) : cdSel.add(i);
       renderCd();
     });
@@ -5129,6 +5207,13 @@ function buildStore() {
 
   h += '<h2>Items</h2>';
   buyable.forEach(([m, i]) => {
+    if (!merchInStock(m)) {
+      h += '<div class="ms-item oos">' +
+             '<div class="ms-t"><b>' + mbEsc(m.name) + '</b><span>' + mbEsc(m.note) + '</span></div>' +
+             '<span class="oos-badge">Out of stock</span>' +
+           '</div>';
+      return;
+    }
     const sizeSel = m.variants
       ? '<select class="mb-sel" data-role="size" data-i="' + i + '">' +
           m.variants.map((v, vi) => '<option value="' + vi + '">' + v.label + '</option>').join("") + '</select>'
