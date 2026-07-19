@@ -5224,8 +5224,11 @@ function showWelcomeBalloon() {
    markup or spam huge payloads.
    ========================================================================= */
 const GUESTBOOK_CONFIG = {
-  supabaseUrl: CHATROOM_CONFIG.supabaseUrl,
-  supabaseKey: CHATROOM_CONFIG.supabaseKey,
+  /* Same Supabase project as the chatroom. Full REST endpoint the code
+     hits is: <supabaseUrl>/rest/v1/<table>
+     = https://aecvfegvljzqovfmveka.supabase.co/rest/v1/guestbook */
+  supabaseUrl: "https://aecvfegvljzqovfmveka.supabase.co",
+  supabaseKey: "sb_publishable_Vb2UOj7TpL5QbcSJian1xQ_D9uIUuT8",
   table: "guestbook"
 };
 
