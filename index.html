@@ -5196,18 +5196,32 @@ function showWelcomeBalloon() {
    (same free project as the chatroom / fan photos), read + written with
    the public anon key.
 
-   ONE-TIME SUPABASE SETUP (dashboard):
-   1. Table editor -> New table `guestbook`, columns:
-        id          int8, primary key, identity
-        created_at  timestamptz, default now()
-        name        text
-        message     text
-      Turn OFF "Enable Row Level Security"? No â keep RLS ON and add two
-      policies (Authentication -> Policies -> guestbook):
-        - "anyone can sign":  INSERT, target roles: anon, WITH CHECK (true)
-        - "anyone can read":  SELECT, target roles: anon, USING (true)
-   2. That's it. Delete rows in the table editor to moderate.
-   Entries are HTML-escaped on render, so signatures can't inject markup.
+   ONE-TIME SUPABASE SETUP -- easiest: Supabase dashboard -> SQL Editor ->
+   New query -> paste ALL of this -> Run. Creates the table AND the access
+   rules in one shot (no clicking through the table/policy UI):
+
+     create table if not exists public.guestbook (
+       id         bigint generated always as identity primary key,
+       created_at timestamptz not null default now(),
+       name       text,
+       message    text not null
+     );
+     alter table public.guestbook enable row level security;
+     create policy "anyone can read" on public.guestbook
+       for select to anon using (true);
+     create policy "anyone can sign" on public.guestbook
+       for insert to anon with check (
+         char_length(message) between 1 and 280
+         and char_length(coalesce(name, '')) <= 30
+       );
+
+   Column types if you build it by hand instead: name = text, message =
+   text; leave id (int8 identity) and created_at (timestamptz default
+   now()) exactly as "New table" pre-fills them.
+
+   Moderate by deleting rows in the Table Editor. Entries are HTML-escaped
+   on render and the insert policy caps lengths, so signatures can't inject
+   markup or spam huge payloads.
    ========================================================================= */
 const GUESTBOOK_CONFIG = {
   supabaseUrl: CHATROOM_CONFIG.supabaseUrl,
