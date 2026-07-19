@@ -906,6 +906,29 @@
 @keyframes tb-flash { 0%,100% { filter: none; } 50% { filter: brightness(1.5) saturate(1.6); } }
 .win-titlebar.flash { animation: tb-flash 0.45s ease-in-out 4; }
 
+/* XP tray toasts — small app notifications stacked bottom-right */
+#toast-stack {
+  position: fixed; right: 12px; bottom: calc(6.2vh + 12px); z-index: 6500;
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto; width: 264px; position: relative;
+  background: linear-gradient(180deg, #fffdf0, #fff4c2);
+  border: 1px solid #c9a800; border-radius: 6px; padding: 9px 11px 10px;
+  font-family: Tahoma, "Segoe UI", sans-serif; font-size: 11.5px; color: #1a1a1a;
+  box-shadow: 2px 3px 10px rgba(0,0,0,0.42); cursor: pointer;
+  animation: toast-in 0.22s ease-out;
+}
+.toast .toast-title { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 12px; margin-bottom: 3px; color: #14245c; }
+.toast .toast-title img { width: 16px; height: 16px; flex: 0 0 16px; }
+.toast .toast-body { color: #333; line-height: 1.35; word-break: break-word; }
+.toast .toast-x { position: absolute; top: 4px; right: 7px; color: #7a6a10; font-size: 11px; line-height: 1; }
+.toast .toast-x:hover { color: #b31313; }
+.toast.closing { animation: toast-out 0.2s ease-in forwards; }
+@keyframes toast-in { from { opacity: 0; transform: translateX(22px); } }
+@keyframes toast-out { to { opacity: 0; transform: translateX(22px); } }
+
 /* ---------- Branding: corner watermark, splash tagline, welcome balloon ---------- */
 #desk-watermark {
   position: fixed; right: 14px; bottom: calc(6.2vh + 12px); z-index: 1;
@@ -3285,42 +3308,104 @@ function chatStatus(t) {
 
 /* Handle an incoming message from whatever transport is live. Both the
    BroadcastChannel and the Supabase paths deliver the exact same shape. */
-/* XP-style "new message" chime + a titlebar flash, played whenever another
-   user posts to the chatroom. Sound is synthesized (no file needed) and
-   fails silent if the browser blocks audio before any user interaction. */
-let chatAudioCtx = null;
-function chatNotify() {
+/* One shared Web Audio context for all UI sounds (chat chime, key clicks).
+   Created lazily; returns null if the browser has no Web Audio or blocks
+   it before the first user gesture. */
+let sfxCtx = null;
+function audioCtx() {
   try {
     const AC = window.AudioContext || window.webkitAudioContext;
-    if (AC) {
-      if (!chatAudioCtx) chatAudioCtx = new AC();
-      if (chatAudioCtx.state === "suspended") chatAudioCtx.resume();
-      const t0 = chatAudioCtx.currentTime;
-      /* two quick rising blips — the classic instant-messenger "bloop" */
+    if (!AC) return null;
+    if (!sfxCtx) sfxCtx = new AC();
+    if (sfxCtx.state === "suspended") sfxCtx.resume();
+    return sfxCtx;
+  } catch (e) { return null; }
+}
+
+/* Soft mechanical key tick — a very short filtered noise burst. */
+const TYPING_SFX = true;
+function playKeyClick() {
+  const ctx = audioCtx();
+  if (!ctx) return;
+  try {
+    const dur = 0.028;
+    const buf = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * dur)), ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 1400;
+    const gain = ctx.createGain(); gain.gain.value = 0.07;
+    src.connect(hp); hp.connect(gain); gain.connect(ctx.destination);
+    src.start();
+  } catch (e) {}
+}
+document.addEventListener("keydown", (e) => {
+  if (!TYPING_SFX) return;
+  const el = e.target;
+  if (!el || !el.matches) return;
+  if (!el.matches('input:not([type=password]):not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), textarea, [contenteditable="true"]')) return;
+  if (e.key && (e.key.length === 1 || e.key === "Backspace" || e.key === "Enter" || e.key === " ")) playKeyClick();
+}, true);
+
+/* A small XP tray toast (top: app name + icon; body: the message). Clicking
+   it opens the app; auto-dismisses; the stack caps at a few. */
+function showToast(opts) {
+  let stack = document.getElementById("toast-stack");
+  if (!stack) { stack = document.createElement("div"); stack.id = "toast-stack"; document.body.appendChild(stack); }
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.innerHTML =
+    '<span class="toast-x">&#10005;</span>' +
+    '<div class="toast-title">' + (opts.iconSrc ? '<img src="' + opts.iconSrc + '">' : "") +
+      "<span>" + (opts.title || "") + "</span></div>" +
+    '<div class="toast-body">' + (opts.body || "") + "</div>";
+  const remove = () => { if (!t.parentNode) return; t.classList.add("closing"); setTimeout(() => t.remove(), 200); };
+  t.querySelector(".toast-x").addEventListener("click", (e) => { e.stopPropagation(); remove(); });
+  t.addEventListener("click", () => { if (opts.onClick) opts.onClick(); remove(); });
+  stack.appendChild(t);
+  while (stack.children.length > 4) stack.firstChild.remove();
+  setTimeout(remove, opts.timeout || 6500);
+  return t;
+}
+
+/* XP-style "new message" chime + titlebar flash + a tray toast that names
+   the Messenger app, whenever another user posts to the chatroom. */
+function chatNotify(who, text) {
+  const ctx = audioCtx();
+  if (ctx) {
+    try {
+      const t0 = ctx.currentTime;
       [[880, 0], [1174, 0.10]].forEach(([freq, dt]) => {
-        const osc = chatAudioCtx.createOscillator();
-        const gain = chatAudioCtx.createGain();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
         osc.type = "triangle";
         osc.frequency.value = freq;
         const s = t0 + dt;
         gain.gain.setValueAtTime(0.0001, s);
         gain.gain.exponentialRampToValueAtTime(0.22, s + 0.012);
         gain.gain.exponentialRampToValueAtTime(0.0001, s + 0.19);
-        osc.connect(gain); gain.connect(chatAudioCtx.destination);
+        osc.connect(gain); gain.connect(ctx.destination);
         osc.start(s); osc.stop(s + 0.2);
       });
-    }
-  } catch (e) {}
-  /* flash the Messenger titlebar unless it's already the focused window */
+    } catch (e) {}
+  }
   const win = document.getElementById("win-msn");
-  if (win) {
-    const focused = win.classList.contains("open") && Number(win.style.zIndex || 0) >= zTop;
-    if (!focused) {
-      const bar = win.querySelector(".win-titlebar");
-      bar.classList.remove("flash");
-      void bar.offsetWidth;            // restart the animation
-      bar.classList.add("flash");
-    }
+  const focused = win && win.classList.contains("open") && Number(win.style.zIndex || 0) >= zTop;
+  if (win && !focused) {
+    const bar = win.querySelector(".win-titlebar");
+    bar.classList.remove("flash");
+    void bar.offsetWidth;
+    bar.classList.add("flash");
+    const icon = bar.querySelector("img");
+    showToast({
+      title: "Messenger — #10to2-fans",
+      iconSrc: icon ? icon.src : "",
+      body: "<b>" + chatEsc(who).slice(0, 40) + "</b>: " + chatEsc(text).slice(0, 90),
+      onClick: () => {
+        openWindow("win-msn");
+        if (!chatOpen) { const tg = document.getElementById("chatroom-toggle"); if (tg) tg.click(); }
+      }
+    });
   }
 }
 
@@ -3335,7 +3420,7 @@ function chatOnRemote(msg) {
     chatUsers[msg.id] = Date.now();
     chatRenderUserCount();
     chatAppend(msg.id, msg.text, false, false);
-    chatNotify();
+    chatNotify(msg.id, msg.text);
     track("chat/message-received");
   }
 }
