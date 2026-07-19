@@ -890,6 +890,34 @@
   #mobile-store .mb-back::before { content: "cd .. "; color: #2f8f43; }
 
 
+/* ---------- Product image viewer (front/back lightbox) ---------- */
+#pv-overlay {
+  position: fixed; inset: 0; z-index: 90000; display: none;
+  background: rgba(0,0,0,0.6); align-items: center; justify-content: center;
+}
+#pv-overlay.on { display: flex; }
+#pv-box {
+  background: #ece9d8; border: 1px solid var(--win-edge, #0831d9);
+  border-radius: 6px; box-shadow: 4px 4px 22px rgba(0,0,0,0.55);
+  width: min(92vw, 460px); overflow: hidden;
+}
+#pv-bar {
+  height: 30px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 6px 0 10px; color: #fff; font-family: Tahoma, sans-serif; font-size: 13px; font-weight: bold;
+  background: linear-gradient(180deg, var(--tb-1,#0997ff) 0%, var(--tb-2,#0053ee) 45%, var(--tb-3,#0050ee) 55%, var(--tb-4,#06f) 100%);
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+}
+#pv-close { width: 21px; height: 21px; background: #d33; border: 1px solid #fff; border-radius: 3px; color: #fff; cursor: pointer; font-size: 12px; line-height: 19px; text-align: center; }
+#pv-img-wrap { background: #fff; text-align: center; padding: 10px; }
+#pv-img { max-width: 100%; max-height: 62vh; object-fit: contain; }
+#pv-tabs { display: flex; gap: 6px; padding: 8px 10px 12px; justify-content: center; background: #ece9d8; }
+#pv-tabs button {
+  padding: 6px 18px; font-family: Tahoma, sans-serif; font-size: 12px; cursor: pointer;
+  border: 1px solid #a9b6d0; background: #f6f8fc; border-radius: 3px;
+}
+#pv-tabs button.active { background: #316ac5; color: #fff; border-color: #24408a; font-weight: bold; }
+.cd-item img.cd-clickable { cursor: zoom-in; }
+
 /* ---------- Out-of-stock merch (desktop wizard + mobile store) ---------- */
 .cd-item.oos { opacity: 0.72; }
 .cd-item.oos .cd-name { text-decoration: line-through; color: #8a94a6; text-decoration-color: #c0392b; }
@@ -1972,6 +2000,15 @@
   </div>
 </div>
 <div id="desk-watermark" aria-hidden="true">10to2 &mdash; official artist site<br>10to2-OS Build 1002</div>
+
+<!-- Product image lightbox (front/back) -->
+<div id="pv-overlay">
+  <div id="pv-box">
+    <div id="pv-bar"><span id="pv-title">Product</span><span id="pv-close">&#10005;</span></div>
+    <div id="pv-img-wrap"><img id="pv-img" alt=""></div>
+    <div id="pv-tabs"></div>
+  </div>
+</div>
 <div id="mobile-basic"></div>
 <div id="mobile-store"></div>
 
@@ -3053,7 +3090,8 @@ const SCRAPPED = [
    sync_variant_id in Printful, so fill in one per row. */
 const MERCH = [
   { name: "Whoareyou? - CD single", mb: 148, price: 8,  note: "Jewel case, 2 tracks", url: "", img: "", printfulVariantId: "" },
-  { name: "10to2 - logo tee (white)", mb: 121, price: 25, note: "Gildan 5000 heavy cotton, S-5XL", url: "", img: "",
+  { name: "10to2 - logo tee (white)", mb: 121, price: 25, note: "Gildan 5000 heavy cotton, S-5XL", url: "", img: "assets/merch/tee-front.png",
+    images: ["assets/merch/tee-front.png", "assets/merch/tee-back.png"],
     variants: [
       { label: "S",   printfulVariantId: "5396150185" },
       { label: "M",   printfulVariantId: "5396150186" },
@@ -3064,7 +3102,8 @@ const MERCH = [
       { label: "4XL", printfulVariantId: "5396150191" },
       { label: "5XL", printfulVariantId: "5396150192" }
     ] },
-  { name: "10to2 - zip hoodie", mb: 140, price: 40, note: "Gildan 18600 zip hoodie, S-3XL", url: "", img: "",
+  { name: "10to2 - zip hoodie", mb: 140, price: 40, note: "Gildan 18600 zip hoodie, S-3XL", url: "", img: "assets/merch/hoodie-front.png",
+    images: ["assets/merch/hoodie-front.png", "assets/merch/hoodie-back.png"],
     variants: [
       { label: "S",   printfulVariantId: "5396152424" },
       { label: "M",   printfulVariantId: "5396152425" },
@@ -3077,7 +3116,8 @@ const MERCH = [
      sizes), so each variant carries its own `price`; unit price falls back
      to the item `price` when a variant omits one. Keep these in sync with
      _catalog.js. */
-  { name: "10to2 - jersey", mb: 110, price: 40, note: "All-over jersey, 2XS-6XL", url: "", img: "",
+  { name: "10to2 - jersey", mb: 110, price: 40, note: "All-over jersey, 2XS-6XL", url: "", img: "assets/merch/jersey-front.png",
+    images: ["assets/merch/jersey-front.png", "assets/merch/jersey-back.png"],
     variants: [
       { label: "2XS", printfulVariantId: "5396150016", price: 40 },
       { label: "XS",  printfulVariantId: "5396150017", price: 40 },
@@ -3094,7 +3134,7 @@ const MERCH = [
   { name: "Ifwecrash - poster 18x24", mb: 94,  price: 12, note: "Matte, rolled", url: "", img: "", printfulVariantId: "" },
   { name: "One2many - cassette", mb: 132, price: 14, note: "Limited to 100", url: "", img: "", printfulVariantId: "" },
   { name: "sticker pack (4)", mb: 27, price: 5, note: "Die cut, vinyl", url: "", img: "", printfulVariantId: "" },
-  { name: "10to2 - wall flag", mb: 100, price: 26, note: "Printed wall flag", url: "", img: "", printfulVariantId: "5396151473" },
+  { name: "10to2 - wall flag", mb: 100, price: 26, note: "Printed wall flag", url: "", img: "assets/merch/flag-front.png", images: ["assets/merch/flag-front.png"], printfulVariantId: "5396151473" },
   { name: "unreleased_demos.zip", mb: 305, price: 0, note: "Mailing list only", url: "", img: "", printfulVariantId: "" }
 ];
 
@@ -3954,6 +3994,40 @@ function unitPrice(m, vi) {
   return m.price;
 }
 
+/* Open the front/back product image lightbox for a merch item. */
+function showProductImages(m, startIdx) {
+  const imgs = (m && m.images && m.images.length) ? m.images : (m && m.img ? [m.img] : []);
+  if (!imgs.length) return;
+  const overlay = document.getElementById("pv-overlay");
+  const img = document.getElementById("pv-img");
+  const tabs = document.getElementById("pv-tabs");
+  document.getElementById("pv-title").textContent = m.name;
+  const labels = imgs.length === 2 ? ["Front", "Back"] : imgs.map((_, i) => "View " + (i + 1));
+  const show = (i) => {
+    img.src = imgs[i]; img.alt = m.name + " " + (labels[i] || "");
+    [...tabs.children].forEach((b, bi) => b.classList.toggle("active", bi === i));
+  };
+  tabs.innerHTML = "";
+  imgs.forEach((_, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = labels[i];
+    btn.addEventListener("click", () => show(i));
+    tabs.appendChild(btn);
+  });
+  tabs.style.display = imgs.length > 1 ? "flex" : "none";
+  show(startIdx || 0);
+  overlay.classList.add("on");
+  track("merch/view-images");
+}
+(function initProductViewer() {
+  const overlay = document.getElementById("pv-overlay");
+  if (!overlay) return;
+  const close = () => overlay.classList.remove("on");
+  document.getElementById("pv-close").addEventListener("click", close);
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+})();
+
 /* Can this item actually be fulfilled? It needs either an external product
    page (url), a Printful variant ID, or per-size variants that carry IDs.
    Items with none of those would take a payment and never ship, so they're
@@ -3988,10 +4062,12 @@ function renderCd() {
           '<option value="' + n + '"' + (qty === n ? " selected" : "") + '>x' + n + '</option>'
         ).join("") + '</select>';
     }
+    const hasPhotos = !!(m.images && m.images.length);
     row.innerHTML =
       '<input type="checkbox" ' + (cdSel.has(i) ? "checked" : "") + (oos ? " disabled" : "") + ' style="pointer-events:none">' +
-      '<img src="' + (m.img || ("data:image/png;base64," + ICONS.cd)) + '" style="width:22px;height:22px;object-fit:cover;border-radius:3px;">' +
-      '<span class="cd-name">' + m.name + '<br><span class="cd-size">' + m.note + '</span></span>' +
+      '<img src="' + (m.img || ("data:image/png;base64," + ICONS.cd)) + '" class="' + (hasPhotos ? "cd-clickable" : "") + '" ' +
+        'style="width:26px;height:26px;object-fit:cover;border-radius:3px;background:#fff;"' + (hasPhotos ? ' title="View front & back"' : "") + '>' +
+      '<span class="cd-name">' + m.name + (hasPhotos ? ' <span class="cd-size" style="color:#1c46c9;">&#128247; photos</span>' : "") + '<br><span class="cd-size">' + m.note + '</span></span>' +
       opts +
       (oos
         ? '<span class="oos-badge">Out of stock</span>'
@@ -4006,6 +4082,10 @@ function renderCd() {
       cdSel.has(i) ? cdSel.delete(i) : cdSel.add(i);
       renderCd();
     });
+    if (hasPhotos) {
+      const thumb = row.querySelector("img.cd-clickable");
+      thumb.addEventListener("click", (e) => { e.stopPropagation(); showProductImages(m); });
+    }
     row.querySelectorAll(".cd-opt").forEach(sel => {
       /* the dropdowns live inside a clickable row \u2014 don't toggle the row */
       sel.addEventListener("click", (e) => e.stopPropagation());
@@ -5716,6 +5796,9 @@ function buildStore() {
       ? '<select class="mb-sel" data-role="size" data-i="' + i + '">' +
           m.variants.map((v, vi) => '<option value="' + vi + '">' + v.label + '</option>').join("") + '</select>'
       : "";
+    const photos = (m.images && m.images.length)
+      ? '<div class="ms-t" style="flex-basis:100%"><a href="#" data-photos="' + i + '" style="color:#4dff6c;font-size:11px">&#128247; view front &amp; back</a></div>'
+      : "";
     h += '<div class="ms-item">' +
            '<div class="ms-t"><b>' + mbEsc(m.name) + '</b><span>' + mbEsc(m.note) + '</span></div>' +
            '<span class="ms-price" id="msp-' + i + '">$' + unitPrice(m, 0) + '</span>' +
@@ -5723,6 +5806,7 @@ function buildStore() {
            '<select class="mb-sel" data-role="qty" data-i="' + i + '">' +
              [1,2,3,4,5].map(n => '<option value="' + n + '">x' + n + '</option>').join("") + '</select>' +
            '<button class="ms-add" data-add="' + i + '">Add</button>' +
+           photos +
          '</div>';
   });
 
@@ -5775,6 +5859,8 @@ function buildStore() {
       setTimeout(() => { btn.textContent = "Add"; }, 900);
       mbRenderCart();
     }));
+  box.querySelectorAll("[data-photos]").forEach(a =>
+    a.addEventListener("click", (e) => { e.preventDefault(); showProductImages(MERCH[Number(a.dataset.photos)]); }));
 
   /* state field only matters for a few countries (Printful needs state_code) */
   const stateEl = box.querySelector("#ms-state");
