@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secret Trigger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #008080; /* Classic XP Teal */
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Windows XP Error Dialog Styles */
+    .xp-dialog {
+      display: none;
+      width: 380px;
+      background-color: #ece9d8;
+      border: 3px solid #0055ea;
+      border-radius: 5px 5px 0 0;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+      position: absolute;
+      z-index: 9999;
+    }
+
+    .xp-header {
+      background: linear-gradient(to right, #0058ee, #3d93ff);
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+      padding: 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .xp-close-btn {
+      background-color: #e31818;
+      color: white;
+      border: 1px solid #fff;
+      border-radius: 3px;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      line-height: 14px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .xp-content {
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .xp-icon {
+      width: 32px;
+      height: 32px;
+      background-color: #e60000;
+      color: white;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset -1px -1px 2px #800000;
+      flex-shrink: 0;
+    }
+
+    .xp-text {
+      font-size: 12px;
+      color: #000;
+      line-height: 1.4;
+    }
+
+    .xp-footer {
+      padding: 0 15px 12px 15px;
+      text-align: center;
+    }
+
+    .xp-button {
+      background: linear-gradient(to bottom, #ffffff, #ece9d8);
+      border: 1px solid #003c74;
+      border-radius: 3px;
+      padding: 3px 20px;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: inset -1px -1px 1px #a0a0a0;
+    }
+
+    .xp-button:active {
+      background: #dbd8c0;
+    }
+  </style>
+</head>
+<body>
+
+  <p style="color: white;">Type the secret code to trigger the modal...</p>
+
+  <!-- XP Dialog Box Structure -->
+  <div id="xpErrorModal" class="xp-dialog">
+    <div class="xp-header">
+      <span>System Error</span>
+      <div class="xp-close-btn" onclick="closeModal()">×</div>
+    </div>
+    <div class="xp-content">
+      <div class="xp-icon">✕</div>
+      <div class="xp-text">
+        <strong>Critical Action Required:</strong><br>
+        You need to presave 10to2's new song for early access!
+      </div>
+    </div>
+    <div class="xp-footer">
+      <button class="xp-button" onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const secretCode = "cdfe;";
+    let inputBuffer = "";
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        if (inputBuffer.toLowerCase().endsWith(secretCode)) {
+          showModal();
+        }
+        inputBuffer = ""; // Clear buffer on Enter
+      } else if (event.key.length === 1) {
+        inputBuffer += event.key;
+        // Keep buffer trimmed to prevent memory growth
+        if (inputBuffer.length > 20) {
+          inputBuffer = inputBuffer.slice(-20);
+        }
+      }
+    });
+
+    function showModal() {
+      document.getElementById("xpErrorModal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("xpErrorModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
