@@ -606,6 +606,243 @@
   }
   .msn-compose input { flex: 1; }
 
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presave Early Access</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #008080; /* Classic XP Teal */
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Windows XP Error Dialog Styles */
+    .xp-dialog {
+      display: none;
+      width: 380px;
+      background-color: #ece9d8;
+      border: 3px solid #0055ea;
+      border-radius: 5px 5px 0 0;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+      position: absolute;
+      z-index: 9999;
+    }
+
+    .xp-header {
+      background: linear-gradient(to right, #0058ee, #3d93ff);
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+      padding: 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .xp-close-btn {
+      background-color: #e31818;
+      color: white;
+      border: 1px solid #fff;
+      border-radius: 3px;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      line-height: 14px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .xp-content {
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .xp-icon {
+      width: 32px;
+      height: 32px;
+      background-color: #e60000;
+      color: white;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset -1px -1px 2px #800000;
+      flex-shrink: 0;
+    }
+
+    .xp-text {
+      font-size: 12px;
+      color: #000;
+      line-height: 1.4;
+    }
+
+    .xp-footer {
+      padding: 0 15px 12px 15px;
+      text-align: center;
+    }
+
+    .xp-button {
+      background: linear-gradient(to bottom, #ffffff, #ece9d8);
+      border: 1px solid #003c74;
+      border-radius: 3px;
+      padding: 3px 20px;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: inset -1px -1px 1px #a0a0a0;
+    }
+
+    .xp-button:active {
+      background: #dbd8c0;
+    }
+
+    /* Terminal Screen Styles */
+    .terminal-screen {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0c0c0c;
+      color: #00ff66;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 40px;
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .terminal-text {
+      font-size: 20px;
+      line-height: 1.6;
+      text-shadow: 0 0 5px #00ff66;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background-color: #00ff66;
+      animation: blink 1s infinite;
+      vertical-align: bottom;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- XP Dialog Box Structure -->
+  <div id="xpErrorModal" class="xp-dialog">
+    <div class="xp-header">
+      <span>System Error</span>
+      <div class="xp-close-btn" onclick="closeModal()">×</div>
+    </div>
+    <div class="xp-content">
+      <div class="xp-icon">✕</div>
+      <div class="xp-text">
+        <strong>Critical Action Required:</strong><br>
+        You need to presave 10to2's new song for early access!
+      </div>
+    </div>
+    <div class="xp-footer">
+      <button class="xp-button" onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <!-- Terminal Display -->
+  <div id="terminalScreen" class="terminal-screen">
+    <div class="terminal-text">
+      C:\SYSTEM32> ACCESS GRANTED<br>
+      C:\SYSTEM32> Terminal Code: ChickenPadThai<span class="cursor"></span>
+    </div>
+  </div>
+
+  <script>
+    // Synthesize Windows XP Error Sound using Web Audio API
+    function playXPErrorSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        // Distinct dual-tone frequency characteristic of the XP chord
+        osc1.type = 'sawtooth';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(150, ctx.currentTime);
+        osc2.frequency.setValueAtTime(180, ctx.currentTime);
+
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start();
+        osc2.start();
+        osc1.stop(ctx.currentTime + 0.4);
+        osc2.stop(ctx.currentTime + 0.4);
+      } catch (e) {
+        // Fallback if browser blocks unprompted audio context
+      }
+    }
+
+    // Trigger on load or key sequence
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(showModal, 500);
+    });
+
+    const secretCode = "cdfe;";
+    let inputBuffer = "";
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        if (inputBuffer.toLowerCase().endsWith(secretCode)) {
+          showModal();
+        }
+        inputBuffer = "";
+      } else if (event.key.length === 1) {
+        inputBuffer += event.key;
+        if (inputBuffer.length > 20) {
+          inputBuffer = inputBuffer.slice(-20);
+        }
+      }
+    });
+
+    function showModal() {
+      document.getElementById("terminalScreen").style.display = "none";
+      document.getElementById("xpErrorModal").style.display = "block";
+      playXPErrorSound();
+    }
+
+    function closeModal() {
+      document.getElementById("xpErrorModal").style.display = "none";
+      document.getElementById("terminalScreen").style.display = "block";
+    }    
+
   /* ---------- CD burner / merch ---------- */
   #win-cd .win-body { background: #fff; display: flex; flex-direction: column; padding: 0; }
   .cd-head {
