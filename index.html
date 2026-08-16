@@ -607,28 +607,152 @@
   .msn-compose input { flex: 1; }
 
 
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Presave Early Access</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #008080; /* Classic XP Teal */
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-
     /* Windows XP Error Dialog Styles */
-    .xp-dialog {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #5a7edc;
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Window Frame */
+.xp-window {
+  width: 380px;
+  background: #ece9d8;
+  border: 1px solid #0055ea;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+/* Titlebar */
+.xp-titlebar {
+  background: linear-gradient(to bottom, #0058ee 0%, #3593ff 4%, #288eff 6%, #0058ee 10%, #0052de 14%, #0046c7 68%, #003ddb 84%, #0030ac 100%);
+  padding: 3px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+}
+
+.xp-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  text-shadow: 1px 1px 1px #000;
+}
+
+.xp-title-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Close Button */
+.xp-close-btn {
+  width: 21px;
+  height: 21px;
+  background: linear-gradient(135deg, #e7664c 0%, #c13115 100%);
+  border: 1px solid #ffffff;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.xp-close-btn::before,
+.xp-close-btn::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  left: 4px;
+  width: 11px;
+  height: 2px;
+  background-color: #ffffff;
+}
+
+.xp-close-btn::before {
+  transform: rotate(45deg);
+}
+
+.xp-close-btn::after {
+  transform: rotate(-45deg);
+}
+
+.xp-close-btn:hover {
+  filter: brightness(1.1);
+}
+
+.xp-close-btn:active {
+  filter: brightness(0.9);
+}
+
+/* Window Content */
+.xp-body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.xp-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.xp-error-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.xp-message {
+  font-size: 11px;
+  color: #000000;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* Buttons */
+.xp-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.xp-btn {
+  min-width: 75px;
+  padding: 3px 12px;
+  font-size: 11px;
+  font-family: "Tahoma", sans-serif;
+  background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 100%);
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  box-shadow: inset 0 0 1px #ffffff;
+  cursor: pointer;
+}
+
+.xp-btn:hover {
+  box-shadow: 0 0 3px #e59700;
+  border-color: #e59700;
+}
+
+.xp-btn:active {
+  background: #dedabf;
+  box-shadow: inset 1px 1px 1px #808080;
+}   
+     .xp-dialog {
       display: none;
       width: 380px;
       background-color: #ece9d8;
@@ -1746,6 +1870,31 @@
     </div>
   </div>
 
+
+<!-- Windows XP Error Dialog Component -->
+<div class="xp-window-container">
+  <div class="xp-window">
+    <div class="xp-titlebar">
+      <div class="xp-title">
+        <img src="https://win98ui.netlify.app/images/icon-error.png" alt="Error" class="xp-title-icon" />
+        <span>System Error</span>
+      </div>
+      <button class="xp-close-btn" aria-label="Close"></button>
+    </div>
+    
+    <div class="xp-body">
+      <div class="xp-content">
+        <img src="https://win98ui.netlify.app/images/icon-error.png" alt="Error Icon" class="xp-error-icon" />
+        <p class="xp-message">An unexpected error has occurred. Please check your connection and try again.</p>
+      </div>
+      
+      <div class="xp-actions">
+        <button class="xp-btn" id="ok-btn">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- ============ Messenger (mailing list) ============ -->
   <div class="win" id="win-msn" style="left:400px; top:150px; width:400px; height:400px;">
     <div class="win-titlebar">
@@ -1869,6 +2018,41 @@
     </div>
   </div>
 
+
+<!-- Windows XP Error Dialog Component -->
+<div class="xp-window-container">
+  <div class="xp-window">
+    <div class="xp-titlebar">
+      <div class="xp-title">
+        <img src="https://win98ui.netlify.app/images/icon-error.png" alt="Error" class="xp-title-icon" />
+        <span>System Error</span>
+      </div>
+      <button class="xp-close-btn" aria-label="Close"></button>
+    </div>
+    
+    <div class="xp-body">
+      <div class="xp-content">
+        <img src="https://win98ui.netlify.app/images/icon-error.png" alt="Error Icon" class="xp-error-icon" />
+        <p class="xp-message">An unexpected error has occurred. Please check your connection and try again.</p>
+      </div>
+      
+      <div class="xp-actions">
+        <button class="xp-btn" id="ok-btn">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+                  
   <!-- ============ Display Properties (era switcher) ============ -->
   <div class="win" id="win-display" style="left:330px; top:70px; width:340px;">
     <div class="win-titlebar">
@@ -3071,7 +3255,7 @@ setInterval(updateClock, 1000 * 30);
    ========================================================================= */
 
 /* Next release. Change this date and the taskbar countdown follows it. */
-const NEXT_RELEASE = { title: "new single", date: "2026-08-14T00:00:00" };
+const NEXT_RELEASE = { title: "1ShotRoulette", date: "2026-08-28T00:00:00" };
 
 /* =========================================================================
    PRE-SAVE — save the upcoming single to a fan's library in one tap.
@@ -3128,7 +3312,7 @@ const PRESAVE_CONFIG = {
    While this is "" the site doesn't fake it: fans are told the list isn't
    wired up yet and given the contact email instead of being dropped. */
 const MAILING_LIST_CONFIG = {
-  endpoint: "https://formspree.io/f/xwvglony"
+  endpoint: "https://acts.lnk.to/1shotroulette?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAcGRvZgJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA85MzY2MTk3NDMzOTI0NTkAAaduzsE--I_OfQR6PZ7kciNYdHXDkjW-7WNZ8DxgRYqR8XZkhQLdvpHL7xz2BA_aem_GpCwOrx8NfIJtPQt1gc2Lw"
 };
 
 /* =========================================================================
@@ -3141,6 +3325,36 @@ const MAILING_LIST_CONFIG = {
    payment succeeded...) so you can see WHERE visitors drop off.
    Blank endpoint = everything is a silent no-op.
    ========================================================================= */
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const closeBtn = document.querySelector(".xp-close-btn");
+  const okBtn = document.getElementById("ok-btn");
+  const windowElement = document.querySelector(".xp-window");
+
+  // Destination URL
+  const targetUrl = "https://acts.lnk.to/1shotroulette?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAcGRvZgJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA85MzY2MTk3NDMzOTI0NTkAAaduzsE--I_OfQR6PZ7kciNYdHXDkjW-7WNZ8DxgRYqR8XZkhQLdvpHL7xz2BA_aem_GpCwOrx8NfIJtPQt1gc2Lw"; 
+
+  const navigateToSite = () => {
+    // Redirects the current tab to the site
+    window.location.href = targetUrl; 
+
+    // Alternative: Opens the site in a new tab instead
+    // window.open(targetUrl, "_blank"); 
+  };
+
+  closeBtn.addEventListener("click", navigateToSite);
+  okBtn.addEventListener("click", navigateToSite);
+});
+
+
+
+
+
+
+
+
+       
 const ANALYTICS_CONFIG = {
   endpoint: "https://10to2.goatcounter.com/count"
 };
