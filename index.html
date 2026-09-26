@@ -1820,8 +1820,6 @@ function termBoot() {
     "",
     "Type HELP for a list of commands."
   ].forEach(l => termPrint(l, "term-line-dim"));
-  termPrint("");
-  showPresaveReminder();
 }
 
 function termHandleCommand(raw) {
@@ -1844,8 +1842,6 @@ function termHandleCommand(raw) {
       termPrint(song + ":", "term-line-ok");
       ALT_VERSIONS[song].forEach(v => termPrint("  " + v));
     });
-  } else if (lower === "cder") {
-    showPresaveReminder();
   } else if (lower === VAULT_PASSPHRASE) {
     if (vaultUnlocked) {
       termPrint("Vault already unlocked.", "term-line-ok");
