@@ -3070,18 +3070,34 @@ function renderCd() {
   const list = document.getElementById("cd-list");
   list.innerHTML = "";
   MERCH.forEach((m, i) => {
+    /* An item is available to buy only once it's "being sold and linked":
+       it has a live product URL, or a Printful variant wired to checkout.
+       Anything else shows "Under construction" and can't be selected. */
+    const forSale = !!((m.url && m.url.trim()) || (m.printfulVariantId && m.printfulVariantId.trim()));
+    if (!forSale) cdSel.delete(i);
     const row = document.createElement("div");
-    row.className = "cd-item";
+    row.className = "cd-item" + (forSale ? "" : " cd-uc");
     row.innerHTML =
-      '<input type="checkbox" ' + (cdSel.has(i) ? "checked" : "") + ' style="pointer-events:none">' +
-      '<img src="' + (m.img || ("data:image/png;base64," + ICONS.cd)) + '" style="width:22px;height:22px;object-fit:cover;border-radius:3px;">' +
-      '<span class="cd-name">' + m.name + '<br><span class="cd-size">' + m.note + '</span></span>' +
+      '<input type="checkbox" ' + (cdSel.has(i) ? "checked" : "") + (forSale ? "" : " disabled") + ' style="pointer-events:none;' + (forSale ? "" : "opacity:.4;") + '">' +
+      '<img src="' + (m.img || ("data:image/png;base64," + ICONS.cd)) + '" style="width:22px;height:22px;object-fit:cover;border-radius:3px;' + (forSale ? "" : "filter:grayscale(1);opacity:.6;") + '">' +
+      '<span class="cd-name"' + (forSale ? "" : ' style="color:#888;"') + '>' + m.name + '<br>' +
+        (forSale
+          ? '<span class="cd-size">' + m.note + '</span>'
+          : '<span class="cd-size" style="color:#b06a00;font-weight:bold;">🚧 Under construction</span>') +
+      '</span>' +
       '<span class="cd-size">' + m.mb + ' MB</span>' +
-      '<span class="cd-price">' + (m.price ? "$" + m.price : "free") + '</span>';
-    row.addEventListener("click", () => {
-      cdSel.has(i) ? cdSel.delete(i) : cdSel.add(i);
-      renderCd();
-    });
+      (forSale
+        ? '<span class="cd-price">' + (m.price ? "$" + m.price : "free") + '</span>'
+        : '<span class="cd-price" style="color:#b06a00;">—</span>');
+    if (forSale) {
+      row.addEventListener("click", () => {
+        cdSel.has(i) ? cdSel.delete(i) : cdSel.add(i);
+        renderCd();
+      });
+    } else {
+      row.style.cursor = "default";
+      row.title = "Not for sale yet — under construction";
+    }
     list.appendChild(row);
   });
   let mb = 0, cost = 0;
@@ -3099,8 +3115,15 @@ function renderCd() {
 }
 
 document.getElementById("cd-burn").addEventListener("click", () => {
-  const items = [...cdSel].map(i => MERCH[i]);
-  openCheckout(items);
+  const items = [...cdSel].map(i => MERCH[i]).filter(m =>
+    (m.url && m.url.trim()) || (m.printfulVariantId && m.printfulVariantId.trim()));
+  if (items.length === 0) return;
+  /* Linked items go straight to their product page; anything wired only to
+     the built-in checkout goes through Stripe. */
+  const linked = items.filter(m => m.url && m.url.trim());
+  const viaCheckout = items.filter(m => !(m.url && m.url.trim()));
+  linked.forEach(m => window.open(m.url, "_blank", "noopener"));
+  if (viaCheckout.length) openCheckout(viaCheckout);
 });
 
 /* =========================================================================
