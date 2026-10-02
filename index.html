@@ -712,6 +712,27 @@
     flex-wrap: wrap;
   }
 
+  /* =========================================================================
+     MOBILE XP MODE  (body.xpm) -- the real desktop, tap-to-open, scaled so
+     each app window fits the phone. Windows are positioned/scaled in JS
+     (scaleWinMobile); this just sizes the chrome and hit targets.
+     ========================================================================= */
+  @media (max-width: 820px) {
+    body.xpm { overflow: hidden; }
+    body.xpm #desktop { height: 100vh; height: 100dvh; }
+    body.xpm .icon { width: 25vw; max-width: 92px; padding: 7px 4px; }
+    body.xpm .icon img { width: 46px; height: 46px; }
+    body.xpm .icon span { font-size: 12px; }
+    body.xpm .win { box-shadow: 0 12px 44px rgba(0,0,0,0.6); }
+    body.xpm #taskbar { height: 44px; min-height: 44px; max-height: 48px; }
+    /* a soft scrim behind any open window so the scaled app reads clearly */
+    body.xpm #xpm-scrim {
+      position: fixed; inset: 0; z-index: 5; background: rgba(0,0,0,0.28);
+      display: none;
+    }
+    body.xpm.has-open #xpm-scrim { display: block; }
+  }
+
   /* the honest fallback behind the joke */
   #mobile-basic {
     position: fixed; inset: 0; z-index: 98000; display: none;
@@ -1553,18 +1574,19 @@
     <div class="mg-inner">
       <div class="mg-ico">!</div>
       <div>
-        <p><b>This site requires a display of at least 800 &times; 600 and a mouse.</b></p>
-        <p class="mg-sub">It's a whole Windows XP desktop. It does not fit in your hand, and pretending
-        otherwise would make it worse for both of us.</p>
+        <p><b>This is a whole Windows XP desktop.</b></p>
+        <p class="mg-sub">On a phone it runs as a tap-to-open version &mdash; the same desktop and the
+        same apps, just scaled to your screen. Prefer plain text? Grab the simple list.</p>
       </div>
     </div>
     <div class="mg-actions">
-      <button class="xp-btn primary" id="mg-basic">View basic version</button>
-      <button class="xp-btn" id="mg-anyway">Continue anyway</button>
+      <button class="xp-btn primary" id="mg-desktop">Open the desktop</button>
+      <button class="xp-btn" id="mg-basic">Simple list</button>
     </div>
   </div>
 </div>
 <div id="mobile-basic"></div>
+<div id="xpm-scrim"></div>
 
 <!-- Real playback. Empty until songs[].src is filled in; falls back to the simulated clock. -->
 <audio id="wmp-audio" preload="none"></audio>
@@ -2100,6 +2122,7 @@ function openWindow(id) {
   /* some windows have something to say the first time they're opened */
   if (id === "win-msn" && typeof msnBoot === "function") msnBoot();
   if (id === "win-streaming" && typeof renderStreamingLinks === "function") renderStreamingLinks(document.getElementById("streaming-list"));
+  if (document.body.classList.contains("xpm")) scaleWinMobile(win);
 }
 
 function showWinLoading(win) {
@@ -2117,6 +2140,7 @@ function closeWindow(id) {
   document.getElementById(id).classList.remove("minimized");
   openWins.delete(id);
   refreshTaskbar();
+  if (typeof xpmSyncScrim === "function") xpmSyncScrim();
 }
 
 function minimizeWindow(id) {
@@ -2162,7 +2186,8 @@ document.querySelectorAll(".win").forEach(win => {
     e.stopPropagation();
   });
   win.querySelector(".max").addEventListener("click", (e) => {
-    toggleMaximize(win.id);
+    if (document.body.classList.contains("xpm")) scaleWinMobile(win);
+    else toggleMaximize(win.id);
     focusWindow(win.id);
     e.stopPropagation();
   });
@@ -2283,16 +2308,13 @@ const NEXT_RELEASE = { title: "new single", date: "2026-08-28T00:00:00" };
 
 /* =========================================================================
    Streaming platforms -- ONE source of truth for every "listen" link.
-   Add/toggle a platform here and it updates everywhere at once: the desktop
+   Add a platform here and it updates everywhere at once: the desktop
    "Streaming Platforms" window, the taskbar Listen button, and the mobile
-   list. Leave url blank (or enabled:false) to hide one until you have its URL.
+   list. Set enabled:false (or leave url blank) to hide one.
    ========================================================================= */
 const STREAMING_LINKS = [
   { key: "spotify",    label: "Spotify",     host: "open.spotify.com",   color: "#1DB954", enabled: true,  url: "https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" },
   { key: "apple",      label: "Apple Music", host: "music.apple.com",    color: "#FA2C56", enabled: true,  url: "https://music.apple.com/us/artist/10to2/1638897947" },
-  { key: "youtube",    label: "YouTube",     host: "youtube.com",        color: "#FF0000", enabled: false, url: "" },
-  { key: "soundcloud", label: "SoundCloud",  host: "soundcloud.com",     color: "#FF5500", enabled: false, url: "" },
-  { key: "tiktok",     label: "TikTok",      host: "tiktok.com",         color: "#010101", enabled: false, url: "" },
   { key: "instagram",  label: "Instagram",   host: "instagram.com",      color: "#C13584", enabled: true,  url: "https://instagram.com/finleycry9" }
 ];
 
@@ -4001,15 +4023,67 @@ function buildBasic() {
 function mobileGate() {
   const gate = document.getElementById("mobile-gate");
   gate.classList.add("on");
+  document.getElementById("mg-desktop").addEventListener("click", () => {
+    gate.classList.remove("on");
+    enterXpMobile();
+  });
   document.getElementById("mg-basic").addEventListener("click", () => {
     buildBasic();
     gate.classList.remove("on");
     document.getElementById("mobile-basic").classList.add("on");
   });
-  document.getElementById("mg-anyway").addEventListener("click", () => {
-    gate.classList.remove("on");
-    initTrackpad();
+}
+
+/* ---------------------------------------------------------------------------
+   MOBILE XP MODE. Show the genuine desktop and make every window fit the
+   phone: openWindow() calls scaleWinMobile(), which shrinks the whole window
+   (screenshot + overlays together, so nothing misaligns) to the viewport and
+   centres it. Taps already open apps -- no mouse/trackpad needed.
+   ------------------------------------------------------------------------- */
+function enterXpMobile() {
+  document.body.classList.add("xpm");
+  /* tapping the scrim or the desktop wallpaper closes the front window */
+  const scrim = document.getElementById("xpm-scrim");
+  if (scrim) scrim.addEventListener("click", closeTopWindow);
+  window.addEventListener("resize", () => {
+    if (!document.body.classList.contains("xpm")) return;
+    document.querySelectorAll(".win.open").forEach(scaleWinMobile);
   });
+}
+
+function xpmSyncScrim() {
+  document.body.classList.toggle("has-open", !!document.querySelector(".win.open"));
+}
+
+function closeTopWindow() {
+  const open = [...document.querySelectorAll(".win.open")];
+  if (!open.length) return;
+  open.sort((a, b) => (parseInt(b.style.zIndex || 0) - parseInt(a.style.zIndex || 0)));
+  closeWindow(open[0].id);
+  xpmSyncScrim();
+}
+
+function scaleWinMobile(win) {
+  if (!win || !document.body.classList.contains("xpm")) return;
+  /* measure at natural size first */
+  win.style.transform = "none";
+  win.style.position = "fixed";
+  win.style.left = "0px";
+  win.style.top = "0px";
+  win.style.maxWidth = "none";
+  const bar = document.getElementById("taskbar");
+  const barH = (bar ? bar.offsetHeight : 40) + 10;
+  const w = win.offsetWidth || 360;
+  const h = win.offsetHeight || 300;
+  const availW = window.innerWidth - 12;
+  const availH = window.innerHeight - barH - 8;
+  const scale = Math.min(availW / w, availH / h, 1);
+  const left = Math.max(6, (window.innerWidth - w * scale) / 2);
+  win.style.transformOrigin = "top left";
+  win.style.transform = "scale(" + scale + ")";
+  win.style.left = left + "px";
+  win.style.top = "8px";
+  xpmSyncScrim();
 }
 
 /* =========================================================================
