@@ -678,40 +678,6 @@
   #tp-cursor.tp-pressed { transform-origin: 0 0; }
   #tp-cursor.tp-pressed svg { transform: scale(0.88); }
 
-  #mobile-gate {
-    position: fixed; inset: 0; z-index: 99000; display: none;
-    background: #3a6ea5; padding: 20px;
-    align-items: center; justify-content: center;
-    font-family: Tahoma, sans-serif;
-    overflow: auto;
-  }
-  #mobile-gate.on { display: flex; }
-  .mg-dialog {
-    width: 100%; max-width: 380px; background: #ece9d8;
-    border: 1px solid var(--win-edge); border-radius: 8px 8px 3px 3px;
-    box-shadow: 4px 4px 22px rgba(0,0,0,0.55); overflow: hidden;
-  }
-  .mg-dialog .mg-bar {
-    height: 30px; display: flex; align-items: center; padding: 0 8px;
-    background: linear-gradient(180deg, var(--tb-1) 0%, var(--tb-2) 45%, var(--tb-3) 55%, var(--tb-4) 100%);
-    color: #fff; font-size: 13px; font-weight: bold;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
-  }
-  .mg-inner { padding: 18px 16px; display: flex; gap: 14px; }
-  .mg-inner .mg-ico {
-    width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%;
-    background: linear-gradient(180deg, #6fb2ff, #1c46c9);
-    color: #fff; font-size: 22px; font-weight: bold;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
-  }
-  .mg-inner p { margin: 0 0 8px; font-size: 12px; line-height: 1.55; color: #1a1a1a; }
-  .mg-inner p.mg-sub { color: #555; font-size: 11px; }
-  .mg-actions {
-    padding: 10px 16px 16px; display: flex; gap: 8px; justify-content: flex-end;
-    flex-wrap: wrap;
-  }
-
   /* =========================================================================
      MOBILE XP MODE  (body.xpm) -- the real desktop, tap-to-open, scaled so
      each app window fits the phone. Windows are positioned/scaled in JS
@@ -732,48 +698,6 @@
     }
     body.xpm.has-open #xpm-scrim { display: block; }
   }
-
-  /* the honest fallback behind the joke */
-  #mobile-basic {
-    position: fixed; inset: 0; z-index: 98000; display: none;
-    background: #050805; color: #4dff6c; overflow: auto;
-    font-family: "Consolas", "Lucida Console", monospace;
-    padding: 22px 18px 50px; font-size: 14px; line-height: 1.5;
-  }
-  #mobile-basic.on { display: block; }
-  #mobile-basic h1 {
-    font-size: 22px; margin: 0 0 2px; font-weight: normal;
-  }
-  #mobile-basic h1::before { content: "C:\\10TO2> "; color: #2f8f43; }
-  #mobile-basic .mb-sub { color: #2f8f43; font-size: 12px; margin-bottom: 22px; }
-  .mb-song {
-    display: flex; align-items: center; gap: 12px; padding: 13px 0;
-    border-top: 1px solid #163a1e;
-  }
-  .mb-song img { width: 46px; height: 46px; border-radius: 2px; flex: 0 0 46px; filter: saturate(0.6); }
-  .mb-song .mb-t { flex: 1; }
-  .mb-song .mb-t b { display: block; font-size: 15px; font-weight: normal; color: #b6ffc4; }
-  .mb-song .mb-t b::before { content: "> "; color: #2f8f43; }
-  .mb-song .mb-t span { color: #2f8f43; font-size: 11.5px; }
-  .mb-song .mb-go {
-    background: none; color: #4dff6c; border: 1px solid #2f8f43; border-radius: 0;
-    padding: 9px 14px; font-size: 12px; cursor: pointer; font-family: inherit;
-  }
-  .mb-song .mb-go::before { content: "["; color: #2f8f43; }
-  .mb-song .mb-go::after { content: "]"; color: #2f8f43; }
-  .mb-lyric {
-    white-space: pre-wrap; font-family: inherit;
-    font-size: 12.5px; line-height: 1.6; color: #8fdba0;
-    background: #0a120a; border: 1px solid #163a1e; padding: 12px; margin: 0 0 4px;
-    display: none;
-  }
-  .mb-lyric.on { display: block; }
-  #mobile-basic .mb-back {
-    margin-top: 26px; background: none; border: 1px solid #2f8f43; color: #4dff6c;
-    padding: 10px 16px; font-size: 12px; font-family: inherit; cursor: pointer;
-  }
-  #mobile-basic .mb-back::before { content: "cd .. "; color: #2f8f43; }
-
 
 /* ---------- download strip below WMP screenshot ---------- */
 .wmp-dl-strip {
@@ -1567,25 +1491,7 @@
   </div>
 </div>
 
-<!-- ============ Mobile ============ -->
-<div id="mobile-gate">
-  <div class="mg-dialog">
-    <div class="mg-bar">10to2.net</div>
-    <div class="mg-inner">
-      <div class="mg-ico">!</div>
-      <div>
-        <p><b>This is a whole Windows XP desktop.</b></p>
-        <p class="mg-sub">On a phone it runs as a tap-to-open version &mdash; the same desktop and the
-        same apps, just scaled to your screen. Prefer plain text? Grab the simple list.</p>
-      </div>
-    </div>
-    <div class="mg-actions">
-      <button class="xp-btn primary" id="mg-desktop">Open the desktop</button>
-      <button class="xp-btn" id="mg-basic">Simple list</button>
-    </div>
-  </div>
-</div>
-<div id="mobile-basic"></div>
+<!-- ============ Mobile (phone = the real desktop, tap to open) ============ -->
 <div id="xpm-scrim"></div>
 
 <!-- Real playback. Empty until songs[].src is filled in; falls back to the simulated clock. -->
@@ -3960,80 +3866,6 @@ function isSmall() {
   return window.matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
 }
 
-function buildBasic() {
-  const box = document.getElementById("mobile-basic");
-  if (box.dataset.built) return;
-  box.dataset.built = "1";
-  let h = '<h1>10to2</h1><div class="mb-sub">DIR /music -- the desktop version needs a mouse, so here\'s everything on it.</div>';
-  h += '<a href="#mb-listen" style="display:block;text-align:center;margin:6px 0 16px;padding:11px;border:1px solid #2f8f43;color:#4dff6c;background:#0a120a;text-decoration:none;font-size:13px">\u266A Streaming platforms \u00bb</a>';
-  songs.forEach((s, i) => {
-    const l = LYRICS.find(x => x.song === i);
-    h += '<div class="mb-song">' +
-           '<img src="' + s.art + '">' +
-           '<div class="mb-t"><b>' + s.title + '</b><span>' + s.artist + ' \u00b7 ' +
-             Math.floor(s.duration/60) + ':' + String(s.duration%60).padStart(2,"0") + '</span></div>' +
-           (l ? '<button class="mb-go" data-lyric="' + i + '">Lyrics</button>' : '') +
-         '</div>' +
-         (l ? '<pre class="mb-lyric" id="mbl-' + i + '">' + l.body + '</pre>' : '');
-  });
-  h += '<div id="mb-listen" style="color:#2f8f43;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:26px 0 8px;border-top:1px solid #163a1e;padding-top:14px">Listen everywhere</div>';
-  streamingLiveLinks().forEach(p => {
-    h += '<div class="mb-song">' +
-           '<span style="display:inline-flex;align-items:center;margin-right:10px;flex:0 0 auto">' + streamingIconSVG(p, 22) + '</span>' +
-           '<div class="mb-t"><b>' + p.label + '</b><span>' + p.host + '</span></div>' +
-           '<a class="mb-go" href="' + p.url + '" target="_blank" rel="noopener">Open</a></div>';
-  });
-  h += '<div class="mb-song" style="border-bottom:1px solid #163a1e">' +
-         '<div class="mb-t"><b>Contact</b><span>booking, press, collabs</span></div>' +
-         '<button class="mb-go" id="mb-contact">Email</button>' +
-       '</div>' +
-       '<div class="mb-song">' +
-         '<div class="mb-t"><b>Mailing list</b><span>I\'ll tell you when the record\'s done</span></div>' +
-       '</div>' +
-       '<div style="display:flex;gap:8px;margin-top:14px">' +
-         '<input id="mb-email" placeholder="you@email.com" style="flex:1;background:#0a120a;border:1px solid #2f8f43;' +
-         'color:#4dff6c;padding:11px;font-family:inherit;font-size:13px">' +
-         '<button class="mb-go" id="mb-join">Join</button>' +
-       '</div>' +
-       '<button class="mb-back" id="mb-back"></button>';
-  box.innerHTML = h;
-
-  box.querySelectorAll("[data-lyric]").forEach(b =>
-    b.addEventListener("click", () => {
-      const el = document.getElementById("mbl-" + b.dataset.lyric);
-      el.classList.toggle("on");
-      b.textContent = el.classList.contains("on") ? "Hide" : "Lyrics";
-    }));
-  document.getElementById("mb-contact").addEventListener("click", () => {
-    window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Hey 10to2 —");
-  });
-  document.getElementById("mb-back").addEventListener("click", () => {
-    box.classList.remove("on");
-    document.getElementById("mobile-gate").classList.add("on");
-  });
-  document.getElementById("mb-join").addEventListener("click", () => {
-    const v = document.getElementById("mb-email").value.trim();
-    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-    /* TODO: same as Messenger — this needs a real endpoint. */
-    document.getElementById("mb-join").textContent = ok ? "Done" : "Nope";
-    if (ok) document.getElementById("mb-email").value = "";
-  });
-}
-
-function mobileGate() {
-  const gate = document.getElementById("mobile-gate");
-  gate.classList.add("on");
-  document.getElementById("mg-desktop").addEventListener("click", () => {
-    gate.classList.remove("on");
-    enterXpMobile();
-  });
-  document.getElementById("mg-basic").addEventListener("click", () => {
-    buildBasic();
-    gate.classList.remove("on");
-    document.getElementById("mobile-basic").classList.add("on");
-  });
-}
-
 /* ---------------------------------------------------------------------------
    MOBILE XP MODE. Show the genuine desktop and make every window fit the
    phone: openWindow() calls scaleWinMobile(), which shrinks the whole window
@@ -4252,7 +4084,7 @@ function startDesktop() {
 }
 
 (function init() {
-  if (isSmall()) { mobileGate(); startDesktop(); return; }
+  if (isSmall()) { enterXpMobile(); startDesktop(); return; }
   if (sessionSeen("10to2.booted")) { startDesktop(); return; }
   runBoot(startDesktop);
 })();
