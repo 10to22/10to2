@@ -694,6 +694,14 @@
     body.xpm #taskbar { height: 44px; min-height: 44px; max-height: 48px; }
     body.xpm #countdown { display: none; }
     body.xpm, body.xpm #desktop { overflow-x: hidden; max-width: 100vw; }
+    body.xpm #start-btn { height: 30px; }
+    body.xpm #desktop {
+      background-image: var(--background), linear-gradient(180deg, #3f74e6 0%, #5b89ef 100%);
+      background-size: 100% auto, 100% 100%;
+      background-position: center bottom, top;
+      background-repeat: no-repeat, no-repeat;
+      background-color: #5b89ef;
+    }
     /* a soft scrim behind any open window so the scaled app reads clearly */
     body.xpm #xpm-scrim {
       position: fixed; inset: 0; z-index: 5; background: rgba(0,0,0,0.28);
@@ -926,10 +934,6 @@
   <div class="icon" style="left:200px; top:420px;" data-target="win-streaming">
     <img src="assets/icons/listen-butterfly.png">
     <span>Listen</span>
-  </div>
-  <div class="icon" style="left:20px; top:420px;" data-target="win-downloads">
-    <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="12" fill="%231f6fd6"/><path d="M32 15v23m0 0l-9-9m9 9l9-9" fill="none" stroke="%23fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="45" width="28" height="5" rx="2.5" fill="%23fff"/></svg>'>
-    <span>Downloads</span>
   </div>
   <div class="win" id="win-info" style="left:120px; top:60px; width:479px;">
     <div class="win-titlebar">
@@ -1448,26 +1452,12 @@
     </div>
   </div>
 
-  <div class="win" id="win-downloads" style="left:380px; top:130px; width:360px; height:420px;">
-    <div class="win-titlebar">
-      <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M12 3v11m0 0l-4-4m4 4l4-4" fill="none" stroke="%230b57d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18h14" stroke="%230b57d0" stroke-width="2" stroke-linecap="round"/></svg>'>
-      <div class="title">Downloads</div>
-      <div class="win-btn min">_</div>
-      <div class="win-btn max">&#9633;</div>
-      <div class="win-btn close">X</div>
-    </div>
-    <div class="win-body" style="padding:14px; overflow:auto;">
-      <div id="downloads-list"></div>
-    </div>
-  </div>
-
 <div id="taskbar">
   <div id="start-btn">
     <div id="start-menu">
       <div class="sm-header">Windows User</div>
       <div class="sm-item" data-open="win-media">Windows Media Player</div>
       <div class="sm-item" data-open="win-streaming">Streaming Platforms</div>
-      <div class="sm-item" data-open="win-downloads">Downloads</div>
       <div class="sm-item" data-open="win-docs">My Documents</div>
       <div class="sm-item" data-open="win-msn">Messenger</div>
       <div class="sm-item" data-open="win-cd">Burn a CD</div>
@@ -1540,6 +1530,8 @@ const songs = [
     art: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAALkElEQVR4nO1bXU8bRxeenV3vl228tjG44DY4KXZDKCFJG9RUSpUoaUyD5PQqEPWu/6D/ov0Hvap617tWqqqqV1WlihDRpKVNbOw2YFIiIIbFxp+79uy+FydM94VADTgLVPtcWDC7O3POmZlzZp4zg5ADBw4cOHDgwIEDBw4cOHDgwIEDB4cFhmEOWwQHxxcY41deeYXn+cMW5OgBZpbf7y8UCh9++CFCiGXZwxbqOfBhC4AQQqZpMgyzvr7+448/ZrNZKDlsoZ7jSBgIIYQxZhjm999/L5fLDMM4BkIIIYwx2AUhRAgxTfPMmTN+v980TTAQwzDwziEKydnfJFjENE3DMKBEEARZlnmej8fjQ0NDS0tLzWazXC5rmkaHEv3KZmltNRDMHVDS6/VGIpFQKCQIQrPZbDQamqYpihKPx9PptCRJHMexLFuv11dXVxcXF0ulkrUS22S2z0CgGMMw/f39J06cwBg/e/Ysm82qqqrrOrxTq9WWlpamp6fhX57nA4FAT0/PpUuXDMPI5XJ//vknVGKbjewzkGmaAwMD0WhUVdX79++rqkofga8BnYPBIMaY47hGo6Hr+vLy8vLyMpTH4/FYLDY3N5dOp20T2w4wDMPz/Ojo6MjIiCRJtBA8tNUTZzKZzz77DG2ug+hTugWRZXlkZCSRSLhcLnv2JTYFCEIIy7IPHjyo1WqgMDhpcEmGYYDD1nXd7XYLgsBxHEKIPoVphTGuVqu//fYby7LUwb9s2DTFCCF37969evXqDz/8gCzBqKOjQxCEK1eunDp1KhQKnThx4tatW5qmwdPPP//88ePHzWYTbS4mEUJXrly5e/cuIcSeEWSHgUzTxBivra0Vi8VoNDo/P0+9rGEYsiwXi8X79+/39fV5vd5SqfTdd9+VSqVGo1EqlViWBQMxDGMYxqlTp9bX11VVxRjbNojsAO3t8fHxF7oPhmGi0ahpmg8fPhRFcfviEBzZxMTElgpfNuzwQTBeJEm6cePG7Ozs9p5nWdY0zXK5bJomrH0MwwAPbX2NEJJOpxOJhCRJdMYdV1Dp4Y9AIJBMJiORyC4vK4pSr9dTqdTuNUcikWQy6ff7t7dyPEBlpeEZrOP1eqFwp08kSSoWi7uvceDzjo6OW7duKYqCNpcLW5o+ogBBE4nEzZs3u7u7oVCSpGQy6fF40A7WQZuKsSy7srLyr4tAaqNkMikIAhSGw+GxsbH3339/l1b2h7bVBVEmFoutrq5OTk5euHDh0qVLkiS99957U1NTQGLsFHcgohFCarUarW2nhgzDwBhvbGxMT09fvnxZkqR333333LlzP//8c6FQeP3118F/tUuvtgGGeiKRoJxpPB6/c+fOmTNnUAu9CirNzs7Ozs6iFiYLVDg0NDQxMRGLxaBQEIREIrHdux8+QKBoNPrWW28hhFiWhRLr7+4AhWdmZlo00JbKGYaB3cnFixf7+vparKEVtGeKgTR9fX2ZTAZtsl90Ndj6zpuuoVsBrRwaIoQghDKZzFE0kGEYbrcbIVQqlahk+2Ak9kdiWEm1YrGIMZZluV3r7DYYCGZHJBLJ5/PoYF1HSY/9AZrO5/O9vb0HlOQfkQ5eBSAYDAJxAxpijGFM7U2ave+wRFGERSNtemVlpbOzEx0dA4FYoigWCgVaKMtyb2/vXpckexpBoD/P85FIBBqCb9fX10VRRG0isNtjIEEQDMNoNps0xA4ODl67dg3WLHuQpuURZA1hExMTMFqh9UajgRDieZ6mRvau0z84EN0Bm0zTND0eDyGE4zjYXhBCoFdBOOu42ElciNNgICAYX9j/pgVQomna+vr6yZMnHz58CAYyDIMQ4vV6YURDdNs3DmQg2naj0cjn80DcAIrFYjwe7+joKBaL1k92H/aEEF3XKcG4O3ieF0UxGo2Gw+FKpWI1xNraGi0B+nHf020/ww/WHR6P5/Lly5lMhhAyMDBw+vRpVVV9Pp/b7Xa73X19faOjo0+ePNlC/Vn/pnQq/DabzeHhYaCEMMaaptXrdUrIsiwriqIkSZIkwR+iKAqCwPM8z/PT09O6rsMYRAgJgpDNZh88eNDV1XX79u3r16+nUqn9cWz7GUFgoNdee+2LL7746quv8vn8+fPnY7EY+CDQh+M4RVEURYHkhKZptVqtXq/DL2V8sAUulwsq5zjO5XKJohgIBLaQ9mBWQki5XC6Xy4ZhiKLY2dm5tLSUy+XK5XKlUikWi4qiPHr0KJVKsSw7OTm5uLiI7E86YowhWCCEPB7P4OCg9enw8PCnn3569uzZQCDgdruBhP9XzMzM/Prrr3sSo6ur65NPPnnnnXeshW+88YYsy3uqZyfs3wcZhlGv16F7RVFUFIVmbwzDcLlcpVJpZmZmy1fMJmgJjTWmaYqiqGkaTXvs0ueUUczn85qmybIMIQJa7+rqevbsWa1Wo25738PnQE6aMhilUonjOCqHaZrpdHpwcNDtdlerVatWO6lN866NRgMCWevxXhTFjY2NZrMJsQ94WyBwDz6tDmQg2vnQ7RzH0UBWrVZ/+uknqnaLgmKMKSXUYus8z3/77be5XA4hBDYFX6brelsy1G1YKMJQr9frlANFCBmGoaoq7M5bkZJuUPaqkq7rCwsLkN1nNk+q1et1dHS2GoC1tbVwOIwsYhUKBVjUtg46Z1vXzTRNSpLAV93d3aurq+jobDVApcXFxVAohP6ffNizNAdLB0LToVDo6dOn6OgYCCGEMa5UKgghr9d7QLH2YVYrA+Xz+QzDqFar7aLu21MLGCWXy8XjcbRJudJIvCedIVHRipVp5dAQUK7xeBwcdruWhW0zEMMwCwsLnZ2dPM8D5RqPx8fHxwcHByE332JVLTIV4M7ffPPN8fHxWCwGy2tBEAKBwMLCQlvi1/OG2lILwDCMubm5oaEhv9//wQcfBIPBr7/+ure3NxwOt8h7wFrxX18DVxUOh3t6er755ptQKDQ6OqooytmzZ//66y+7txStgyYOx8bGaOJQFMUWE4cIoVwuNz8/30orXq83mUxSa768xGH7se/UM0Iol8stLy/Dxu2Fngs+9/l8xzL1bMWWYwXBYDCZTPb09OzyMsMw8/PzhUKB0oMvfPnVV1893ocXtgOkl2U5kUgMDQ3RtCJ9CkMAY5zL5Wq1mt/vh6i05TWWZc+dO3fjxg2YWcfbKFtAx8jExMRO5y8xxnDgrqur64U18Dw/Pj5urdAG2HRGEeLuyMjI1NRUo9Gg6rlcLp/PpyiKJEmBQEAURZZlr1279vfff4ui+OjRo3w+T/cruq5PT0+PjIzcu3evjYF8d9hhINhhBYNBn883NTVl3U+wLBuJRD7++GOGYVwulyAI5XL54sWLJ0+e5Dju6dOnGxsbYFBYTD1+/Li/vz8QCKiqapuNXjrAfYyNjQERsYVCRQixLKsoSkdHx5dffvnLL7/wPL99BlFXJQjCzZs3t3iolweblgwsyxJCzp8/L0mS9dwzMH6EkGKxuLGxUS6XOY4DKgdMQF8D9l6W5eHh4b2m2w4Cm44B67r+/fffDwwMXL16VVXVTCajqqp13+9yuQghlUoFMhMYY9ivoM1tB1xF8Pv9c3Nz9+7ds0FsgK2XWVKpVDqd7u/vv3DhAlxmWVpagssswHitra1ZD97TyyyhUAgus0xOTiJ7L/zYepkFFMtms9lsFq5DxWIxuA5FCKlWq93d3R6P5+2334aEF70ONTk5+d+/DoUsHDZCqFQqpdNpOLIpCILH4+E4LpPJFAqFJ0+eNBqNSqViPU/FbF6oszlyHcKNQ6ohPZKhaRrY4o8//shmsysrK/ACTRAdJG9zQByCgSis7CrwO6urq6lUCkJYs9m0f7xsxxFiBkzTdLvdp0+fNi3XWR08B1AcH330UaFQAPLoP7UXbRckSYLrrIctiINjCis96MCBAwcOHDhw4MCBAwcOHDhw4MDBIeB/zKUV8dx01H8AAAAASUVORK5CYII=" },
 ];
 
+/* 1 Shot Roulette: download-only -- lives in My Documents, not the player. */
+if (songs[3]) songs[3].downloadOnly = true;
 let vaultUnlocked = false;
 let selectedIndex = null;
 let playingIndex = null;
@@ -1630,7 +1622,7 @@ function updateDlStrip() {
   if (!strip || !label) return;
   const i = (playingIndex !== null ? playingIndex : selectedIndex);
   const s = (i !== null && i !== undefined) ? songs[i] : null;
-  if (s && s.src && !s.locked) {
+  if (s && s.src && !s.locked && !s.downloadOnly) {
     strip.style.display = "flex";
     label.textContent = s.title + " (" + s.artist + ")";
   } else {
@@ -1828,7 +1820,7 @@ function termHandleCommand(raw) {
 function nextPlayableIndex(i) {
   let next = (i + 1) % songs.length;
   let guard = 0;
-  while (songs[next].locked && !vaultUnlocked && guard < songs.length) {
+  while ((songs[next].downloadOnly || (songs[next].locked && !vaultUnlocked)) && guard < songs.length) {
     next = (next + 1) % songs.length;
     guard++;
   }
@@ -1838,7 +1830,7 @@ function nextPlayableIndex(i) {
 function prevPlayableIndex(i) {
   let prev = (i - 1 + songs.length) % songs.length;
   let guard = 0;
-  while (songs[prev].locked && !vaultUnlocked && guard < songs.length) {
+  while ((songs[prev].downloadOnly || (songs[prev].locked && !vaultUnlocked)) && guard < songs.length) {
     prev = (prev - 1 + songs.length) % songs.length;
     guard++;
   }
@@ -1847,7 +1839,7 @@ function prevPlayableIndex(i) {
 
 function playSong(i) {
   if (i === null || i === undefined) return;
-  if (songs[i].locked && !vaultUnlocked) return;
+  if (songs[i].downloadOnly || (songs[i].locked && !vaultUnlocked)) return;
   playingIndex = i;
   selectedIndex = i;
   elapsed = 0;
@@ -1925,7 +1917,7 @@ function renderRows() {
   container.innerHTML = "";
   let slot = 0;
   songs.forEach((s, i) => {
-    if (s.locked && !vaultUnlocked) return;
+    if (s.downloadOnly || (s.locked && !vaultUnlocked)) return;
     const row = document.createElement("div");
     row.className = "wmp-row-overlay";
     row.dataset.index = i;
@@ -1951,7 +1943,7 @@ function renderRows() {
 function renderLibraryRow4() {
   const wrap = document.getElementById("wmp-lib-row4");
   if (!wrap) return;
-  if (!songs[3]) { wrap.style.display = "none"; return; }
+  if (!songs[3] || songs[3].downloadOnly) { wrap.style.display = "none"; return; }
   const s = songs[3];
   wrap.style.display = "block";
   wrap.innerHTML =
@@ -2045,7 +2037,6 @@ function openWindow(id) {
   /* some windows have something to say the first time they're opened */
   if (id === "win-msn" && typeof msnBoot === "function") msnBoot();
   if (id === "win-streaming" && typeof renderStreamingLinks === "function") renderStreamingLinks(document.getElementById("streaming-list"));
-  if (id === "win-downloads" && typeof renderDownloads === "function") renderDownloads(document.getElementById("downloads-list"));
   if (document.body.classList.contains("xpm")) scaleWinMobile(win);
 }
 
@@ -2275,25 +2266,6 @@ function renderStreamingLinks(el) {
          '</a>';
   });
   el.innerHTML = h;
-}
-
-/* Downloads window -- every released track, download only. Nothing else. */
-function renderDownloads(el) {
-  if (!el) return;
-  let h = '<div class="ua-sub" style="margin-bottom:12px;">Grab the tracks &mdash; free, yours to keep.</div>';
-  songs.forEach((s, i) => {
-    if (!s.src) return;
-    h += '<div style="display:flex;align-items:center;gap:11px;padding:9px 11px;margin-bottom:8px;border:1px solid #cfd6e6;border-radius:5px;background:#fff;">' +
-           '<div style="width:36px;height:36px;flex:0 0 auto;border-radius:3px;background:#000 center/cover no-repeat;background-image:url(' + s.art + ');"></div>' +
-           '<div style="flex:1;min-width:0;">' +
-             '<b style="font-size:12.5px;color:#0b2f73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;">' + s.title + '</b>' +
-             '<span style="font-size:10.5px;color:#5a6b86;">' + s.artist + ' &middot; ' + fmt(s.duration) + '</span>' +
-           '</div>' +
-           '<button class="xp-btn" data-dl="' + i + '" style="flex:0 0 auto;">&#8681; Download</button>' +
-         '</div>';
-  });
-  el.innerHTML = h;
-  el.querySelectorAll("[data-dl]").forEach(b => b.addEventListener("click", () => downloadSong(Number(b.dataset.dl))));
 }
 
 /* Lyrics shown in My Documents -> Notepad. */
@@ -2527,25 +2499,48 @@ const ICONS = { txt: "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAKX0lEQVR42u
    ========================================================================= */
 let docsSel = null;
 
+function docFiles() {
+  const out = LYRICS.map((l, i) => ({ kind: "txt", idx: i, file: l.file, size: l.size, meta: "Text Document" }));
+  songs.forEach((s, i) => {
+    if (!s.src) return;
+    const mb = Math.max(0.6, (s.src.length * 0.75) / (1024 * 1024));
+    out.push({ kind: "mp3", idx: i, file: s.title + ".mp3", size: mb.toFixed(1) + " MB", meta: "MP3 Audio" });
+  });
+  return out;
+}
+
+function openDocFile(i) {
+  const f = docFiles()[i];
+  if (!f) return;
+  if (f.kind === "txt") openNotepad(f.idx);
+  else downloadSong(f.idx);
+}
+
 function renderDocs() {
   const box = document.getElementById("docs-files");
   box.innerHTML = "";
-  LYRICS.forEach((l, i) => {
+  const files = docFiles();
+  files.forEach((f, i) => {
     const row = document.createElement("div");
     row.className = "file-row" + (docsSel === i ? " selected" : "");
-    row.innerHTML = '<img class="fr-ico" src="data:image/png;base64,' + ICONS.txt + '">' +
-                    '<span class="fr-name">' + l.file + '</span>' +
-                    '<span class="fr-meta">' + l.size + '  Text Document</span>';
+    const icon = f.kind === "mp3" ? ICONS.wav : ICONS.txt;
+    row.innerHTML = '<img class="fr-ico" src="data:image/png;base64,' + icon + '">' +
+                    '<span class="fr-name">' + f.file + '</span>' +
+                    '<span class="fr-meta">' + f.size + '  ' + f.meta + '</span>';
     row.addEventListener("click", (e) => { docsSel = i; renderDocs(); e.stopPropagation(); });
-    row.addEventListener("dblclick", (e) => { openNotepad(i); e.stopPropagation(); });
+    row.addEventListener("dblclick", (e) => { openDocFile(i); e.stopPropagation(); });
     box.appendChild(row);
   });
   const d = document.getElementById("docs-details");
-  d.innerHTML = docsSel === null
-    ? "Select an item to view its description."
-    : "<b>" + LYRICS[docsSel].file + "</b><br>Text Document<br>Size: " + LYRICS[docsSel].size;
+  if (docsSel === null) {
+    d.innerHTML = "Select an item to view its description.";
+  } else {
+    const f = files[docsSel];
+    d.innerHTML = "<b>" + f.file + "</b><br>" + f.meta + "<br>Size: " + f.size +
+      (f.kind === "mp3" ? "<br><span style='color:#2767d6;'>Double-click to download.</span>" : "");
+  }
   document.getElementById("docs-status").textContent =
-    LYRICS.length + " objects" + (docsSel !== null ? "  (1 selected)" : "");
+    files.length + " objects" + (docsSel !== null ? "  (1 selected)" : "");
 }
 
 function openNotepad(i) {
@@ -2572,7 +2567,7 @@ document.getElementById("np-print-item").addEventListener("click", (e) => {
 });
 
 document.getElementById("docs-openlink").addEventListener("click", () => {
-  if (docsSel !== null) openNotepad(docsSel);
+  if (docsSel !== null) openDocFile(docsSel);
   else xpDialog("Open", "Select a file first.", "info");
 });
 document.querySelector('#win-docs [data-mailto]').addEventListener("click", () => {
