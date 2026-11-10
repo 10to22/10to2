@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0e0e14">
+<meta name="theme-color" content="#1941c7">
 <title>10to2 — Press Kit (EPK)</title>
 <meta name="description" content="Official press kit for 10to2 — the hyperpop project of Finn Cryan, a 19-year-old producer, engineer and co-founder of the nonprofit studio Noisewatt in Fort Collins, Colorado. Press release, fact sheet, bios, quotes, photos and media contact.">
 <link rel="canonical" href="https://10to2.net/press/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 
-<!-- Open Graph / Twitter -->
 <meta property="og:type" content="profile">
 <meta property="og:site_name" content="10to2">
 <meta property="og:title" content="10to2 — Press Kit (EPK)">
@@ -26,19 +25,15 @@
 <!--
   =========================================================================
   10to2 PRESS KIT / EPK  —  owner checklist before sharing publicly:
-  1. QUOTES below are DRAFTS written from your brief — read them, edit to
-     your voice, or replace. Nothing is attributed to you that you haven't
-     approved yet.
-  2. ARTIST / LIVE PHOTOS: drop high-res files into /assets/press/ and fill
-     in the "Press photos" gallery (a ready template is commented there).
-     The release covers shown are web-res (96px) pulled from the site — add
-     print-res versions when you have them.
-  3. PAST COVERAGE: add real outlets/links as they come. FoCoMX 2026 is the
-     only confirmed item; nothing else is invented.
-  4. MEDIA EMAIL: press@10to2.net is used throughout — set that inbox up
-     (or change it here) before you send this link to anyone.
-  5. PRESS RELEASE: update the headline + dateline for your current news peg
-     (a release, a show, a milestone).
+  1. QUOTES below are DRAFTS written from your brief — edit to your voice.
+  2. ARTIST / LIVE PHOTOS: save your images to
+       /home/user/10to2/assets/press/finn-portrait.jpg   (Ten2two confetti portrait)
+       /home/user/10to2/assets/press/finn-notes.jpg       (B&W shot w/ colored notes)
+     Tiles show a clean placeholder until the files exist.
+  3. PAST COVERAGE: add real outlets/links as they come (FoCoMX 2026 is the
+     only confirmed item; nothing else is invented).
+  4. MEDIA EMAIL: press@10to2.net is used throughout — set up that inbox.
+  5. PRESS RELEASE: update headline + dateline for your current news peg.
   =========================================================================
 -->
 
@@ -61,372 +56,358 @@
 }
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-
 <style>
   :root{
-    --bg:#ffffff; --panel:#f6f7fb; --ink:#14141b; --muted:#5b6071; --line:#e6e8f0;
-    --accent:#d6128f; --accent2:#2bb3ff; --accent3:#8cf03a;
-    --grad:linear-gradient(90deg,#d6128f 0%,#8a2be2 35%,#2bb3ff 70%,#8cf03a 100%);
-    --maxw:860px;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#0e0e14; --panel:#16161f; --ink:#f1f2f7; --muted:#a3a8bb; --line:#262736;
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#0e0e14; --panel:#16161f; --ink:#f1f2f7; --muted:#a3a8bb; --line:#262736;
+    --tb-1:#2c63e4; --tb-2:#1941c7; --tb-3:#133cc9; --tb-4:#0f2fb0;
+    --bar-1:#4d76c8; --bar-2:#336ae1; --bar-3:#225ad1; --bar-4:#2660dd;
+    --edge:#0831d9; --beige:#ece9d8; --beige-edge:#b7b19a;
+    --blue:#1c46c9; --blue2:#2f63c9; --accent:#316ac5;
+    --ink:#1b1d22; --muted:#5d6475; --line:#d2ddf0; --doc:#ffffff;
+    --grad:linear-gradient(90deg,#d6128f,#8a2be2 45%,#2bb3ff 80%,#8cf03a);
+    --font:Tahoma,"Segoe UI",Verdana,Geneva,sans-serif;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    margin:0; color:var(--ink); font:14.5px/1.62 var(--font);
+    background:linear-gradient(160deg,#5b8ad6 0%,#3a63ad 100%); background-attachment:fixed;
     -webkit-font-smoothing:antialiased;
   }
-  h1,h2,h3,.display{font-family:"Space Grotesk",var(--ink),sans-serif;}
-  a{color:var(--accent);} a:hover{color:var(--accent2);}
-  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 20px;}
+  a{color:var(--blue);} a:hover{color:#0a2db5;}
+  h1,h2,h3{font-family:var(--font); font-weight:700; letter-spacing:-.01em;}
 
-  /* top accent bar */
-  .topgrad{height:5px; background:var(--grad);}
+  /* sticky XP toolbar nav (echoes the taskbar) */
+  .toolbar{position:sticky; top:0; z-index:30;
+    background:linear-gradient(180deg,var(--bar-1),var(--bar-3));
+    border-bottom:1px solid #16307a; box-shadow:inset 0 1px 0 rgba(255,255,255,.4);}
+  .toolbar .in{max-width:900px; margin:0 auto; display:flex; gap:3px; align-items:center;
+    overflow-x:auto; padding:6px 10px;}
+  .toolbar .brand{color:#fff; font-weight:700; text-shadow:1px 1px 1px rgba(0,0,0,.4); margin-right:6px; font-size:14px;}
+  .toolbar a{color:#eaf0ff; text-decoration:none; font-size:12.5px; font-weight:600; white-space:nowrap;
+    padding:4px 9px; border-radius:3px;}
+  .toolbar a:hover{background:rgba(255,255,255,.18); color:#fff;}
 
-  /* sticky jump nav */
-  .jump{position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
-  .jump .wrap{display:flex; gap:4px; overflow-x:auto; padding-top:10px; padding-bottom:10px; align-items:center;}
-  .jump a{color:var(--muted); text-decoration:none; font-size:13px; font-weight:600; white-space:nowrap;
-    padding:6px 10px; border-radius:999px;}
-  .jump a:hover{color:var(--ink); background:var(--panel);}
-  .jump .brand{font-family:"Space Grotesk"; font-weight:700; color:var(--ink); margin-right:6px;}
+  /* the window */
+  .window{max-width:900px; margin:22px auto; background:var(--doc);
+    border:1px solid var(--edge); border-radius:8px 8px 4px 4px;
+    box-shadow:0 18px 50px rgba(0,0,0,.4); overflow:hidden;}
+  .titlebar{display:flex; align-items:center; gap:8px; height:32px; padding:0 6px 0 9px; color:#fff;
+    text-shadow:1px 1px 1px rgba(0,0,0,.35);
+    background:linear-gradient(180deg,var(--tb-1) 0%,var(--tb-2) 45%,var(--tb-3) 55%,var(--tb-4) 100%);}
+  .titlebar img{width:16px; height:16px; border-radius:2px;}
+  .titlebar .t{flex:1; font-size:13px; font-weight:700;}
+  .winbtns{display:flex; gap:3px;}
+  .winbtn{width:22px; height:20px; border-radius:3px; border:1px solid rgba(255,255,255,.55);
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff;
+    text-decoration:none; text-shadow:none; background:linear-gradient(#5a8bf0,#2250c8);}
+  .winbtn.close{background:linear-gradient(#f6a98f,#d6442a);}
+  .winbtn:hover{filter:brightness(1.1);}
 
-  header.hero{padding:46px 0 10px;}
-  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); font-weight:700;}
-  h1{font-size:clamp(34px,7vw,56px); line-height:1.02; margin:.18em 0 .1em; letter-spacing:-.01em;}
-  .tagline{font-size:clamp(17px,2.6vw,21px); color:var(--muted); max-width:640px; margin:.2em 0 1.1em;}
-  .hero-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px;}
-  .btn{display:inline-flex; align-items:center; gap:7px; padding:10px 16px; border-radius:10px;
-    font-weight:600; font-size:14px; text-decoration:none; border:1px solid var(--line); color:var(--ink); background:var(--panel);}
-  .btn:hover{border-color:var(--accent2); color:var(--ink);}
-  .btn.primary{background:var(--grad); color:#fff; border:0;}
-  .btn.primary:hover{color:#fff; filter:brightness(1.07);}
+  /* document body */
+  .doc{padding:0;}
+  .section{padding:26px 30px; border-top:1px solid var(--line);}
+  .section:first-child{border-top:0;}
+  @media(max-width:620px){ .section{padding:20px 16px;} }
 
-  section{padding:34px 0; border-top:1px solid var(--line);}
-  section h2{font-size:24px; margin:0 0 4px; display:flex; align-items:center; gap:10px;}
-  section h2::before{content:""; width:12px; height:12px; border-radius:3px; background:var(--grad); flex:0 0 auto;}
-  .sub{color:var(--muted); margin:.2em 0 1.1em; font-size:14.5px;}
+  /* hero */
+  .hero{padding:30px 30px 24px; background:
+    radial-gradient(120% 140% at 0% 0%, #f3f7ff 0%, #ffffff 55%);}
+  @media(max-width:620px){ .hero{padding:22px 16px;} }
+  .eyebrow{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-weight:700;}
+  .hero h1{font-size:clamp(30px,6vw,46px); line-height:1; margin:.14em 0 .12em; color:#0f2a86;}
+  .hero .tagline{font-size:clamp(15px,2.3vw,18px); color:#3a4254; max-width:620px; margin:.25em 0 1em;}
+  .actions{display:flex; flex-wrap:wrap; gap:9px;}
 
-  /* fact sheet */
-  .facts{display:grid; grid-template-columns:repeat(2,1fr); gap:0 28px; border:1px solid var(--line); border-radius:14px; overflow:hidden;}
-  .facts dl{margin:0; display:contents;}
-  .fact{padding:12px 16px; border-bottom:1px solid var(--line);}
-  .fact dt{font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:700;}
-  .fact dd{margin:3px 0 0; font-size:15px;}
-  @media(max-width:620px){ .facts{grid-template-columns:1fr;} }
+  /* XP buttons */
+  .xpbtn{display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:13px; font-weight:600;
+    padding:6px 14px; border-radius:3px; border:1px solid #003c74; cursor:pointer; text-decoration:none; color:#0a1f44;
+    background:linear-gradient(#fdfefe,#dce7f7 46%,#c6d7f1 54%,#bfd2ee); box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);}
+  .xpbtn:hover{border-color:#e68a00; box-shadow:inset 0 0 0 1px #fff, 0 0 0 2px rgba(255,170,0,.35); color:#0a1f44;}
+  .xpbtn.primary{color:#fff; border-color:#17408f; background:linear-gradient(#5e93f3,#2b5fd6 50%,#1c46c9 51%,#143bb3);}
+  .xpbtn.primary:hover{color:#fff;}
 
-  .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 20px;}
-  .release{background:var(--panel); border:1px dashed var(--line); border-radius:12px; padding:14px 16px; font-size:13.5px; color:var(--muted); margin-bottom:16px;}
-  .release b{color:var(--ink);}
+  /* headings */
+  .section h2{font-size:20px; margin:0 0 3px; display:flex; align-items:center; gap:9px; color:#102a86;}
+  .section h2::before{content:""; width:12px; height:12px; border-radius:3px; background:var(--grad); flex:0 0 auto; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);}
+  .sub{color:var(--muted); margin:.1em 0 1em; font-size:13px;}
+
+  /* panels */
+  .panel{background:#fbfcff; border:1px solid var(--line); border-radius:7px; padding:16px 18px;}
+  .doc-card{background:var(--beige); border:1px solid var(--beige-edge); border-radius:4px; padding:16px 18px;}
+  .doc-card h3{margin:.1em 0 .4em; font-size:19px; color:#1a1a1a;}
+  .kicker{font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:#6a5; color:var(--muted); font-weight:700;}
+
+  /* fact sheet (XP property-sheet look) */
+  .facts{border:1px solid var(--beige-edge); border-radius:4px; overflow:hidden; background:#fff;}
+  .facts dl{margin:0; display:grid; grid-template-columns:200px 1fr;}
+  .facts .k{background:#f2f4fb; border-bottom:1px solid var(--line); border-right:1px solid var(--line);
+    padding:9px 12px; font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:#334; font-weight:700;}
+  .facts .v{border-bottom:1px solid var(--line); padding:9px 12px; font-size:14px;}
+  .facts .k:last-of-type, .facts .v:last-of-type{border-bottom:0;}
+  @media(max-width:580px){ .facts dl{grid-template-columns:1fr;} .facts .k{border-right:0;} }
 
   /* bios */
-  .bio{margin:0 0 18px;}
-  .bio .lab{font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:700; display:flex; justify-content:space-between; align-items:center;}
+  .bio{margin:0 0 14px;}
+  .bio .lab{display:flex; justify-content:space-between; align-items:center;
+    font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700;}
   .bio p{margin:.4em 0 0;}
-  .copybtn{font:inherit; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; cursor:pointer;
-    background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:7px; padding:3px 8px;}
-  .copybtn:hover{color:var(--ink); border-color:var(--accent2);}
+  .copybtn{font:inherit; font-size:11px; font-weight:700; cursor:pointer; color:#0a1f44;
+    border:1px solid #003c74; border-radius:3px; padding:2px 9px;
+    background:linear-gradient(#fdfefe,#dce7f7 46%,#c6d7f1 54%,#bfd2ee);}
+  .copybtn:hover{border-color:#e68a00;}
 
-  blockquote.q{margin:0 0 14px; padding:14px 18px; border-left:3px solid; border-image:var(--grad) 1;
-    background:var(--panel); border-radius:0 12px 12px 0; font-size:17px;}
-  blockquote.q footer{color:var(--muted); font-size:13.5px; margin-top:6px;}
+  blockquote.q{margin:0 0 12px; padding:13px 16px; background:#f4f8ff; border:1px solid var(--line);
+    border-left:4px solid; border-image:var(--grad) 1; border-radius:0 4px 4px 0; font-size:16px;}
+  blockquote.q footer{color:var(--muted); font-size:13px; margin-top:6px;}
 
-  ul.clean{margin:.3em 0; padding:0; list-style:none;}
-  ul.clean li{padding:10px 0 10px 26px; position:relative; border-bottom:1px solid var(--line);}
+  ul.clean{margin:.2em 0; padding:0; list-style:none;}
+  ul.clean li{padding:9px 0 9px 24px; position:relative; border-bottom:1px solid var(--line);}
   ul.clean li:last-child{border-bottom:0;}
-  ul.clean li::before{content:""; position:absolute; left:4px; top:17px; width:9px; height:9px; border-radius:50%; background:var(--grad);}
-  ul.clean b{font-weight:700;}
+  ul.clean li::before{content:""; position:absolute; left:3px; top:16px; width:8px; height:8px; border-radius:2px; background:var(--grad);}
 
-  /* media / downloads grid */
-  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px;}
-  .asset{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--panel); text-align:center;}
-  .asset .thumb{aspect-ratio:1/1; background:#0e0e14 center/cover no-repeat; display:block;}
-  .asset .meta{padding:9px 10px;}
-  .asset .meta .name{font-size:13px; font-weight:600;}
-  .asset .meta .cap{font-size:11.5px; color:var(--muted); margin:2px 0 6px;}
+  /* downloads grid */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;}
+  .asset{border:1px solid var(--beige-edge); border-radius:4px; overflow:hidden; background:var(--beige); text-align:center;}
+  .asset .thumb{aspect-ratio:1/1; background:#15213f center/cover no-repeat; display:block;}
+  .asset .meta{padding:8px 9px;}
+  .asset .name{font-size:12.5px; font-weight:700;}
+  .asset .cap{font-size:11px; color:var(--muted); margin:2px 0 6px;}
   .asset .dl{font-size:12px; font-weight:700; text-decoration:none;}
-  .ph{border:1.5px dashed var(--line); border-radius:12px; aspect-ratio:3/2; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--muted); font-size:13px; padding:12px; background:repeating-linear-gradient(45deg,transparent,transparent 10px,color-mix(in srgb,var(--panel) 60%,transparent) 10px,color-mix(in srgb,var(--panel) 60%,transparent) 20px);}
 
-  .contact{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media(max-width:620px){ .contact{grid-template-columns:1fr;} }
+  .contact{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:580px){ .contact{grid-template-columns:1fr;} }
 
-  footer.foot{padding:30px 0 50px; color:var(--muted); font-size:13px; border-top:1px solid var(--line);}
-  footer.foot a{color:var(--muted);} footer.foot a:hover{color:var(--ink);}
-
-  .note{font-size:12.5px; color:var(--muted); font-style:italic;}
+  .foot{background:var(--beige); border-top:1px solid var(--beige-edge); padding:16px 30px; color:#4a4a44; font-size:12.5px;}
+  @media(max-width:620px){ .foot{padding:14px 16px;} }
+  .note{font-size:12px; color:var(--muted); font-style:italic;}
 
   @media print{
-    .jump,.hero-actions,.copybtn,.topgrad{display:none !important;}
-    body{color:#000; background:#fff; font-size:11pt;}
-    a{color:#000; text-decoration:underline;}
-    section{border-top:1px solid #ccc; padding:14px 0;}
-    .card,.release,.facts,.asset,blockquote.q{background:#fff !important;}
+    body{background:#fff;}
+    .toolbar,.actions,.copybtn,.winbtns{display:none !important;}
+    .window{box-shadow:none; border:0; margin:0; max-width:none;}
+    .titlebar{background:#1941c7 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    a{color:#000;}
   }
 </style>
 </head>
 <body>
-<div class="topgrad"></div>
 
-<nav class="jump" aria-label="Jump to section">
-  <div class="wrap">
+<nav class="toolbar" aria-label="Jump to section">
+  <div class="in">
     <span class="brand">10to2</span>
     <a href="#release">Release</a>
     <a href="#facts">Fact sheet</a>
     <a href="#bios">Bios</a>
     <a href="#quotes">Quotes</a>
-    <a href="#angles">Story angles</a>
-    <a href="#photos">Photos &amp; logos</a>
+    <a href="#angles">Angles</a>
+    <a href="#photos">Photos</a>
     <a href="#music">Music</a>
     <a href="#coverage">Coverage</a>
     <a href="#contact">Contact</a>
   </div>
 </nav>
 
-<header class="hero">
-  <div class="wrap">
-    <div class="eyebrow">Press Kit · Electronic Press Kit</div>
-    <h1>10to2</h1>
-    <p class="tagline">The hyperpop project of Finn Cryan — a 19-year-old producer, audio engineer and co-founder of the nonprofit studio Noisewatt in Fort Collins, Colorado.</p>
-    <div class="hero-actions">
-      <a class="btn primary" href="mailto:press@10to2.net">✉ Media contact</a>
-      <a class="btn" href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">Listen on Spotify ↗</a>
-      <a class="btn" href="https://10to2.net/" target="_blank" rel="noopener">10to2.net ↗</a>
-      <a class="btn" href="#photos">Download assets ↓</a>
-    </div>
+<div class="window">
+  <div class="titlebar">
+    <img src="/assets/press/logo-10to2.png" alt="">
+    <span class="t">10to2 — Press Kit</span>
+    <span class="winbtns">
+      <span class="winbtn" aria-hidden="true">_</span>
+      <span class="winbtn" aria-hidden="true">&#9633;</span>
+      <a class="winbtn close" href="https://10to2.net/" title="Back to 10to2.net">&times;</a>
+    </span>
   </div>
-</header>
 
-<main>
+  <div class="doc">
 
-<!-- ============ PRESS RELEASE ============ -->
-<section id="release">
-  <div class="wrap">
-    <h2>Press release</h2>
-    <p class="sub">FOR IMMEDIATE RELEASE</p>
-    <!-- Owner: update the headline + dateline for your current news peg. -->
-    <div class="card">
-      <p style="margin:0 0 2px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:700;">Fort Collins, CO</p>
-      <h3 style="font-size:22px; margin:.1em 0 .5em;">Fort Collins producer 10to2 brings hyperpop to a guitar town — and co-builds a studio for the next kid</h3>
-      <p>At 19, Finn Cryan is an unlikely fixture in Fort Collins, Colorado&rsquo;s mostly-rock music scene. Under the name <b>10to2</b>, he makes maximalist hyperpop and electronic music — glossy, fast, emotional — in a city better known for guitars. In 2026 he played <b>FoCoMX</b> at The Lyric, and off stage he helped found <b>Noisewatt</b>, a nonprofit recording studio started by young musicians to give local artists an affordable, professional room to record in.</p>
-      <p>Cryan is largely self-taught, having started making songs on a laptop years before formal training. He has since completed music-production and music-business specializations from <b>Berklee College of Music</b> and audio engineering coursework from the <b>University of Rochester</b>, and he now puts that knowledge to work engineering sessions for other artists at Noisewatt.</p>
-      <p>&ldquo;I make hyperpop in a town that mostly plays guitars — I like being the odd one out,&rdquo; says Cryan. &ldquo;Co-founding Noisewatt was about building the room I wish I&rsquo;d had at 15. Everything I learned, I taught myself; I just want the next kid to start with a door already open.&rdquo;</p>
-      <p>10to2&rsquo;s catalog includes <em>Whoareyou?</em>, <em>One2many</em> and <em>Ifwecrash</em>, available on Spotify and Apple Music. Cryan also performs in a shoegaze-leaning rock band, moving between the two worlds with the same DIY ethic.</p>
-      <p style="margin-top:16px;"><b>About 10to2</b><br>
-      10to2 is the hyperpop/electronic project of Finn Cryan, a 19-year-old producer and audio engineer from Fort Collins, Colorado. A self-taught artist with specializations from Berklee College of Music and audio engineering training from the University of Rochester, he is a co-founder of the nonprofit studio Noisewatt and played FoCoMX 2026. Learn more at 10to2.net.</p>
-      <p class="note" style="margin-top:14px;">Media contact: press@10to2.net · 10to2.net · Instagram @finleycry9</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FACT SHEET ============ -->
-<section id="facts">
-  <div class="wrap">
-    <h2>Fact sheet</h2>
-    <p class="sub">Everything a writer needs at a glance.</p>
-    <div class="facts">
-      <dl>
-        <div class="fact"><dt>Artist</dt><dd>10to2 (Finn &ldquo;Finn&rdquo; Cryan)</dd></div>
-        <div class="fact"><dt>Based in</dt><dd>Fort Collins, Colorado</dd></div>
-        <div class="fact"><dt>Age</dt><dd>19</dd></div>
-        <div class="fact"><dt>Genre</dt><dd>Hyperpop / electronic</dd></div>
-        <div class="fact"><dt>Also</dt><dd>Performs in a shoegaze-leaning rock band</dd></div>
-        <div class="fact"><dt>Day role</dt><dd>Co-founder &amp; audio engineer, Noisewatt (nonprofit studio)</dd></div>
-        <div class="fact"><dt>Live</dt><dd>FoCoMX 2026 — The Lyric (Lobby / Patio), Fort Collins</dd></div>
-        <div class="fact"><dt>Select releases</dt><dd>Whoareyou?, One2many, Ifwecrash, 1 Shot Roulette</dd></div>
-        <div class="fact"><dt>Training</dt><dd>Berklee College of Music specializations (Electronic Music Production; The Business of Music Production; Music Business); University of Rochester (Fundamentals of Audio &amp; Music Engineering); Dante Level 2 (Audinate)</dd></div>
-        <div class="fact"><dt>Listen</dt><dd><a href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">Spotify</a> · <a href="https://music.apple.com/us/artist/10to2/1638897947" target="_blank" rel="noopener">Apple Music</a></dd></div>
-        <div class="fact"><dt>Online</dt><dd><a href="https://10to2.net/" target="_blank" rel="noopener">10to2.net</a> · <a href="https://instagram.com/finleycry9" target="_blank" rel="noopener">Instagram @finleycry9</a></dd></div>
-        <div class="fact"><dt>Press contact</dt><dd><a href="mailto:press@10to2.net">press@10to2.net</a></dd></div>
-      </dl>
-    </div>
-    <p class="note" style="margin-top:12px;">Berklee credentials are completed specializations (via Coursera), not a Berklee degree or Berklee Online program.</p>
-  </div>
-</section>
-
-<!-- ============ BIOS ============ -->
-<section id="bios">
-  <div class="wrap">
-    <h2>Bios</h2>
-    <p class="sub">Three lengths — copy the one that fits your space.</p>
-
-    <div class="bio card">
-      <div class="lab">One line <button class="copybtn" data-copy="#bio1">Copy</button></div>
-      <p id="bio1">10to2 is the hyperpop project of Finn Cryan, a 19-year-old producer, audio engineer and co-founder of the nonprofit studio Noisewatt in Fort Collins, Colorado.</p>
-    </div>
-
-    <div class="bio card">
-      <div class="lab">Short (~50 words) <button class="copybtn" data-copy="#bio2">Copy</button></div>
-      <p id="bio2">10to2 is the hyperpop/electronic project of Finn Cryan, a 19-year-old producer and audio engineer from Fort Collins, Colorado. A largely self-taught artist with training from Berklee College of Music and the University of Rochester, he co-founded the nonprofit studio Noisewatt and played FoCoMX 2026. Releases include <em>Whoareyou?</em> and <em>Ifwecrash</em>.</p>
-    </div>
-
-    <div class="bio card">
-      <div class="lab">Long (~200 words) <button class="copybtn" data-copy="#bio3">Copy</button></div>
-      <p id="bio3">10to2 is the hyperpop and electronic project of Finn Cryan, a 19-year-old producer and audio engineer based in Fort Collins, Colorado. Drawn to maximalist, emotional pop built on fast electronic production, he stands out in a local scene that leans heavily on guitars — a contrast he embraces, and one he blurs further by also performing in a shoegaze-leaning rock band. Cryan is largely self-taught: he was making songs on a laptop long before he had a name for what he was doing. He later formalized that instinct with specializations from Berklee College of Music in Electronic Music Production, The Business of Music Production and Music Business, plus audio engineering coursework from the University of Rochester and Dante Level 2 certification. In 2026 he played FoCoMX at The Lyric and co-founded Noisewatt, a nonprofit recording studio started by young musicians to give Fort Collins artists an affordable, acoustically treated room to record, mix and master in — the kind of space Cryan says he wished he&rsquo;d had starting out. His catalog, including <em>Whoareyou?</em>, <em>One2many</em> and <em>Ifwecrash</em>, is available on Spotify and Apple Music, with more on the way.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ QUOTES ============ -->
-<section id="quotes">
-  <div class="wrap">
-    <h2>Quotes</h2>
-    <p class="sub">Ready to pull. <span class="note">(Drafts in Finn&rsquo;s voice — approve or tweak before publishing.)</span></p>
-    <blockquote class="q">&ldquo;I make hyperpop in a town that mostly plays guitars — I like being the odd one out.&rdquo;<footer>— Finn Cryan (10to2)</footer></blockquote>
-    <blockquote class="q">&ldquo;Co-founding Noisewatt was about building the room I wish I&rsquo;d had at 15. Everything I learned, I taught myself — I just want the next kid to start with a door already open.&rdquo;<footer>— Finn Cryan (10to2)</footer></blockquote>
-    <blockquote class="q">&ldquo;The certifications came after the curiosity. I was making songs on a laptop long before I knew what any of it was called.&rdquo;<footer>— Finn Cryan (10to2)</footer></blockquote>
-  </div>
-</section>
-
-<!-- ============ STORY ANGLES ============ -->
-<section id="angles">
-  <div class="wrap">
-    <h2>Story angles</h2>
-    <p class="sub">Hooks for a feature, a local-scene piece or a profile.</p>
-    <ul class="clean">
-      <li><b>The teenager building a studio.</b> A 19-year-old co-founding Noisewatt, a nonprofit recording studio run by young musicians to make professional recording affordable in Fort Collins.</li>
-      <li><b>Hyperpop in a rock town.</b> An electronic outlier in a guitar-driven Colorado scene — who also plays in a shoegaze band, straddling both worlds.</li>
-      <li><b>Self-taught, then certified.</b> A bedroom-laptop producer who turned curiosity into formal training (Berklee specializations, University of Rochester) and now engineers for other artists.</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============ PHOTOS & LOGOS ============ -->
-<section id="photos">
-  <div class="wrap">
-    <h2>Photos &amp; logos</h2>
-    <p class="sub">Downloadable assets. Please credit photographers where noted.</p>
-
-    <h3 style="font-size:16px; margin:6px 0 10px;">Press &amp; live photos</h3>
-    <!--
-      Owner: TWO artist photos are wired below. Save the images you sent to:
-        /home/user/10to2/assets/press/finn-portrait.jpg   (the "Ten2two" confetti portrait)
-        /home/user/10to2/assets/press/finn-notes.jpg       (the B&W shot with colored notes)
-      Until those files exist the tiles show a dark placeholder (no broken image).
-      Add more by copying a tile. Fill in the photographer credit where it says "Photo: —".
-    -->
-    <div class="grid">
-      <div class="asset">
-        <span class="thumb" style="background-image:url('/assets/press/finn-portrait.jpg')"></span>
-        <div class="meta"><div class="name">10to2 (Finn Cryan)</div><div class="cap">Primary press photo · Photo: —</div><a class="dl" href="/assets/press/finn-portrait.jpg" download>Download ↓</a></div>
+    <header class="hero">
+      <div class="eyebrow">Press Kit · Electronic Press Kit</div>
+      <h1>10to2</h1>
+      <p class="tagline">The hyperpop project of Finn Cryan — a 19-year-old producer, audio engineer and co-founder of the nonprofit studio Noisewatt in Fort Collins, Colorado.</p>
+      <div class="actions">
+        <a class="xpbtn primary" href="mailto:press@10to2.net">✉ Media contact</a>
+        <a class="xpbtn" href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">Listen on Spotify ↗</a>
+        <a class="xpbtn" href="https://10to2.net/" target="_blank" rel="noopener">10to2.net ↗</a>
+        <a class="xpbtn" href="#photos">Download assets ↓</a>
       </div>
-      <div class="asset">
-        <span class="thumb" style="background-image:url('/assets/press/finn-notes.jpg')"></span>
-        <div class="meta"><div class="name">10to2 — promo</div><div class="cap">Promo image · Photo: —</div><a class="dl" href="/assets/press/finn-notes.jpg" download>Download ↓</a></div>
-      </div>
-    </div>
-    <p class="note" style="margin-top:10px;">More high-resolution photos available on request — <a href="mailto:press@10to2.net">press@10to2.net</a>.</p>
+    </header>
 
-    <h3 style="font-size:16px; margin:22px 0 10px;">Release artwork</h3>
-    <p class="note" style="margin:0 0 10px;">Web-resolution covers from the site — request print-res if needed.</p>
-    <div class="grid">
-      <div class="asset">
-        <span class="thumb" style="background-image:url('/assets/press/cover-whoareyou.png')"></span>
-        <div class="meta"><div class="name">Whoareyou?</div><div class="cap">Cover art · 10to2</div><a class="dl" href="/assets/press/cover-whoareyou.png" download>Download ↓</a></div>
+    <!-- PRESS RELEASE -->
+    <section class="section" id="release">
+      <h2>Press release</h2>
+      <p class="sub">FOR IMMEDIATE RELEASE</p>
+      <div class="doc-card">
+        <div class="kicker">Fort Collins, CO</div>
+        <h3>Fort Collins producer 10to2 brings hyperpop to a guitar town — and co-builds a studio for the next kid</h3>
+        <p>At 19, Finn Cryan is an unlikely fixture in Fort Collins, Colorado&rsquo;s mostly-rock music scene. Under the name <b>10to2</b>, he makes maximalist hyperpop and electronic music — glossy, fast, emotional — in a city better known for guitars. In 2026 he played <b>FoCoMX</b> at The Lyric, and off stage he helped found <b>Noisewatt</b>, a nonprofit recording studio started by young musicians to give local artists an affordable, professional room to record in.</p>
+        <p>Cryan is largely self-taught, having started making songs on a laptop years before formal training. He has since completed music-production and music-business specializations from <b>Berklee College of Music</b> and audio engineering coursework from the <b>University of Rochester</b>, and he now puts that knowledge to work engineering sessions for other artists at Noisewatt.</p>
+        <p>&ldquo;I make hyperpop in a town that mostly plays guitars — I like being the odd one out,&rdquo; says Cryan. &ldquo;Co-founding Noisewatt was about building the room I wish I&rsquo;d had at 15. Everything I learned, I taught myself; I just want the next kid to start with a door already open.&rdquo;</p>
+        <p>10to2&rsquo;s catalog includes <em>Whoareyou?</em>, <em>One2many</em> and <em>Ifwecrash</em>, available on Spotify and Apple Music. Cryan also performs in a shoegaze-leaning rock band, moving between the two worlds with the same DIY ethic.</p>
+        <p style="margin-top:16px;"><b>About 10to2</b><br>
+        10to2 is the hyperpop/electronic project of Finn Cryan, a 19-year-old producer and audio engineer from Fort Collins, Colorado. A self-taught artist with specializations from Berklee College of Music and audio engineering training from the University of Rochester, he is a co-founder of the nonprofit studio Noisewatt and played FoCoMX 2026. Learn more at 10to2.net.</p>
+        <p class="note" style="margin-top:14px;">Media contact: press@10to2.net · 10to2.net · Instagram @finleycry9</p>
       </div>
-      <div class="asset">
-        <span class="thumb" style="background-image:url('/assets/press/cover-one2many.png')"></span>
-        <div class="meta"><div class="name">One2many</div><div class="cap">Cover art · 10to2</div><a class="dl" href="/assets/press/cover-one2many.png" download>Download ↓</a></div>
-      </div>
-      <div class="asset">
-        <span class="thumb" style="background-image:url('/assets/press/cover-ifwecrash.png')"></span>
-        <div class="meta"><div class="name">Ifwecrash</div><div class="cap">Cover art · 10to2</div><a class="dl" href="/assets/press/cover-ifwecrash.png" download>Download ↓</a></div>
-      </div>
-      <div class="asset">
-        <span class="thumb" style="background-image:url('/assets/press/cover-1shotroulette.png')"></span>
-        <div class="meta"><div class="name">1 Shot Roulette</div><div class="cap">Cover art · 10to2</div><a class="dl" href="/assets/press/cover-1shotroulette.png" download>Download ↓</a></div>
-      </div>
-    </div>
+    </section>
 
-    <h3 style="font-size:16px; margin:22px 0 10px;">Logo</h3>
-    <div class="grid">
-      <div class="asset">
-        <span class="thumb" style="background-image:url('/assets/press/logo-10to2.png')"></span>
-        <div class="meta"><div class="name">10to2 crest</div><div class="cap">PNG · transparent</div><a class="dl" href="/assets/press/logo-10to2.png" download>Download ↓</a></div>
+    <!-- FACT SHEET -->
+    <section class="section" id="facts">
+      <h2>Fact sheet</h2>
+      <p class="sub">Everything a writer needs at a glance.</p>
+      <div class="facts">
+        <dl>
+          <div class="k">Artist</div><div class="v">10to2 (Finley &ldquo;Finn&rdquo; Cryan)</div>
+          <div class="k">Based in</div><div class="v">Fort Collins, Colorado</div>
+          <div class="k">Age</div><div class="v">19</div>
+          <div class="k">Genre</div><div class="v">Hyperpop / electronic</div>
+          <div class="k">Also</div><div class="v">Performs in a shoegaze-leaning rock band</div>
+          <div class="k">Day role</div><div class="v">Co-founder &amp; audio engineer, Noisewatt (nonprofit studio)</div>
+          <div class="k">Live</div><div class="v">FoCoMX 2026 — The Lyric (Lobby / Patio), Fort Collins</div>
+          <div class="k">Select releases</div><div class="v">Whoareyou?, One2many, Ifwecrash, 1 Shot Roulette</div>
+          <div class="k">Training</div><div class="v">Berklee College of Music specializations (Electronic Music Production; The Business of Music Production; Music Business); University of Rochester (Fundamentals of Audio &amp; Music Engineering); Dante Level 2 (Audinate)</div>
+          <div class="k">Listen</div><div class="v"><a href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">Spotify</a> · <a href="https://music.apple.com/us/artist/10to2/1638897947" target="_blank" rel="noopener">Apple Music</a></div>
+          <div class="k">Online</div><div class="v"><a href="https://10to2.net/" target="_blank" rel="noopener">10to2.net</a> · <a href="https://instagram.com/finleycry9" target="_blank" rel="noopener">Instagram @finleycry9</a></div>
+          <div class="k">Press contact</div><div class="v"><a href="mailto:press@10to2.net">press@10to2.net</a></div>
+        </dl>
       </div>
-    </div>
-  </div>
-</section>
+      <p class="note" style="margin-top:10px;">Berklee credentials are completed specializations (via Coursera), not a Berklee degree or Berklee Online program.</p>
+    </section>
 
-<!-- ============ MUSIC ============ -->
-<section id="music">
-  <div class="wrap">
-    <h2>Music</h2>
-    <p class="sub">Stream or embed.</p>
-    <ul class="clean">
-      <li><b>Spotify</b> — <a href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">open.spotify.com/artist/10to2</a></li>
-      <li><b>Apple Music</b> — <a href="https://music.apple.com/us/artist/10to2/1638897947" target="_blank" rel="noopener">music.apple.com/artist/10to2</a></li>
-      <li><b>Official site</b> — <a href="https://10to2.net/" target="_blank" rel="noopener">10to2.net</a> (interactive site + downloads)</li>
-    </ul>
-  </div>
-</section>
+    <!-- BIOS -->
+    <section class="section" id="bios">
+      <h2>Bios</h2>
+      <p class="sub">Three lengths — copy the one that fits your space.</p>
 
-<!-- ============ COVERAGE ============ -->
-<section id="coverage">
-  <div class="wrap">
-    <h2>Selected coverage &amp; appearances</h2>
-    <p class="sub">Live dates and press to date.</p>
-    <ul class="clean">
-      <li><b>FoCoMX 2026</b> — Performed at The Lyric (Lobby / Patio), Fort Collins, CO.</li>
-      <!-- Owner: add real press/interviews/playlists here as they come, e.g.:
-      <li><b>Outlet name</b> — "Headline" (Month Year) · <a href="URL">Read ↗</a></li>
+      <div class="bio panel">
+        <div class="lab">One line <button class="copybtn" data-copy="#bio1">Copy</button></div>
+        <p id="bio1">10to2 is the hyperpop project of Finn Cryan, a 19-year-old producer, audio engineer and co-founder of the nonprofit studio Noisewatt in Fort Collins, Colorado.</p>
+      </div>
+      <div class="bio panel">
+        <div class="lab">Short (~50 words) <button class="copybtn" data-copy="#bio2">Copy</button></div>
+        <p id="bio2">10to2 is the hyperpop/electronic project of Finn Cryan, a 19-year-old producer and audio engineer from Fort Collins, Colorado. A largely self-taught artist with training from Berklee College of Music and the University of Rochester, he co-founded the nonprofit studio Noisewatt and played FoCoMX 2026. Releases include <em>Whoareyou?</em> and <em>Ifwecrash</em>.</p>
+      </div>
+      <div class="bio panel">
+        <div class="lab">Long (~200 words) <button class="copybtn" data-copy="#bio3">Copy</button></div>
+        <p id="bio3">10to2 is the hyperpop and electronic project of Finn Cryan, a 19-year-old producer and audio engineer based in Fort Collins, Colorado. Drawn to maximalist, emotional pop built on fast electronic production, he stands out in a local scene that leans heavily on guitars — a contrast he embraces, and one he blurs further by also performing in a shoegaze-leaning rock band. Cryan is largely self-taught: he was making songs on a laptop long before he had a name for what he was doing. He later formalized that instinct with specializations from Berklee College of Music in Electronic Music Production, The Business of Music Production and Music Business, plus audio engineering coursework from the University of Rochester and Dante Level 2 certification. In 2026 he played FoCoMX at The Lyric and co-founded Noisewatt, a nonprofit recording studio started by young musicians to give Fort Collins artists an affordable, acoustically treated room to record, mix and master in — the kind of space Cryan says he wished he&rsquo;d had starting out. His catalog, including <em>Whoareyou?</em>, <em>One2many</em> and <em>Ifwecrash</em>, is available on Spotify and Apple Music, with more on the way.</p>
+      </div>
+    </section>
+
+    <!-- QUOTES -->
+    <section class="section" id="quotes">
+      <h2>Quotes</h2>
+      <p class="sub">Ready to pull. <span class="note">(Drafts in Finn&rsquo;s voice — approve or tweak before publishing.)</span></p>
+      <blockquote class="q">&ldquo;I make hyperpop in a town that mostly plays guitars — I like being the odd one out.&rdquo;<footer>— Finn Cryan (10to2)</footer></blockquote>
+      <blockquote class="q">&ldquo;Co-founding Noisewatt was about building the room I wish I&rsquo;d had at 15. Everything I learned, I taught myself — I just want the next kid to start with a door already open.&rdquo;<footer>— Finn Cryan (10to2)</footer></blockquote>
+      <blockquote class="q">&ldquo;The certifications came after the curiosity. I was making songs on a laptop long before I knew what any of it was called.&rdquo;<footer>— Finn Cryan (10to2)</footer></blockquote>
+    </section>
+
+    <!-- STORY ANGLES -->
+    <section class="section" id="angles">
+      <h2>Story angles</h2>
+      <p class="sub">Hooks for a feature, a local-scene piece or a profile.</p>
+      <ul class="clean">
+        <li><b>The teenager building a studio.</b> A 19-year-old co-founding Noisewatt, a nonprofit recording studio run by young musicians to make professional recording affordable in Fort Collins.</li>
+        <li><b>Hyperpop in a rock town.</b> An electronic outlier in a guitar-driven Colorado scene — who also plays in a shoegaze band, straddling both worlds.</li>
+        <li><b>Self-taught, then certified.</b> A bedroom-laptop producer who turned curiosity into formal training (Berklee specializations, University of Rochester) and now engineers for other artists.</li>
+      </ul>
+    </section>
+
+    <!-- PHOTOS & LOGOS -->
+    <section class="section" id="photos">
+      <h2>Photos &amp; logos</h2>
+      <p class="sub">Downloadable assets. Please credit photographers where noted.</p>
+
+      <h3 style="font-size:15px; margin:4px 0 9px; color:#102a86;">Press &amp; live photos</h3>
+      <!--
+        Owner: save the two images you sent to
+          /home/user/10to2/assets/press/finn-portrait.jpg
+          /home/user/10to2/assets/press/finn-notes.jpg
+        Tiles show a dark placeholder until the files exist. Add the photographer credit.
       -->
-    </ul>
-    <p class="note">Writing about 10to2? Email <a href="mailto:press@10to2.net">press@10to2.net</a> and we&rsquo;ll add your piece here.</p>
-  </div>
-</section>
+      <div class="grid">
+        <div class="asset">
+          <span class="thumb" style="background-image:url('/assets/press/finn-portrait.jpg')"></span>
+          <div class="meta"><div class="name">10to2 (Finn Cryan)</div><div class="cap">Primary press photo · Photo: —</div><a class="dl" href="/assets/press/finn-portrait.jpg" download>Download ↓</a></div>
+        </div>
+        <div class="asset">
+          <span class="thumb" style="background-image:url('/assets/press/finn-notes.jpg')"></span>
+          <div class="meta"><div class="name">10to2 — promo</div><div class="cap">Promo image · Photo: —</div><a class="dl" href="/assets/press/finn-notes.jpg" download>Download ↓</a></div>
+        </div>
+      </div>
+      <p class="note" style="margin-top:9px;">More high-resolution photos available on request — <a href="mailto:press@10to2.net">press@10to2.net</a>.</p>
 
-<!-- ============ CONTACT ============ -->
-<section id="contact">
-  <div class="wrap">
-    <h2>Media contact</h2>
-    <div class="contact">
-      <div class="card">
-        <div class="eyebrow">Press &amp; interviews</div>
-        <p style="margin:.4em 0 0; font-size:18px;"><a href="mailto:press@10to2.net">press@10to2.net</a></p>
-        <p class="note" style="margin-top:6px;">Interviews, photo requests, premieres and show listings.</p>
+      <h3 style="font-size:15px; margin:20px 0 9px; color:#102a86;">Release artwork</h3>
+      <p class="note" style="margin:0 0 9px;">Web-resolution covers from the site — request print-res if needed.</p>
+      <div class="grid">
+        <div class="asset"><span class="thumb" style="background-image:url('/assets/press/cover-whoareyou.png')"></span><div class="meta"><div class="name">Whoareyou?</div><div class="cap">Cover art · 10to2</div><a class="dl" href="/assets/press/cover-whoareyou.png" download>Download ↓</a></div></div>
+        <div class="asset"><span class="thumb" style="background-image:url('/assets/press/cover-one2many.png')"></span><div class="meta"><div class="name">One2many</div><div class="cap">Cover art · 10to2</div><a class="dl" href="/assets/press/cover-one2many.png" download>Download ↓</a></div></div>
+        <div class="asset"><span class="thumb" style="background-image:url('/assets/press/cover-ifwecrash.png')"></span><div class="meta"><div class="name">Ifwecrash</div><div class="cap">Cover art · 10to2</div><a class="dl" href="/assets/press/cover-ifwecrash.png" download>Download ↓</a></div></div>
+        <div class="asset"><span class="thumb" style="background-image:url('/assets/press/cover-1shotroulette.png')"></span><div class="meta"><div class="name">1 Shot Roulette</div><div class="cap">Cover art · 10to2</div><a class="dl" href="/assets/press/cover-1shotroulette.png" download>Download ↓</a></div></div>
       </div>
-      <div class="card">
-        <div class="eyebrow">Follow</div>
-        <p style="margin:.4em 0 0;">
-          <a href="https://instagram.com/finleycry9" target="_blank" rel="noopener">Instagram @finleycry9</a><br>
-          <a href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">Spotify</a> ·
-          <a href="https://music.apple.com/us/artist/10to2/1638897947" target="_blank" rel="noopener">Apple Music</a>
-        </p>
+
+      <h3 style="font-size:15px; margin:20px 0 9px; color:#102a86;">Logo</h3>
+      <div class="grid">
+        <div class="asset"><span class="thumb" style="background-image:url('/assets/press/logo-10to2.png')"></span><div class="meta"><div class="name">10to2 crest</div><div class="cap">PNG · transparent</div><a class="dl" href="/assets/press/logo-10to2.png" download>Download ↓</a></div></div>
       </div>
+    </section>
+
+    <!-- MUSIC -->
+    <section class="section" id="music">
+      <h2>Music</h2>
+      <p class="sub">Stream or embed.</p>
+      <ul class="clean">
+        <li><b>Spotify</b> — <a href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">open.spotify.com/artist/10to2</a></li>
+        <li><b>Apple Music</b> — <a href="https://music.apple.com/us/artist/10to2/1638897947" target="_blank" rel="noopener">music.apple.com/artist/10to2</a></li>
+        <li><b>Official site</b> — <a href="https://10to2.net/" target="_blank" rel="noopener">10to2.net</a> (interactive site + downloads)</li>
+      </ul>
+    </section>
+
+    <!-- COVERAGE -->
+    <section class="section" id="coverage">
+      <h2>Selected coverage &amp; appearances</h2>
+      <p class="sub">Live dates and press to date.</p>
+      <ul class="clean">
+        <li><b>FoCoMX 2026</b> — Performed at The Lyric (Lobby / Patio), Fort Collins, CO.</li>
+        <!-- Owner: add real press/interviews/playlists here, e.g.:
+        <li><b>Outlet</b> — "Headline" (Month Year) · <a href="URL">Read ↗</a></li> -->
+      </ul>
+      <p class="note">Writing about 10to2? Email <a href="mailto:press@10to2.net">press@10to2.net</a> and we&rsquo;ll add your piece here.</p>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+      <h2>Media contact</h2>
+      <div class="contact">
+        <div class="panel">
+          <div class="eyebrow">Press &amp; interviews</div>
+          <p style="margin:.35em 0 0; font-size:17px;"><a href="mailto:press@10to2.net">press@10to2.net</a></p>
+          <p class="note" style="margin-top:5px;">Interviews, photo requests, premieres and show listings.</p>
+        </div>
+        <div class="panel">
+          <div class="eyebrow">Follow</div>
+          <p style="margin:.35em 0 0;">
+            <a href="https://instagram.com/finleycry9" target="_blank" rel="noopener">Instagram @finleycry9</a><br>
+            <a href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">Spotify</a> ·
+            <a href="https://music.apple.com/us/artist/10to2/1638897947" target="_blank" rel="noopener">Apple Music</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">
+      © <span id="yr"></span> 10to2 (Finn Cryan), Fort Collins, CO · <a href="mailto:press@10to2.net">press@10to2.net</a> · <a href="https://10to2.net/">10to2.net</a>
+      <br><span class="note">Press kit — facts current as of the brief; quotes are drafts pending the artist&rsquo;s approval.</span>
     </div>
-  </div>
-</section>
 
-</main>
-
-<footer class="foot">
-  <div class="wrap">
-    © <span id="yr"></span> 10to2 (Finn Cryan), Fort Collins, CO · <a href="mailto:press@10to2.net">press@10to2.net</a> · <a href="https://10to2.net/">10to2.net</a>
-    <br><span class="note">Press kit — facts current as of the brief; quotes are drafts pending the artist&rsquo;s approval.</span>
   </div>
-</footer>
+</div>
 
 <script>
   document.getElementById("yr").textContent = new Date().getFullYear();
   document.querySelectorAll(".copybtn").forEach(function(b){
     b.addEventListener("click", function(){
-      var el = document.querySelector(b.dataset.copy);
-      if(!el) return;
-      var t = el.innerText;
-      navigator.clipboard && navigator.clipboard.writeText(t).then(function(){
-        var o = b.textContent; b.textContent = "Copied"; setTimeout(function(){ b.textContent = o; }, 1200);
+      var el = document.querySelector(b.dataset.copy); if(!el) return;
+      navigator.clipboard && navigator.clipboard.writeText(el.innerText).then(function(){
+        var o=b.textContent; b.textContent="Copied"; setTimeout(function(){ b.textContent=o; },1200);
       }).catch(function(){});
     });
   });
