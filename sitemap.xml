@@ -11,4 +11,10 @@
       <image:title>10to2 — official site</image:title>
     </image:image>
   </url>
+  <url>
+    <loc>https://10to2.net/press/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
