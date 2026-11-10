@@ -136,6 +136,12 @@
   /* panels */
   .panel{background:#fbfcff; border:1px solid var(--line); border-radius:7px; padding:16px 18px;}
   .doc-card{background:var(--beige); border:1px solid var(--beige-edge); border-radius:4px; padding:16px 18px;}
+  .tracks{display:flex; flex-direction:column; gap:12px; margin-top:4px;}
+  .track{background:#fbfcff; border:1px solid var(--line); border-radius:7px; padding:12px 14px;}
+  .track-head{display:flex; justify-content:space-between; align-items:center; gap:10px 16px; margin-bottom:8px; flex-wrap:wrap;}
+  .track-name{font-weight:700; color:#102a86;}
+  .track-name small{font-weight:400; color:var(--muted);}
+  .track audio{width:100%; height:38px; margin-top:2px;}
   .doc-card h3{margin:.1em 0 .4em; font-size:19px; color:#1a1a1a;}
   .kicker{font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:#6a5; color:var(--muted); font-weight:700;}
 
@@ -227,8 +233,9 @@
       <h1 class="brand"><img src="/assets/press/logo-wordmark.webp" alt="10to2"></h1>
       <p class="tagline">The hyperpop project of Finn Cryan, a 19-year-old producer, audio engineer and co-founder of Noisewatt, a fledgling nonprofit studio in Fort Collins, Colorado.</p>
       <div class="actions">
-        <a class="xpbtn primary" href="mailto:tt10to2tt@gmail.com">✉ Media contact</a>
-        <a class="xpbtn" href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">Listen on Spotify ↗</a>
+        <a class="xpbtn primary" href="https://open.spotify.com/artist/43g2oawxX5Bx4cIerARwHO" target="_blank" rel="noopener">▶ Listen on Spotify ↗</a>
+        <a class="xpbtn primary" href="https://music.apple.com/us/artist/10to2/1638897947" target="_blank" rel="noopener">▶ Apple Music ↗</a>
+        <a class="xpbtn" href="mailto:tt10to2tt@gmail.com">✉ Media contact</a>
         <a class="xpbtn" href="https://10to2.net/" target="_blank" rel="noopener">10to2.net ↗</a>
         <a class="xpbtn" href="#photos">Download assets ↓</a>
       </div>
@@ -364,6 +371,23 @@
         <li><b>Apple Music:</b> <a href="https://music.apple.com/us/artist/10to2/1638897947" target="_blank" rel="noopener">10to2 on Apple Music ↗</a></li>
         <li><b>Official site:</b> <a href="https://10to2.net/" target="_blank" rel="noopener">10to2.net ↗</a> (interactive site + downloads)</li>
       </ul>
+
+      <h3 style="font-size:15px; margin:18px 0 9px; color:#102a86;">Tracks (preview &amp; download)</h3>
+      <p class="note" style="margin:0 0 10px;">For press use. Please don&rsquo;t repost or redistribute without permission.</p>
+      <div class="tracks">
+        <div class="track">
+          <div class="track-head"><span class="track-name">One2many <small>· MP3</small></span><a class="dl" href="/assets/press/audio/one2many.mp3" download>Download ↓</a></div>
+          <audio controls preload="none" src="/assets/press/audio/one2many.mp3"></audio>
+        </div>
+        <div class="track">
+          <div class="track-head"><span class="track-name">Ifwecrash <small>· MP3</small></span><a class="dl" href="/assets/press/audio/ifwecrash.mp3" download>Download ↓</a></div>
+          <audio controls preload="none" src="/assets/press/audio/ifwecrash.mp3"></audio>
+        </div>
+        <div class="track">
+          <div class="track-head"><span class="track-name">1 Shot Roulette <small>· WAV, lossless (19 MB)</small></span><a class="dl" href="/assets/press/audio/1shotroulette.wav" download>Download ↓</a></div>
+          <audio controls preload="none" src="/assets/press/audio/1shotroulette.wav"></audio>
+        </div>
+      </div>
     </section>
 
     <!-- CREDITS: COLLABORATIONS & APPEARANCES -->
